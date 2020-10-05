@@ -25,8 +25,13 @@
 #include "config.h"
 #include <TTGO.h>
 
-#include "hardware/display.h"
-#include "gui/splashscreen.h"
+	/* FreeRTOS' stuff */
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
+#include <freertos/timers.h>
+#include <freertos/queue.h>
+
+#include "gui.h"
 
 	/*	My own setting for my automation.
 	 *	Has to define
@@ -59,7 +64,6 @@ void setup(){
 		
 		// force to store all new heap allocations in psram to get more internal ram
     heap_caps_malloc_extmem_enable( 1 );
-    display_setup();
 }
 
 void loop(){
