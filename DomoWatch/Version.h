@@ -4,7 +4,7 @@
 *
 *	History :
 *	---------
-*	04/10/2020 - LF : First version
+*	05/10/2020 - LF : First version (copy from SimpleWatch)
 */
 
 #ifndef VERSION_H
