@@ -20,7 +20,7 @@ Created by Lewis he on October 10, 2019.
 
 #include "myfont.h"
 
-#define RTC_TIME_ZONE   "CST-8"
+#define RTC_TIME_ZONE   "CET+1"
 
 
 LV_FONT_DECLARE(Geometr);
@@ -52,9 +52,10 @@ LV_IMG_DECLARE(CAMERA_PNG);
 extern EventGroupHandle_t g_event_group;
 extern QueueHandle_t g_event_queue_handle;
 
-static lv_style_t settingStyle;
+// static lv_style_t settingStyle;
 static lv_obj_t *mainBar = nullptr;
 static lv_obj_t *timeLabel = nullptr;
+static lv_obj_t *dateLabel= nullptr;
 static lv_obj_t *menuBtn = nullptr;
 
 static uint8_t globalIndex = 0;
@@ -335,18 +336,18 @@ static void event_handler(lv_obj_t *obj, lv_event_t event)
 }
 
 
-void setupGui()
-{
+void setupGui(){
+/*
     lv_style_init(&settingStyle);
     lv_style_set_radius(&settingStyle, LV_OBJ_PART_MAIN, 0);
     lv_style_set_bg_color(&settingStyle, LV_OBJ_PART_MAIN, LV_COLOR_GRAY);
-    lv_style_set_bg_opa(&settingStyle, LV_OBJ_PART_MAIN, LV_OPA_0);
+    lv_style_set_bg_opa(&settingStyle, LV_OBJ_PART_MAIN, LV_OPA_0);	// Opacity
     lv_style_set_border_width(&settingStyle, LV_OBJ_PART_MAIN, 0);
     lv_style_set_text_color(&settingStyle, LV_OBJ_PART_MAIN, LV_COLOR_WHITE);
     lv_style_set_image_recolor(&settingStyle, LV_OBJ_PART_MAIN, LV_COLOR_WHITE);
+*/
 
-
-    //Create wallpaper
+	    /* Create wallpaper */
     void *images[] = {(void *) &bg, (void *) &bg1, (void *) &bg2, (void *) &bg3 };
     lv_obj_t *scr = lv_scr_act();
     lv_obj_t *img_bin = lv_img_create(scr, NULL);  /*Create an image object*/
@@ -355,7 +356,7 @@ void setupGui()
     lv_img_set_src(img_bin, images[r]);
     lv_obj_align(img_bin, NULL, LV_ALIGN_CENTER, 0, 0);
 
-    //! bar
+	    /* bar */
     bar.createIcons(scr);
     updateBatteryLevel();
     lv_icon_battery_t icon = LV_ICON_CALCULATION;
@@ -367,7 +368,7 @@ void setupGui()
     }
     updateBatteryIcon(icon);
 
-    //! main
+	    /* main */
     static lv_style_t mainStyle;
     lv_style_init(&mainStyle);
     lv_style_set_radius(&mainStyle, LV_OBJ_PART_MAIN, 0);
@@ -383,13 +384,19 @@ void setupGui()
     lv_obj_add_style(mainBar, LV_OBJ_PART_MAIN, &mainStyle);
     lv_obj_align(mainBar, bar.self(), LV_ALIGN_OUT_BOTTOM_MID, 0, 0);
 
-    //! Time
+    //! Time & date
     static lv_style_t timeStyle;
     lv_style_copy(&timeStyle, &mainStyle);
     lv_style_set_text_font(&timeStyle, LV_STATE_DEFAULT, &Ubuntu_48px);
-
     timeLabel = lv_label_create(mainBar, NULL);
     lv_obj_add_style(timeLabel, LV_OBJ_PART_MAIN, &timeStyle);
+
+    static lv_style_t dateStyle;
+    lv_style_copy(&dateStyle, &mainStyle);
+    lv_style_set_text_font(&dateStyle, LV_STATE_DEFAULT, &Ubuntu_48px);
+    dateLabel = lv_label_create(mainBar, NULL);
+    lv_obj_add_style(dateLabel, LV_OBJ_PART_MAIN, &dateStyle);
+
     updateTime();
 
     //! menu
@@ -415,27 +422,32 @@ void setupGui()
     lv_task_create(lv_battery_task, 30000, LV_TASK_PRIO_LOWEST, NULL);
 }
 
-void updateStepCounter(uint32_t counter)
-{
+void updateStepCounter(uint32_t counter){
     bar.setStepCounter(counter);
 }
 
-static void updateTime()
-{
+static void updateTime(){
     time_t now;
     struct tm  info;
     char buf[64];
     time(&now);
     localtime_r(&now, &info);
+
     strftime(buf, sizeof(buf), "%H:%M:%S", &info);
     lv_label_set_text(timeLabel, buf);
     lv_obj_align(timeLabel, NULL, LV_ALIGN_IN_TOP_MID, 0, 20);
+
+	strftime(buf, sizeof(buf), "%a %e %b %Y", &info);
+    lv_label_set_text(dateLabel, buf);
+    lv_obj_align(dateLabel, NULL, LV_ALIGN_IN_TOP_MID, 0, 20);
+
+/*
     TTGOClass *ttgo = TTGOClass::getWatch();
     ttgo->rtc->syncToRtc();
+*/
 }
 
-void updateBatteryLevel()
-{
+void updateBatteryLevel(){
     TTGOClass *ttgo = TTGOClass::getWatch();
     int p = ttgo->power->getBattPercentage();
     bar.updateLevel(p);

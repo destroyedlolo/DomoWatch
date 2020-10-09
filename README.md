@@ -7,4 +7,4 @@
 
 # DomoWatch
 
-
+This code is deeply based TTGO_TWatch's SimpleWatch
