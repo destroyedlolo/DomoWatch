@@ -17,7 +17,6 @@ Created by Lewis he on October 10, 2019.
 #include <soc/rtc.h>
 #include "esp_wifi.h"
 #include "esp_sleep.h"
-#include <WiFi.h>
 #include "gui.h"
 
 #define G_EVENT_VBUS_PLUGIN         _BV(0)
@@ -31,8 +30,6 @@ Created by Lewis he on October 10, 2019.
 #define G_EVENT_WIFI_OFF            _BV(7)
 
 enum {
-    Q_EVENT_WIFI_SCAN_DONE,
-    Q_EVENT_WIFI_CONNECT,
     Q_EVENT_BMA_INT,
     Q_EVENT_AXP_INT,
 } ;
@@ -50,27 +47,6 @@ EventGroupHandle_t isr_group = NULL;
 bool lenergy = false;
 TTGOClass *ttgo;
 
-void setupNetwork()
-{
-    WiFi.mode(WIFI_STA);
-    WiFi.onEvent([](WiFiEvent_t event, WiFiEventInfo_t info) {
-        xEventGroupClearBits(g_event_group, G_EVENT_WIFI_CONNECTED);
-    }, WiFiEvent_t::SYSTEM_EVENT_STA_DISCONNECTED);
-
-    WiFi.onEvent([](WiFiEvent_t event, WiFiEventInfo_t info) {
-        uint8_t data = Q_EVENT_WIFI_SCAN_DONE;
-        xQueueSend(g_event_queue_handle, &data, portMAX_DELAY);
-    }, WiFiEvent_t::SYSTEM_EVENT_SCAN_DONE);
-
-    WiFi.onEvent([](WiFiEvent_t event, WiFiEventInfo_t info) {
-        xEventGroupSetBits(g_event_group, G_EVENT_WIFI_CONNECTED);
-    }, WiFiEvent_t::SYSTEM_EVENT_STA_CONNECTED);
-
-    WiFi.onEvent([](WiFiEvent_t event, WiFiEventInfo_t info) {
-        wifi_connect_status(true);
-    }, WiFiEvent_t::SYSTEM_EVENT_STA_GOT_IP);
-}
-
 
 	/* Go to sleep */
 void low_energy(){
@@ -80,6 +56,8 @@ void low_energy(){
         ttgo->stopLvglTick();
         ttgo->bma->enableStepCountInterrupt(false);
         ttgo->displaySleep();
+
+#if 0		/* pas logic */
         if(!WiFi.isConnected()){
             lenergy = true;
             WiFi.mode(WIFI_OFF);
@@ -92,6 +70,7 @@ void low_energy(){
             esp_sleep_enable_gpio_wakeup ();
             esp_light_sleep_start();
         }
+#endif
     } else {
         ttgo->startLvglTick();
         ttgo->displayWakeup();
@@ -177,36 +156,11 @@ void setup(){
     //Synchronize time to system time
     ttgo->rtc->syncToSystem();
 
-#ifdef LILYGO_WATCH_HAS_BUTTON
-    /*
-        ttgo->button->setClickHandler([]() {
-            Serial.println("Button2 Pressed");
-        });
-    */
-
-    //Set the user button long press to restart
-    ttgo->button->setLongClickHandler([](){
-        Serial.println("Pressed Restart Button,Restart now ...");
-        delay(1000);
-        esp_restart();
-    });
-#endif
-
-    //Setting up the network
-    setupNetwork();
-
     //Execute your own GUI interface
     setupGui();
 
     //Clear lvgl counter
     lv_disp_trig_activity(NULL);
-
-#ifdef LILYGO_WATCH_HAS_BUTTON
-    //In lvgl we call the button processing regularly
-    lv_task_create([](lv_task_t *args) {
-        ttgo->button->loop();
-    }, 30, 1, nullptr);
-#endif
 
     //When the initialization is complete, turn on the backlight
     ttgo->openBL();
@@ -282,12 +236,6 @@ void loop(){
             ttgo->power->clearIRQ();
             break;
 
-        case Q_EVENT_WIFI_SCAN_DONE: {
-            	int16_t len = WiFi.scanComplete();
-	            for(int i = 0; i < len; ++i)
-    	            wifi_list_add(WiFi.SSID(i).c_str());
-        	}
-            break;
         }
     }
 
