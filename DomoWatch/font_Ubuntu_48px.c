@@ -6,12 +6,6 @@
  * Opts: 
  ******************************************************************************/
 
-#ifndef UBUNTU_48PX
-#define UBUNTU_48PX 1
-#endif
-
-#if UBUNTU_48PX
-
 /*-----------------
  *    BITMAPS
  *----------------*/
@@ -3862,6 +3856,4 @@ lv_font_t Ubuntu_48px = {
 #endif
     .dsc = &font_dsc           /*The custom font data. Will be accessed by `get_glyph_bitmap/dsc` */
 };
-
-#endif /*#if UBUNTU_48PX*/
 
