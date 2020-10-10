@@ -34,7 +34,16 @@ typedef enum {
 
 
 	/***
-	 * Function used elsewhere
+	 * Objects used elsewhere
+	 ***/
+
+extern TTGOClass *ttgo;
+extern EventGroupHandle_t g_event_group;
+extern QueueHandle_t g_event_queue_handle;
+
+
+	/***
+	 * Functions used elsewhere
 	 ***/
 
 extern void setupGui(void);

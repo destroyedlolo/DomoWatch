@@ -9,7 +9,19 @@
 
 	/* "standard" font */
 LV_FONT_DECLARE(Ubuntu);
+LV_FONT_DECLARE(Geometr);
 
+	/* Wallpaper */
+LV_IMG_DECLARE(bg);
+LV_IMG_DECLARE(bg1);
+LV_IMG_DECLARE(bg2);
+LV_IMG_DECLARE(bg3);
+LV_IMG_DECLARE(WALLPAPER_1_IMG);
+LV_IMG_DECLARE(WALLPAPER_2_IMG);
+LV_IMG_DECLARE(WALLPAPER_3_IMG);
+
+	/* objects */
+static lv_obj_t *mainBar = nullptr;
 
 	/* Build the GUI */
 void setupGui(void){
