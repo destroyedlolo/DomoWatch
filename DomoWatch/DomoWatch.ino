@@ -92,9 +92,9 @@ void wakeup(){
 	ttgo->startLvglTick();
 	ttgo->displayWakeup();
 	ttgo->rtc->syncToSystem();
-	updateStepCounter(ttgo->bma->getCounter());
-	updateBatteryLevel();
-	updateBatteryIcon(LV_ICON_CALCULATION);
+	gui->updateStepCounter(ttgo->bma->getCounter());
+	gui->updateBatteryLevel();
+	gui->updateBatteryIcon( Gui::LV_ICON_CALCULATION );
 	lv_disp_trig_activity(NULL);
 	ttgo->openBL();
 	ttgo->bma->enableStepCountInterrupt();
@@ -173,7 +173,7 @@ void setup(){
 	ttgo->rtc->syncToSystem();
 
 	//Execute your own GUI interface
-	setupGui();
+	gui = new Gui();
 
 	//Clear lvgl counter
 	lv_disp_trig_activity(NULL);
@@ -221,27 +221,26 @@ void loop(){
 	if(xQueueReceive(g_event_queue_handle, &data, 5 / portTICK_RATE_MS) == pdPASS){
 		switch(data){
 		case Q_EVENT_BMA_INT:
-			do {
+			do
 				rlst =  ttgo->bma->readInterrupt();
-			} while(!rlst);
+			while(!rlst);
 
 			//! step counter
-			if(ttgo->bma->isStepCounter()){
-				updateStepCounter(ttgo->bma->getCounter());
-			}
+			if(ttgo->bma->isStepCounter())
+				gui->updateStepCounter(ttgo->bma->getCounter());
 			break;
 
 		case Q_EVENT_AXP_INT:
 			ttgo->power->readIRQ();
 
 			if(ttgo->power->isVbusPlugInIRQ())
-				updateBatteryIcon(LV_ICON_CHARGE);
+				gui->updateBatteryIcon( Gui::LV_ICON_CHARGE );
 	
 			if(ttgo->power->isVbusRemoveIRQ())
-				updateBatteryIcon(LV_ICON_CALCULATION);
+				gui->updateBatteryIcon( Gui::LV_ICON_CALCULATION );
 
 			if(ttgo->power->isChargingDoneIRQ())
-				updateBatteryIcon(LV_ICON_CALCULATION);
+				gui->updateBatteryIcon( Gui::LV_ICON_CALCULATION );
 
 			if(ttgo->power->isPEKShortPressIRQ()){
 				ttgo->power->clearIRQ();

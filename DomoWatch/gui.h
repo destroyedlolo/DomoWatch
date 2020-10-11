@@ -1,26 +1,32 @@
-/*
-Copyright (c) 2019 lewis he
-This is just a demonstration. Most of the functions are not implemented.
-The main implementation is low-power standby. 
-The off-screen standby (not deep sleep) current is about 4mA.
-Select standard motherboard and standard backplane for testing.
-Created by Lewis he on October 10, 2019.
-*/
+/************************************************
+*	GUI's root interface
+*************************************************/
 
-#ifndef __GUI_H
-#define __GUI_H
+#ifndef GUI_H
+#define GUI_H
 
 #include <lvgl/lvgl.h>
 
-typedef enum {
-	LV_ICON_BAT_EMPTY,
-	LV_ICON_BAT_1,
-	LV_ICON_BAT_2,
-	LV_ICON_BAT_3,
-	LV_ICON_BAT_FULL,
-	LV_ICON_CHARGE,
-	LV_ICON_CALCULATION
-} lv_icon_battery_t;
+class Gui {
+public :
+	enum lv_icon_battery_t {
+		LV_ICON_BAT_EMPTY,
+		LV_ICON_BAT_1,
+		LV_ICON_BAT_2,
+		LV_ICON_BAT_3,
+		LV_ICON_BAT_FULL,
+		LV_ICON_CHARGE,
+		LV_ICON_CALCULATION
+	};
+
+	Gui();
+
+	void updateStepCounter(uint32_t counter);
+	void updateBatteryIcon(lv_icon_battery_t index);
+	void updateBatteryLevel(void);
+};
+
+extern class Gui *gui;
 
 
 /*
@@ -42,19 +48,9 @@ extern EventGroupHandle_t g_event_group;
 extern QueueHandle_t g_event_queue_handle;
 
 
-	/***
-	 * Functions used elsewhere
-	 ***/
-
-extern void setupGui(void);
-
-extern void updateStepCounter(uint32_t counter);
-extern void updateBatteryIcon(lv_icon_battery_t index);
-extern void updateBatteryLevel(void);
-
 /*
 void wifi_list_add(const char *ssid);
 void wifi_connect_status(bool result);
 */
 
-#endif /*__GUI_H */
+#endif

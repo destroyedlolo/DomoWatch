@@ -22,17 +22,18 @@ LV_IMG_DECLARE(WALLPAPER_3_IMG);
 
 	/* objects */
 static lv_obj_t *mainBar = nullptr;
+class Gui *gui;
 
 	/* Build the GUI */
-void setupGui(void){
+Gui::Gui(){
 }
 
 	/* Interfaces */
-void updateStepCounter(uint32_t counter){
+void Gui::updateStepCounter(uint32_t counter){
 }
 
-void updateBatteryIcon(lv_icon_battery_t index){
+void Gui::updateBatteryIcon(lv_icon_battery_t index){
 }
 
-void updateBatteryLevel(void){
+void Gui::updateBatteryLevel(void){
 }
