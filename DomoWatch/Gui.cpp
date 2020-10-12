@@ -31,8 +31,12 @@ class Gui *gui;
 
 
 	/**** 
-	 * Build the GUI 
+	 * Build the GUI
 	 *****/
+
+/* Gui's constructor
+ *	Create the gui's skeleton then add all objects
+ */
 Gui::Gui(){
 
 		/* Main style */
@@ -64,7 +68,10 @@ Gui::Gui(){
     lv_tileview_set_edge_flash( this->mainbar, true);
 }
 
-	/* Interfaces */
+
+	/*****
+	 * Interfaces 
+	 *****/
 void Gui::updateStepCounter(uint32_t counter){
 }
 
