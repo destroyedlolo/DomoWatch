@@ -8,6 +8,10 @@
 #include <lvgl/lvgl.h>
 
 class Gui {
+	lv_style_t mainbar_style;
+	lv_obj_t *mainbar;
+	lv_obj_t *background;
+
 public :
 	enum lv_icon_battery_t {
 		LV_ICON_BAT_EMPTY,
