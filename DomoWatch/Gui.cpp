@@ -1,10 +1,9 @@
 /************************************************
 *	GUI's root definition
 *************************************************/
-#include "config.h"
-#include <Arduino.h>
-
 #include "Gui.h"
+#include "TlDateHour.h"
+
 #include "myfont.h"
 
 	/* "standard" font */
@@ -66,6 +65,8 @@ Gui::Gui(){
 		// For the moment, not movement 
 	lv_tileview_set_valid_positions( this->mainbar, NULL, 0 );
     lv_tileview_set_edge_flash( this->mainbar, true);
+
+		/* Create tiles */
 }
 
 

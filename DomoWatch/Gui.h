@@ -5,6 +5,8 @@
 #ifndef GUI_H
 #define GUI_H
 
+#include "config.h"
+#include <Arduino.h>
 #include <lvgl/lvgl.h>
 
 class Gui {
