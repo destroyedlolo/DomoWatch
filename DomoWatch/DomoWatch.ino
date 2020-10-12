@@ -32,7 +32,8 @@
 #include <soc/rtc.h>
 #include "esp_wifi.h"
 #include "esp_sleep.h"
-#include "gui.h"
+
+#include "Gui.h"
 
 #define G_EVENT_VBUS_PLUGIN         _BV(0)
 #define G_EVENT_VBUS_REMOVE         _BV(1)

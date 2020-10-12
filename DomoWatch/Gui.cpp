@@ -4,7 +4,7 @@
 #include "config.h"
 #include <Arduino.h>
 
-#include "gui.h"
+#include "Gui.h"
 #include "myfont.h"
 
 	/* "standard" font */
@@ -22,7 +22,11 @@ LV_IMG_DECLARE(WALLPAPER_2_IMG);
 LV_IMG_DECLARE(WALLPAPER_3_IMG);
 #endif
 
-	/* objects */
+
+	/*****
+	 * objects
+	 *****/
+	
 class Gui *gui;
 
 
