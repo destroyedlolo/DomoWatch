@@ -5,6 +5,9 @@
 #ifndef Tile_H
 #define Tile_H
 
+#include "config.h"
+#include <Arduino.h>
+
 #include <lvgl/lvgl.h>
 
 class Tile {

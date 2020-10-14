@@ -28,6 +28,7 @@ TlDateHour::TlDateHour( Gui *g ):Tile( g->getTileView() ), gui( g ){
 	lv_label_set_text( this->datelabel, "??.???? ????" );
 	lv_obj_add_style( this->datelabel, LV_OBJ_PART_MAIN, &this->datestyle );
 
+	Serial.println("TimeDate created");
 }
 
 void TlDateHour::updateTime( void ){

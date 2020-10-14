@@ -14,4 +14,6 @@ Tile::Tile(lv_obj_t *tileview){
 	this->tile = lv_obj_create(tileview, NULL);
 	lv_obj_set_size( this->tile, LV_HOR_RES, LV_VER_RES);
 	lv_tileview_add_element(tileview, this->tile);
+
+	Serial.printf("Tile %dx%d created\n", LV_HOR_RES, LV_VER_RES);
 }
