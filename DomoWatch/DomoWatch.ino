@@ -25,14 +25,17 @@
 // Please select the model you want to use in config.h
 #include "config.h"
 
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
-#include "freertos/timers.h"
-#include "freertos/queue.h"
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
+#include <freertos/timers.h>
+#include <freertos/queue.h>
 #include <soc/rtc.h>
-#include "esp_wifi.h"
-#include "esp_sleep.h"
 
+// #include "esp_wifi.h"
+#include <esp_sleep.h>
+#include <esp_task_wdt.h>
+
+#include "Version.h"
 #include "Gui.h"
 
 #define G_EVENT_VBUS_PLUGIN         _BV(0)
@@ -102,7 +105,10 @@ void wakeup(){
 }
 
 void setup(){
-	Serial.begin(1152000);
+	Serial.begin(115200);
+
+	Serial.printf("starting Domo watch v %f\n", VERSION_H);
+	Serial.printf("Configure watchdog to 30s: %d\n", esp_task_wdt_init( 30, true ) );
 
 	//Create a program that allows the required message objects and group flags
 	g_event_queue_handle = xQueueCreate(20, sizeof(uint8_t));
@@ -112,6 +118,9 @@ void setup(){
 	//Initialize TWatch
 	ttgo = TTGOClass::getWatch();	
 	ttgo->begin();
+
+
+	Serial.println("Setting up interrupts ...");
 
 	// Turn on the IRQ used
 	ttgo->power->adc1Enable(AXP202_BATT_VOL_ADC1 | AXP202_BATT_CUR_ADC1 | AXP202_VBUS_VOL_ADC1 | AXP202_VBUS_CUR_ADC1, AXP202_ON);
@@ -123,9 +132,6 @@ void setup(){
 	ttgo->power->setPowerOutPut(AXP202_DCDC2, AXP202_OFF);
 	ttgo->power->setPowerOutPut(AXP202_LDO3, AXP202_OFF);
 	ttgo->power->setPowerOutPut(AXP202_LDO4, AXP202_OFF);
-
-	//Initialize lvgl
-	ttgo->lvgl_begin();
 
 	// Enable BMA423 interrupt 
 	// The default interrupt configuration,
@@ -167,30 +173,58 @@ void setup(){
 		}
 	}, FALLING);
 
+	
+
 	//Check if the RTC clock matches, if not, use compile time
 	ttgo->rtc->check();
 
 	//Synchronize time to system time
 	ttgo->rtc->syncToSystem();
 
-	//Execute your own GUI interface
+	{	// Debugging
+		time_t now;
+		struct tm  info;
+		char buf[64];
+
+		time(&now);
+		localtime_r(&now, &info);
+		strftime(buf, sizeof(buf), "%H:%M:%S", &info);
+		Serial.print("Setting clock to ");
+		Serial.println(buf);
+	}
+
+	Serial.println("Starting up LVGL and GUI ...");
+
+	//Initialize lvgl
+	ttgo->lvgl_begin();
+
+	//Execute our own GUI interface
 	gui = new Gui();
 
-	//Clear lvgl counter
+	//Clear lvgl activity counter
 	lv_disp_trig_activity(NULL);
 
 	//When the initialization is complete, turn on the backlight
 	ttgo->openBL();
+
+	Serial.printf("Total heap: %d\r\n", ESP.getHeapSize());
+    Serial.printf("Free heap: %d\r\n", ESP.getFreeHeap());
+    Serial.printf("Total PSRAM: %d\r\n", ESP.getPsramSize());
+    Serial.printf("Free PSRAM: %d\r\n", ESP.getFreePsram());
+
+	Serial.println("Initialisation completed");
 }
 
 void loop(){
 	bool  rlst;
 	uint8_t data;
 
-	//! Fast response wake-up interrupt
+	/* Test about wake up irq */
 	EventBits_t  bits = xEventGroupGetBits(isr_group);
 	if(bits & WATCH_FLAG_SLEEP_EXIT){
+		Serial.println("Waking up");
 		if(lenergy){
+			Serial.println("from low energy mode.");
 			lenergy = false;
 			setCpuFrequencyMhz(160);
 		}
@@ -218,20 +252,20 @@ void loop(){
 		return;
 	}
 
-	//! Normal polling
+	/* other activities */
 	if(xQueueReceive(g_event_queue_handle, &data, 5 / portTICK_RATE_MS) == pdPASS){
 		switch(data){
-		case Q_EVENT_BMA_INT:
+		case Q_EVENT_BMA_INT: // step counter
 			do
 				rlst =  ttgo->bma->readInterrupt();
 			while(!rlst);
 
-			//! step counter
 			if(ttgo->bma->isStepCounter())
 				gui->updateStepCounter(ttgo->bma->getCounter());
 			break;
 
 		case Q_EVENT_AXP_INT:
+				// Power management
 			ttgo->power->readIRQ();
 
 			if(ttgo->power->isVbusPlugInIRQ())
@@ -243,7 +277,9 @@ void loop(){
 			if(ttgo->power->isChargingDoneIRQ())
 				gui->updateBatteryIcon( Gui::LV_ICON_CALCULATION );
 
+				// Button push
 			if(ttgo->power->isPEKShortPressIRQ()){
+				Serial.println("Button pressed");
 				ttgo->power->clearIRQ();
 				if(ttgo->bl->isOn())
 					low_energy();
@@ -260,6 +296,8 @@ void loop(){
 
 	if(lv_disp_get_inactive_time(NULL) < DEFAULT_SCREEN_TIMEOUT)
 		lv_task_handler();
-	else	// No activities : going to sleep
+	else {	// No activities : going to sleep
+		Serial.println("No activity : Go to sleep");
 		low_energy();
+	}
 }
