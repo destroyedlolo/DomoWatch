@@ -27,6 +27,12 @@ public :
 
 	Gui();
 
+	lv_style_t *getStyle( void ){ return &mainbar_style; }
+	lv_obj_t *getTileView( void ){ return mainbar; }
+
+
+		/* interface */
+
 	void updateStepCounter(uint32_t counter);
 	void updateBatteryIcon(lv_icon_battery_t index);
 	void updateBatteryLevel(void);

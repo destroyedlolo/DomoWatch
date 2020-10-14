@@ -6,10 +6,6 @@
 
 #include "myfont.h"
 
-	/* "standard" font */
-LV_FONT_DECLARE(Ubuntu);
-LV_FONT_DECLARE(Geometr);
-
 	/* Wallpaper */
 #if 0
 LV_IMG_DECLARE(bg);
@@ -29,6 +25,27 @@ LV_IMG_DECLARE(WALLPAPER_3_IMG);
 class Gui *gui;
 
 
+	/*****
+	 * Tiles
+	 *****/
+
+TlDateHour *hourdate;
+
+	/*****
+	 * Automation
+	 *****/
+
+void cbUpdDH( lv_task_t * ){
+	hourdate->updateTime();
+}
+
+/* Launch automation tasks.
+ * Has to be called ONLY when everything is initialised
+ */
+void initGuiAutomation( void ){
+	hourdate->initAutomation( cbUpdDH );
+}
+
 	/**** 
 	 * Build the GUI
 	 *****/
@@ -40,12 +57,12 @@ Gui::Gui(){
 
 		/* Main style */
 	lv_style_init( &this->mainbar_style );
-    lv_style_set_radius( &this->mainbar_style, LV_OBJ_PART_MAIN, 0 );
-    lv_style_set_bg_color( &this->mainbar_style, LV_OBJ_PART_MAIN, LV_COLOR_GRAY );
-    lv_style_set_bg_opa( &this->mainbar_style, LV_OBJ_PART_MAIN, LV_OPA_0 );
-    lv_style_set_border_width( &this->mainbar_style, LV_OBJ_PART_MAIN, 0 );
-    lv_style_set_text_color( &this->mainbar_style, LV_OBJ_PART_MAIN, LV_COLOR_WHITE );
-    lv_style_set_image_recolor( &this->mainbar_style, LV_OBJ_PART_MAIN, LV_COLOR_WHITE );
+	lv_style_set_radius( &this->mainbar_style, LV_OBJ_PART_MAIN, 0 );
+	lv_style_set_bg_color( &this->mainbar_style, LV_OBJ_PART_MAIN, LV_COLOR_GRAY );
+	lv_style_set_bg_opa( &this->mainbar_style, LV_OBJ_PART_MAIN, LV_OPA_0 );
+	lv_style_set_border_width( &this->mainbar_style, LV_OBJ_PART_MAIN, 0 );
+	lv_style_set_text_color( &this->mainbar_style, LV_OBJ_PART_MAIN, LV_COLOR_WHITE );
+	lv_style_set_image_recolor( &this->mainbar_style, LV_OBJ_PART_MAIN, LV_COLOR_WHITE );
 
 		/* Background images */
 	LV_IMG_DECLARE( bg2 );
@@ -60,13 +77,19 @@ Gui::Gui(){
 		/* Tileview : how tiles will be managed */
 	this->mainbar = lv_tileview_create( lv_scr_act(), NULL);
 	lv_obj_add_style( this->mainbar, LV_OBJ_PART_MAIN, &this->mainbar_style );
-    lv_page_set_scrlbar_mode( this->mainbar, LV_SCRLBAR_MODE_OFF);
+	lv_page_set_scrlbar_mode( this->mainbar, LV_SCRLBAR_MODE_OFF);
 
 		// For the moment, not movement 
 	lv_tileview_set_valid_positions( this->mainbar, NULL, 0 );
-    lv_tileview_set_edge_flash( this->mainbar, true);
+	lv_tileview_set_edge_flash( this->mainbar, true);
 
 		/* Create tiles */
+	hourdate = new TlDateHour( this );
+
+		/* The GUI is initialised,
+		 * ready to launch automation
+		 */
+	initGuiAutomation();	// Launch automation
 }
 
 

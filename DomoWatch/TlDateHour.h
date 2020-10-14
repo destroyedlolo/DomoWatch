@@ -9,11 +9,30 @@
 #include "Tile.h"
 
 class TlDateHour : public Tile {
-	Gui &gui;
+	Gui *gui;
+
+	lv_style_t	timestyle,
+				datestyle;
+	
+	lv_obj_t 	*timelabel,
+				*datelabel;
+
+	lv_task_t	*upd_task;	// Task to update the Gui
 
 public:
-	TlDateHour(lv_obj_t *, Gui &);
-};
+	/* Date & hour tile's constructor
+	 * -> tileview : list of tiles to add too
+	 * -> Gui & : reference to the gui main class
+	 */
+	TlDateHour( Gui * );
 
+	/* update field */
+	void updateTime( void );
+
+	/* Initialise automation
+	 * 	-> func : callback to be launched
+	 */
+	void initAutomation( void (*)(lv_task_t *) );
+};
 
 #endif

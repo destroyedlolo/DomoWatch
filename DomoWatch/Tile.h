@@ -12,6 +12,8 @@ class Tile {
 
 public:
 	Tile(lv_obj_t *);
+
+	lv_obj_t *getTile( void ){ return this->tile; }
 };
 
 #endif
