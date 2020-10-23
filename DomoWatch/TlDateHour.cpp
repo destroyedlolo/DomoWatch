@@ -59,6 +59,8 @@ void TlDateHour::updateTime( void ){
 		strftime( buf, sizeof(buf), "%a %d.%b %Y", &info );
 		lv_label_set_text(this->datelabel, buf);
 		lv_obj_align(this->timelabel, NULL, LV_ALIGN_IN_BOTTOM_MID, 0, 20);
+
+		Serial.println("Date updated");
 	}
 }
 
