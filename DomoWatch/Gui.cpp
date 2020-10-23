@@ -9,9 +9,9 @@
 	/* Wallpaper */
 #if 0
 LV_IMG_DECLARE(bg);
-LV_IMG_DECLARE(bg1);
-LV_IMG_DECLARE(bg2);
-LV_IMG_DECLARE(bg3);
+LV_IMG_DECLARE(bg1);	// Aurore violet en bas
+LV_IMG_DECLARE(bg2);	// Dégradé avec hallo jaune a droite
+LV_IMG_DECLARE(bg3);	// mauve avec ecriture en font
 LV_IMG_DECLARE(WALLPAPER_1_IMG);
 LV_IMG_DECLARE(WALLPAPER_2_IMG);
 LV_IMG_DECLARE(WALLPAPER_3_IMG);
@@ -90,7 +90,21 @@ Gui::Gui(){
 		/* The GUI is initialised,
 		 * ready to launch automation
 		 */
+#if 1
 	initGuiAutomation();	// Launch automation
+#else
+/*
+lv_obj_t *label = nullptr;
+
+    label = lv_label_create(lv_scr_act(), NULL);
+    lv_obj_set_style_local_text_color(label, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
+    lv_label_set_long_mode(label,   LV_LABEL_LONG_BREAK);
+    lv_label_set_text(label, "Please unplug the USB plug  and plug it in again, you will be able to see a simple animation made with PNG images");
+    lv_obj_set_width(label, 239);
+    lv_obj_align(label, NULL, LV_ALIGN_CENTER, 0, 0);
+*/
+
+#endif
 }
 
 

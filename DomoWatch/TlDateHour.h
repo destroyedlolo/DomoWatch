@@ -8,16 +8,19 @@
 #include "Gui.h"
 #include "Tile.h"
 
-class TlDateHour : public Tile {
+class TlDateHour /* : public Tile */ {
 	Gui *gui;
 
 	lv_style_t	timestyle,
 				datestyle;
 	
-	lv_obj_t 	*timelabel,
+	lv_obj_t 	*contener,
+				*timelabel,
 				*datelabel;
 
 	lv_task_t	*upd_task;	// Task to update the Gui
+
+	int 		prev_day;	// Previous day of the year
 
 public:
 	/* Date & hour tile's constructor
