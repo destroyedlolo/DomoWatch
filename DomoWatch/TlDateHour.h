@@ -25,7 +25,7 @@ class TlDateHour /* : public Tile */ {
 public:
 	/* Date & hour tile's constructor
 	 * -> tileview : list of tiles to add too
-	 * -> Gui & : reference to the gui main class
+	 * -> Gui * : the gui main class
 	 */
 	TlDateHour( Gui * );
 

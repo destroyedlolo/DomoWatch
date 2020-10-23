@@ -36,7 +36,6 @@ TlDateHour *hourdate;
 	 *****/
 
 void cbUpdDH( lv_task_t * ){
-	Serial.println("tic");
 	hourdate->updateTime();
 }
 
@@ -90,21 +89,7 @@ Gui::Gui(){
 		/* The GUI is initialised,
 		 * ready to launch automation
 		 */
-#if 1
 	initGuiAutomation();	// Launch automation
-#else
-/*
-lv_obj_t *label = nullptr;
-
-    label = lv_label_create(lv_scr_act(), NULL);
-    lv_obj_set_style_local_text_color(label, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
-    lv_label_set_long_mode(label,   LV_LABEL_LONG_BREAK);
-    lv_label_set_text(label, "Please unplug the USB plug  and plug it in again, you will be able to see a simple animation made with PNG images");
-    lv_obj_set_width(label, 239);
-    lv_obj_align(label, NULL, LV_ALIGN_CENTER, 0, 0);
-*/
-
-#endif
 }
 
 
