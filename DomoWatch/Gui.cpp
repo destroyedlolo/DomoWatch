@@ -84,7 +84,8 @@ Gui::Gui(){
 	lv_tileview_set_edge_flash( this->mainbar, true);
 
 		/* Create tiles */
-	hourdate = new TlDateHour( this );
+/*D Change lv_scr_act() avec le tile */
+	hourdate = new TlDateHour( this, lv_scr_act() );
 
 		/* The GUI is initialised,
 		 * ready to launch automation

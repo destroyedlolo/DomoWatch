@@ -6,28 +6,32 @@
 #define DTHR_H
 
 #include "Gui.h"
+#include "Container.h"
 #include "Tile.h"
 
-class TlDateHour /* : public Tile */ {
+class TlDateHour : /* public Tile, */ public Container {
 	Gui *gui;
 
 	lv_style_t	timestyle,
 				datestyle;
 	
-	lv_obj_t 	*contener,
-				*timelabel,
+	lv_obj_t 	*timelabel,
 				*datelabel;
 
 	lv_task_t	*upd_task;	// Task to update the Gui
 
 	int 		prev_day;	// Previous day of the year
 
+protected :
+	lv_obj_t *getContainer( void ){ return this->Container::getMyself(); }
+
 public:
 	/* Date & hour tile's constructor
 	 * -> tileview : list of tiles to add too
 	 * -> Gui * : the gui main class
+	 * -> parent, cloned : see Container
 	 */
-	TlDateHour( Gui * );
+	TlDateHour( Gui *, lv_obj_t *parent=NULL, const lv_obj_t *cloned=NULL );
 
 	/* update field */
 	void updateTime( void );
