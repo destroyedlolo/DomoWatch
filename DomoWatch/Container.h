@@ -17,7 +17,9 @@ public:
 	 * -> lv_obj_t *parent : parent object (default : NULL)
 	 * -> const lv_obj_t *cloned : copy from this object (default : NULL)
 	 */
-	Container( lv_obj_t *parent=NULL, const lv_obj_t *cloned=NULL );
+	Container( lv_obj_t *parent=NULL, const lv_obj_t *cloned=NULL ){
+		this->container = lv_obj_create( lv_scr_act(), cloned );
+	}
 };
 
 #endif

@@ -7,10 +7,18 @@
 #include <lvgl/lvgl.h>
 
 class GfxObject {
+	lv_style_t	localstyle;	// if a local style is needed
+
 protected:
 	virtual lv_obj_t *getMyself( void ) = 0;
 
 public:
+	lv_obj_t * operator*( void ){ return this->getMyself(); }
+
+	GfxObject(){
+		lv_style_init(&this->localstyle);	// Avoid crash on uninitialised objects
+	}
+	
 		/* Set object's size
 		 * -> lv_coord_t width
 		 * -> lv_coord_t height
@@ -29,18 +37,50 @@ public:
 	}
 
 		/* Set Auto-Realign attribut
-		 * -> bool activate : if true activate, desactivate otherwise
+		 * -> bool activate : if true activate, desactivate otherwise (default: true)
 		 */
-	void AutoRealign( bool activate ){
+	void AutoRealign( bool activate=true ){
 		lv_obj_set_auto_realign( this->getMyself(), activate );
 	}
 
-		/* Apply style
-		 * -> uint8_t part : which part to update (LV_OBJ_PART_MAIN)
-		 * -> lv_style_t *style : new style to be added
+
+		/* Copy a style to local one
+		 * -> lv_style_t *style : original style to copy from
+		 * -> bool apply : if true (default) apply immediately
 		 */
-	void AddStyle( uint8_t part, lv_style_t *style ){
+	void CopyStyle( lv_style_t *style, bool apply=true ){
+		lv_style_copy( &(this->localstyle), style );
+		if(apply)
+			this->ApplyStyle();
+	}
+
+		/* Add an external style
+		 * -> lv_style_t *style : new style to be added
+		 * -> uint8_t part : which part to update (LV_OBJ_PART_MAIN)
+		 */
+	void AddStyle( lv_style_t *style, uint8_t part=LV_OBJ_PART_MAIN ){
 		lv_obj_add_style( this->getMyself(), part, style);
+	}
+
+		/* Apply localy stored style
+		 * -> uint8_t part : which part to update (LV_OBJ_PART_MAIN)
+		 */
+	void ApplyStyle( uint8_t part=LV_OBJ_PART_MAIN ){
+		lv_obj_add_style( this->getMyself(), part, &this->localstyle );
+	}
+
+		/* Get a pointer to the local style
+		 */
+	lv_style_t *getStyle( void ){
+		return( &this->localstyle );
+	}
+
+		/* Set text font
+		 * -> lv_font_t *font : font to use
+		 * -> int state (default : LV_STATE_DEFAULT)
+		 */
+	void SetFont( lv_font_t *font, int state=LV_STATE_DEFAULT ){
+		lv_style_set_text_font( &this->localstyle, state, font );
 	}
 };
 

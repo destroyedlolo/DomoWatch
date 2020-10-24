@@ -6,16 +6,14 @@
 #define DTHR_H
 
 #include "Gui.h"
-#include "Container.h"
 #include "Tile.h"
+#include "Container.h"
+#include "Label.h"
 
 class TlDateHour : /* public Tile, */ public Container {
 	Gui *gui;
 
-	lv_style_t	timestyle,
-				datestyle;
-	
-	lv_obj_t 	*timelabel,
+	Label		*timelabel,
 				*datelabel;
 
 	lv_task_t	*upd_task;	// Task to update the Gui
