@@ -31,11 +31,14 @@ public :
 	lv_obj_t *getTileView( void ){ return mainbar; }
 
 
-		/* interface */
+		/* interfaces
+		 *
+		 * Documentation are in StatusBar.h
+		 */
 
 	void updateStepCounter(uint32_t counter);
 	void updateBatteryIcon(lv_icon_battery_t index);
-	void updateBatteryLevel(void);
+	void updateBatteryLevel( void );
 };
 
 extern class Gui *gui;

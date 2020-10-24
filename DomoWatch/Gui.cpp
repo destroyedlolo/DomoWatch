@@ -2,6 +2,7 @@
 *	GUI's root definition
 *************************************************/
 #include "Gui.h"
+#include "StatusBar.h"
 #include "TlDateHour.h"
 
 #include "myfont.h"
@@ -22,8 +23,8 @@ LV_IMG_DECLARE(WALLPAPER_3_IMG);
 	 * objects
 	 *****/
 	
-class Gui *gui;
-
+Gui *gui;
+StatusBar *statusbar;
 
 	/*****
 	 * Tiles
@@ -39,11 +40,16 @@ void cbUpdDH( lv_task_t * ){
 	hourdate->updateTime();
 }
 
+void cbUpdBat( lv_task_t * ){
+	statusbar->updateBatteryLevel();
+}
+
 /* Launch automation tasks.
  * Has to be called ONLY when everything is initialised
  */
 void initGuiAutomation( void ){
 	hourdate->initAutomation( cbUpdDH );
+	statusbar->initAutomation( cbUpdBat );
 }
 
 	/**** 
@@ -83,6 +89,9 @@ Gui::Gui(){
 	lv_tileview_set_valid_positions( this->mainbar, NULL, 0 );
 	lv_tileview_set_edge_flash( this->mainbar, true);
 
+		/* Create status bar */
+	statusbar = new StatusBar( this, lv_scr_act() );
+
 		/* Create tiles */
 /*D Change lv_scr_act() avec le tile */
 	hourdate = new TlDateHour( this, lv_scr_act() );
@@ -98,10 +107,12 @@ Gui::Gui(){
 	 * Interfaces 
 	 *****/
 void Gui::updateStepCounter(uint32_t counter){
+	statusbar->updateStepCounter( counter );
 }
 
 void Gui::updateBatteryIcon(lv_icon_battery_t index){
 }
 
-void Gui::updateBatteryLevel(void){
+void Gui::updateBatteryLevel( void ){
+	statusbar->updateBatteryLevel();
 }

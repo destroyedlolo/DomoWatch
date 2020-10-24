@@ -67,5 +67,5 @@ void TlDateHour::updateTime( void ){
 }
 
 void TlDateHour::initAutomation( void (*func)(lv_task_t *) ){
-	this->upd_task = lv_task_create( func, 500, LV_TASK_PRIO_MID, NULL );
+	this->upd_h_task = lv_task_create( func, 500, LV_TASK_PRIO_MID, NULL );
 }

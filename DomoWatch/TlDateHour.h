@@ -16,7 +16,7 @@ class TlDateHour : /* public Tile, */ public Container {
 	Label		*timelabel,
 				*datelabel;
 
-	lv_task_t	*upd_task;	// Task to update the Gui
+	lv_task_t	*upd_h_task;	// Task to update the Gui
 
 	int 		prev_day;	// Previous day of the year
 
@@ -35,7 +35,7 @@ public:
 	void updateTime( void );
 
 	/* Initialise automation
-	 * 	-> func : callback to be launched
+	 * 	-> timefunc : callback to be launched to update time
 	 */
 	void initAutomation( void (*)(lv_task_t *) );
 };
