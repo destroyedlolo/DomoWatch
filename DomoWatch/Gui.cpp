@@ -106,11 +106,26 @@ Gui::Gui(){
 	/*****
 	 * Interfaces 
 	 *****/
-void Gui::updateStepCounter(uint32_t counter){
+void Gui::updateStepCounter( uint32_t counter ){
 	statusbar->updateStepCounter( counter );
 }
 
-void Gui::updateBatteryIcon(lv_icon_battery_t index){
+void Gui::updateBatteryIcon( lv_icon_battery_t index ){
+	if(index >= LV_ICON_CALCULATION){
+		int level = ttgo->power->getBattPercentage();
+		if(level > 95)
+			index = LV_ICON_BAT_FULL;
+		else if(level > 80)
+			index = LV_ICON_BAT_3;
+		else if(level > 45)
+			index = LV_ICON_BAT_2;
+		else if(level > 20)
+			index = LV_ICON_BAT_1;
+		else
+			index = LV_ICON_BAT_EMPTY;
+	}
+
+	statusbar->updateBatteryIcon( index );
 }
 
 void Gui::updateBatteryLevel( void ){

@@ -22,7 +22,7 @@ public:
 		this->label = lv_label_create( parent ? **parent : NULL, cloned );
 		if(parent)
 			this->CopyStyle( parent->getStyle() );
-}
+	}
 
 		/* Set text
 		 * -> const char *text

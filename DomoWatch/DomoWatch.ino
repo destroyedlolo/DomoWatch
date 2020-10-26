@@ -37,6 +37,7 @@
 
 #include "Version.h"
 #include "Gui.h"
+// #include "CommandLine.h"
 
 #define G_EVENT_VBUS_PLUGIN         _BV(0)
 #define G_EVENT_VBUS_REMOVE         _BV(1)
@@ -65,7 +66,7 @@ TTGOClass *ttgo;
  * Handle sleep
  *****/
 
-void low_energy(){
+void low_energy( void ){
 /* Enter in low energy */
 
 	xEventGroupSetBits(isr_group, WATCH_FLAG_SLEEP_MODE);
@@ -74,25 +75,21 @@ void low_energy(){
 	ttgo->bma->enableStepCountInterrupt(false);
 	ttgo->displaySleep();
 
-#if 0		/* pas logic */
-		if(!WiFi.isConnected()){
-			lenergy = true;
-			WiFi.mode(WIFI_OFF);
-			// rtc_clk_cpu_freq_set(RTC_CPU_FREQ_2M);
-			setCpuFrequencyMhz(20);
+//	if(!WiFi.isConnected()){
+		lenergy = true;
+// 		WiFi.mode(WIFI_OFF);
+		setCpuFrequencyMhz(20);
 
-			Serial.println("ENTER IN LIGHT SLEEEP MODE");
-			gpio_wakeup_enable ((gpio_num_t)AXP202_INT, GPIO_INTR_LOW_LEVEL);
-			gpio_wakeup_enable ((gpio_num_t)BMA423_INT1, GPIO_INTR_HIGH_LEVEL);
-			esp_sleep_enable_gpio_wakeup ();
-			esp_light_sleep_start();
-		}
-#endif
+		Serial.println("ENTER IN LIGHT SLEEEP MODE");
+		gpio_wakeup_enable ((gpio_num_t)AXP202_INT, GPIO_INTR_LOW_LEVEL);
+		gpio_wakeup_enable ((gpio_num_t)BMA423_INT1, GPIO_INTR_HIGH_LEVEL);
+		esp_sleep_enable_gpio_wakeup ();
+		esp_light_sleep_start();
+//	}
 }
 
-void wakeup(){
 /* wake up from low energy mode */
-
+void wakeup( void ){
 	ttgo->startLvglTick();
 	ttgo->displayWakeup();
 	ttgo->rtc->syncToSystem();
@@ -110,6 +107,10 @@ void setup(){
 	Serial.printf("starting Domo watch v %f\n", VERSION_H);
 	Serial.printf("Configure watchdog to 30s: %d\n", esp_task_wdt_init( 30, true ) );
 
+	// Initialize time zone (France)
+	setenv("TZ", "GMT0BST,M3.5.0/01,M10.5.0/02",1);
+	tzset();
+
 	//Create a program that allows the required message objects and group flags
 	g_event_queue_handle = xQueueCreate(20, sizeof(uint8_t));
 	g_event_group = xEventGroupCreate();
@@ -118,6 +119,9 @@ void setup(){
 	//Initialize TWatch
 	ttgo = TTGOClass::getWatch();	
 	ttgo->begin();
+
+	//Initialize lvgl
+	ttgo->lvgl_begin();
 
 
 	Serial.println("Setting up interrupts ...");
@@ -175,11 +179,9 @@ void setup(){
 
 	
 
-	//Check if the RTC clock matches, if not, use compile time
-	ttgo->rtc->check();
-
-	//Synchronize time to system time
-	ttgo->rtc->syncToSystem();
+	/* Initialise clock */
+	ttgo->rtc->check();	// Check if the clock is valid or fallback to compilation time
+	ttgo->rtc->syncToSystem(); //Synchronize time to system time
 
 	{	// Debugging
 		time_t now;
@@ -193,19 +195,14 @@ void setup(){
 		Serial.println(buf);
 	}
 
-	Serial.println("Starting up LVGL and GUI ...");
+	Serial.println("Starting up GUI ...");
 
-	//Initialize lvgl
-	ttgo->lvgl_begin();
-
-	//Execute our own GUI interface
+	/* Execute our own GUI interface */
 	gui = new Gui();
 
-	//Clear lvgl activity counter
-	lv_disp_trig_activity(NULL);
+	lv_disp_trig_activity(NULL); // Clear lvgl activity counter
 
-	//When the initialization is complete, turn on the backlight
-	ttgo->openBL();
+	ttgo->openBL(); // Everything done, turn on the backlight
 
 	Serial.printf("Total heap: %d\r\n", ESP.getHeapSize());
     Serial.printf("Free heap: %d\r\n", ESP.getFreeHeap());
@@ -232,12 +229,14 @@ void loop(){
 		wakeup();
 
 		if(bits & WATCH_FLAG_BMA_IRQ){
+			Serial.println("IRQ BMA");
 			do {
 				rlst =  ttgo->bma->readInterrupt();
 			} while(!rlst);
 			xEventGroupClearBits(isr_group, WATCH_FLAG_BMA_IRQ);
 		}
 		if(bits & WATCH_FLAG_AXP_IRQ){
+			Serial.println("IRQ AXP");
 			ttgo->power->readIRQ();
 			ttgo->power->clearIRQ();
 				//TODO: Only accept axp power pek key short press
@@ -293,6 +292,8 @@ void loop(){
 
 		}
 	}
+
+//	CommandLine::loop();
 
 	if(lv_disp_get_inactive_time(NULL) < DEFAULT_SCREEN_TIMEOUT)
 		lv_task_handler();

@@ -11,16 +11,19 @@
 #include "Gui.h"
 #include "Container.h"
 #include "Label.h"
+#include "Image.h"
 
 #define BARHEIGHT 30
 
 class StatusBar : public Container {
 	Gui 		*gui;
 
-	Label 		*batpercent;
+	Label 		*batPercent;
+	Image		*batIcon;
 	lv_task_t	*upd_bat_task;	// task to update battery level
 
-	Label 		*stepcounter;
+	Image		*stepIcon;
+	Label 		*stepCounter;
 
 public:
 	/* status bar constructor
@@ -37,6 +40,11 @@ public:
 	/* Update battery level label
 	 */
 	void updateBatteryLevel( void );
+
+	/* Update battery icon
+	 * lv_icon_battery_t index : see Gui.h
+	 */
+	void updateBatteryIcon( Gui::lv_icon_battery_t index );
 
 	/* Initialise automation
 	 * 	-> batfunc : callback to be launched to update battery level

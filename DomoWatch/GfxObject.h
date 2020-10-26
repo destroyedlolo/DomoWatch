@@ -43,7 +43,6 @@ public:
 		lv_obj_set_auto_realign( this->getMyself(), activate );
 	}
 
-
 		/* Copy a style to local one
 		 * -> lv_style_t *style : original style to copy from
 		 * -> bool apply : if true (default) apply immediately

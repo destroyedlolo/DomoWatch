@@ -4,6 +4,10 @@
 
 #include "StatusBar.h"
 
+LV_IMG_DECLARE(step);
+
+lv_obj_t *icon;
+
 StatusBar::StatusBar( Gui *g, lv_obj_t *parent, const lv_obj_t *cloned ) : Container( parent, cloned ), gui( g ){
 	this->CopyStyle( gui->getStyle() );	// Copy gui style
 
@@ -13,24 +17,39 @@ StatusBar::StatusBar( Gui *g, lv_obj_t *parent, const lv_obj_t *cloned ) : Conta
 	this->ApplyStyle();
 
 		/* Battery related */
-	this->batpercent = new Label( this );
-	this->batpercent->SetText( "100%" );
-	this->batpercent->Align( LV_ALIGN_IN_RIGHT_MID );
-	this->batpercent->AutoRealign();
+	this->batPercent = new Label( dynamic_cast<GfxObject *>(this) );
+	this->batPercent->SetText( "100%" );
+	this->batPercent->Align( LV_ALIGN_IN_RIGHT_MID );
+	this->batPercent->AutoRealign();
+
+	this->batIcon = new Image( dynamic_cast<GfxObject *>(this) );
+	this->batIcon->Set( LV_SYMBOL_BATTERY_FULL );
+	this->batIcon->Align( LV_ALIGN_OUT_LEFT_MID,  **(this->batPercent), -5);
+	this->batPercent->AutoRealign();
 
 		/* Step counter */
-	this->stepcounter = new Label( this );
-	this->stepcounter->Align( LV_ALIGN_IN_LEFT_MID );
-	this->stepcounter->SetText( "0" );
-	this->stepcounter->AutoRealign();
+	this->stepIcon = new Image( dynamic_cast<GfxObject *>(this) );
+	this->stepIcon->Set( &step );
+	this->stepIcon->Align( LV_ALIGN_IN_LEFT_MID );
+
+	this->stepCounter = new Label( this );
+	this->stepCounter->Align( LV_ALIGN_OUT_RIGHT_MID, **(this->stepIcon), 5 );
+	this->stepCounter->SetText( "0" );
+	this->stepCounter->AutoRealign();
 }
 
 void StatusBar::updateStepCounter(uint32_t counter){
-	this->stepcounter->SetText( String(counter).c_str() );
+	this->stepCounter->SetText( String(counter).c_str() );
 }
 
 void StatusBar::updateBatteryLevel( void ){
-	this->batpercent->SetText( (String(ttgo->power->getBattPercentage())+'%').c_str() );
+	this->batPercent->SetText( (String(ttgo->power->getBattPercentage())+'%').c_str() );
+}
+
+void StatusBar::updateBatteryIcon( Gui::lv_icon_battery_t index ){
+	static const char *icons[] = {LV_SYMBOL_BATTERY_EMPTY, LV_SYMBOL_BATTERY_1, LV_SYMBOL_BATTERY_2, LV_SYMBOL_BATTERY_3, LV_SYMBOL_BATTERY_FULL, LV_SYMBOL_CHARGE};
+
+	this->batIcon->Set( icons[index] );
 }
 
 void StatusBar::initAutomation( void (*func)(lv_task_t *) ){
