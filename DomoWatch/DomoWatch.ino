@@ -37,7 +37,7 @@
 
 #include "Version.h"
 #include "Gui.h"
-// #include "CommandLine.h"
+ #include "CommandLine.h"
 
 #define G_EVENT_VBUS_PLUGIN         _BV(0)
 #define G_EVENT_VBUS_REMOVE         _BV(1)
@@ -293,7 +293,7 @@ void loop(){
 		}
 	}
 
-//	CommandLine::loop();
+	CommandLine::loop();
 
 	if(lv_disp_get_inactive_time(NULL) < DEFAULT_SCREEN_TIMEOUT)
 		lv_task_handler();
