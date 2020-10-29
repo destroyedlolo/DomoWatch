@@ -9,8 +9,9 @@
 #include <Arduino.h>
 #include <lvgl/lvgl.h>
 
-class Gui {
-	lv_style_t mainbar_style;
+#include "GfxObject.h"
+
+class Gui : public GfxObject {
 	lv_obj_t *mainbar;
 	lv_obj_t *background;
 
@@ -27,8 +28,7 @@ public :
 
 	Gui();
 
-	lv_style_t *getStyle( void ){ return &mainbar_style; }
-	lv_obj_t *getTileView( void ){ return mainbar; }
+	lv_obj_t *getMyself( void ){ return this->mainbar; }
 
 
 		/* interfaces
