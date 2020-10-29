@@ -63,7 +63,6 @@ Gui::Gui(){
 
 		/* Main style */
 
-//	lv_style_init( &this->mainbar_style );
 	lv_style_set_radius( this->getStyle(), LV_OBJ_PART_MAIN, 0 );
 	lv_style_set_bg_color( this->getStyle(), LV_OBJ_PART_MAIN, LV_COLOR_GRAY );
 	lv_style_set_bg_opa( this->getStyle(), LV_OBJ_PART_MAIN, LV_OPA_0 );
@@ -82,15 +81,13 @@ Gui::Gui(){
 	lv_obj_set_hidden( this->background, false );	// Image is visible
 
 		/* Tileview : how tiles will be managed */
-/*
 	this->mainbar = lv_tileview_create( lv_scr_act(), NULL);
-	lv_obj_add_style( this->mainbar, LV_OBJ_PART_MAIN, &this->mainbar_style );
+	this->ApplyStyle();
 	lv_page_set_scrlbar_mode( this->mainbar, LV_SCRLBAR_MODE_OFF);
 
 		// For the moment, not movement 
 	lv_tileview_set_valid_positions( this->mainbar, NULL, 0 );
 	lv_tileview_set_edge_flash( this->mainbar, true);
-*/
 
 		/* Create status bar */
 	statusbar = new StatusBar( this, lv_scr_act() );
