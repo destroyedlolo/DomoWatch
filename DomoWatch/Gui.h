@@ -1,5 +1,7 @@
 /************************************************
 *	GUI's root interface
+*
+*	Basically, it's a Tilewiew
 *************************************************/
 
 #ifndef GUI_H
@@ -26,10 +28,9 @@ public :
 		LV_ICON_CALCULATION
 	};
 
-	Gui();
+	Gui( void );
 
 	lv_obj_t *getMyself( void ){ return this->mainbar; }
-
 
 		/* interfaces
 		 *

@@ -7,7 +7,7 @@
 
 #include "GfxObject.h"
 
-class Container : public GfxObject {
+class Container : virtual public GfxObject {
 	lv_obj_t 	*container;
 
 public:

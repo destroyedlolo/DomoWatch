@@ -10,7 +10,7 @@
 #include "Container.h"
 #include "Label.h"
 
-class TlDateHour : /* public Tile, */ public Container {
+class TlDateHour : public Tile /*, public Container */ {
 	Gui *gui;
 
 	Label		*timelabel,
@@ -20,16 +20,12 @@ class TlDateHour : /* public Tile, */ public Container {
 
 	int 		prev_day;	// Previous day of the year
 
-protected :
-	lv_obj_t *getContainer( void ){ return this->Container::getMyself(); }
-
 public:
 	/* Date & hour tile's constructor
-	 * -> tileview : list of tiles to add too
 	 * -> Gui * : the gui main class
 	 * -> parent, cloned : see Container
 	 */
-	TlDateHour( Gui *, lv_obj_t *parent=NULL, const lv_obj_t *cloned=NULL );
+	TlDateHour( Gui * );
 
 	/* update field */
 	void updateTime( void );

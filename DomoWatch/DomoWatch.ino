@@ -37,7 +37,7 @@
 
 #include "Version.h"
 #include "Gui.h"
- #include "CommandLine.h"
+#include "CommandLine.h"
 
 #define G_EVENT_VBUS_PLUGIN         _BV(0)
 #define G_EVENT_VBUS_REMOVE         _BV(1)
@@ -81,6 +81,7 @@ void low_energy( void ){
 		setCpuFrequencyMhz(20);
 
 		Serial.println("ENTER IN LIGHT SLEEEP MODE");
+		delay(500);
 		gpio_wakeup_enable ((gpio_num_t)AXP202_INT, GPIO_INTR_LOW_LEVEL);
 		gpio_wakeup_enable ((gpio_num_t)BMA423_INT1, GPIO_INTR_HIGH_LEVEL);
 		esp_sleep_enable_gpio_wakeup ();

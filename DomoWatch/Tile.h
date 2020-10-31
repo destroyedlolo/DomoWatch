@@ -8,15 +8,16 @@
 #include "config.h"
 #include <Arduino.h>
 
-#include <lvgl/lvgl.h>
+#include "GfxObject.h"
+#include "Gui.h"
 
-class Tile {
+class Tile : virtual public GfxObject {
 	lv_obj_t *tile;
 
 public:
-	Tile(lv_obj_t *);
+	Tile(Gui *);
 
-	lv_obj_t *getTile( void ){ return this->tile; }
+	lv_obj_t *getMyself( void ){ return this->tile; }
 };
 
 #endif

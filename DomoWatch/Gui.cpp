@@ -59,7 +59,7 @@ void initGuiAutomation( void ){
 /* Gui's constructor
  *	Create the gui's skeleton then add all objects
  */
-Gui::Gui(){
+Gui::Gui( void ){
 
 		/* Main style */
 
@@ -83,7 +83,7 @@ Gui::Gui(){
 		/* Tileview : how tiles will be managed */
 	this->mainbar = lv_tileview_create( lv_scr_act(), NULL);
 	this->ApplyStyle();
-	lv_page_set_scrlbar_mode( this->mainbar, LV_SCRLBAR_MODE_OFF);
+	lv_page_set_scrlbar_mode( this->mainbar, LV_SCRLBAR_MODE_OFF );
 
 		// For the moment, not movement 
 	lv_tileview_set_valid_positions( this->mainbar, NULL, 0 );
@@ -94,7 +94,7 @@ Gui::Gui(){
 
 		/* Create tiles */
 /*D Change lv_scr_act() avec le tile */
-	hourdate = new TlDateHour( this, lv_scr_act() );
+	hourdate = new TlDateHour( this );
 
 		/* The GUI is initialised,
 		 * ready to launch automation

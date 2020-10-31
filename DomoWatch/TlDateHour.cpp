@@ -14,9 +14,8 @@
 LV_FONT_DECLARE(Ubuntu_48px);
 LV_FONT_DECLARE(Ubuntu_16px);
 
-TlDateHour::TlDateHour( Gui *g, lv_obj_t *parent, const lv_obj_t *cloned ) :
-	/*Tile( g->getTileView() ), */ 
-	Container( parent, cloned ),
+TlDateHour::TlDateHour( Gui *g ) :
+	Tile( g ),
 	gui( g ), 
 	prev_day(-1)
 {
