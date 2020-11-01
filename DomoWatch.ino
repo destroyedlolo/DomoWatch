@@ -97,7 +97,7 @@ void wakeup( void ){
 	ttgo->rtc->syncToSystem();
 	gui->updateStepCounter(ttgo->bma->getCounter());
 	gui->updateBatteryLevel();
-	gui->updateBatteryIcon( Gui::LV_ICON_CALCULATION );
+	gui->updateBatteryIcon( Gui::LV_ICON_UNKNOWN );
 	lv_disp_trig_activity(NULL);
 	ttgo->openBL();
 	ttgo->bma->enableStepCountInterrupt();
