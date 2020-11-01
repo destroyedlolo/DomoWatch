@@ -46,9 +46,13 @@ void StatusBar::updateBatteryLevel( void ){
 	this->batPercent->SetText( (String(ttgo->power->getBattPercentage())+'%').c_str() );
 }
 
+void StatusBar::updateBatteryIcon( Gui::lv_icon_battery_t index, lv_color_t color ){
+	this->batIcon->Recolor( color );
+	this->updateBatteryIcon( index );
+}
+
 void StatusBar::updateBatteryIcon( Gui::lv_icon_battery_t index ){
 	static const char *icons[] = {LV_SYMBOL_BATTERY_EMPTY, LV_SYMBOL_BATTERY_1, LV_SYMBOL_BATTERY_2, LV_SYMBOL_BATTERY_3, LV_SYMBOL_BATTERY_FULL, LV_SYMBOL_CHARGE};
-
 	this->batIcon->Set( icons[index] );
 }
 

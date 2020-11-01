@@ -42,9 +42,11 @@ public:
 	void updateBatteryLevel( void );
 
 	/* Update battery icon
-	 * lv_icon_battery_t index : see Gui.h
+	 * -> lv_icon_battery_t index : see Gui.h
+	 * -> lv_color_t color : new color to use (optional)
 	 */
 	void updateBatteryIcon( Gui::lv_icon_battery_t index );
+	void updateBatteryIcon( Gui::lv_icon_battery_t index, lv_color_t color );
 
 	/* Initialise automation
 	 * 	-> batfunc : callback to be launched to update battery level

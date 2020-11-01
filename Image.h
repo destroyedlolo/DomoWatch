@@ -20,10 +20,6 @@ public:
 	 */
 	Image( GfxObject *parent=NULL, const lv_obj_t *cloned=NULL ) : GfxObject(){
 		this->img = lv_img_create( parent ? **parent : NULL, cloned );
-/*
-		if(parent)A
-			this->CopyStyle( parent->getStyle() );
-*/
 	}
 
 	/* set the image content
@@ -31,6 +27,14 @@ public:
 	 */
 	void Set( const void *src ){
 		lv_img_set_src( this->img, src );
+	}
+
+	/* recolor image's color
+	 *	-> lv_color_t color : new image color
+	 */
+	void Recolor( lv_color_t color ){
+		lv_style_set_image_recolor( this->getStyle(), LV_OBJ_PART_MAIN, color );
+		this->ApplyStyle();
 	}
 };
 

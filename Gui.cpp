@@ -111,24 +111,31 @@ void Gui::updateStepCounter( uint32_t counter ){
 }
 
 void Gui::updateBatteryIcon( lv_icon_battery_t index ){
+	lv_color_t color = LV_COLOR_WHITE;
 	if( index == LV_ICON_UNKNOWN && ttgo->power->isChargeing() )
 		index = LV_ICON_CHARGE;
-
-	if( index >= LV_ICON_CALCULATION ){
+	
+	if( index == LV_ICON_CHARGE )
+		color = LV_COLOR_BLUE;
+	else if( index >= LV_ICON_CALCULATION ){
 		int level = ttgo->power->getBattPercentage();
-		if(level > 95)
+		if(level > 95){
+			color = LV_COLOR_GREEN;
 			index = LV_ICON_BAT_FULL;
-		else if(level > 80)
+		} else if(level > 80)
 			index = LV_ICON_BAT_3;
 		else if(level > 45)
 			index = LV_ICON_BAT_2;
-		else if(level > 20)
+		 else if(level > 20){
+			color = LV_COLOR_ORANGE;
 			index = LV_ICON_BAT_1;
-		else
+		} else {
+			color = LV_COLOR_RED;
 			index = LV_ICON_BAT_EMPTY;
+		}
 	}
 
-	statusbar->updateBatteryIcon( index );
+	statusbar->updateBatteryIcon( index, color );
 }
 
 void Gui::updateBatteryLevel( void ){
