@@ -30,6 +30,7 @@
 #include <freertos/timers.h>
 #include <freertos/queue.h>
 #include <soc/rtc.h>
+#include <rom/rtc.h>
 
 // #include "esp_wifi.h"
 #include <esp_sleep.h>
@@ -107,6 +108,56 @@ void setup(){
 
 	Serial.printf("starting Domo watch v %f\n", VERSION_H);
 	Serial.printf("Configure watchdog to 30s: %d\n", esp_task_wdt_init( 30, true ) );
+	Serial.print("Wakeup raison : ");
+	switch( rtc_get_reset_reason(0) ){
+	case POWERON_RESET :
+		Serial.println("Power on");
+		break;
+	case SW_RESET :
+		Serial.println("Software");
+		break;
+	case OWDT_RESET :
+		Serial.println("Legacy Watch dog");
+		break;
+	case DEEPSLEEP_RESET :
+		Serial.println("Deep Sleep");
+		break;
+	case SDIO_RESET :
+		Serial.println("SLC");
+		break;
+	case TG0WDT_SYS_RESET :
+		Serial.println("Timer Group0 Watch dog");
+		break;
+	case TG1WDT_SYS_RESET :
+		Serial.println("Timer Group1 Watch dog");
+		break;
+	case RTCWDT_SYS_RESET :
+		Serial.println("RTC Watch dog digital");
+		break;
+	case INTRUSION_RESET :
+		Serial.println("Instrusion tested to reset");
+		break;
+	case TGWDT_CPU_RESET :
+		Serial.println("Time Group");
+		break;
+	case SW_CPU_RESET :
+		Serial.println("Software");
+		break;
+	case RTCWDT_CPU_RESET :
+		Serial.println("RTC Watch dog");
+		break;
+	case EXT_CPU_RESET :
+		Serial.println("reseted by PRO CPU");
+		break;
+	case RTCWDT_BROWN_OUT_RESET :
+		Serial.println("vdd voltage is not stable");
+		break;
+	case RTCWDT_RTC_RESET :
+		Serial.println("RTC Watch dog reset digital core and rtc module");
+		break;
+	default :
+		Serial.println("Who know ...");
+	}
 
 	// Initialize time zone (France)
 	setenv("TZ", "GMT0BST,M3.5.0/01,M10.5.0/02",1);
