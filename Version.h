@@ -9,5 +9,5 @@
 */
 
 #ifndef VERSION_H
-#define VERSION_H 0.0201
+#define VERSION_H 0.0202
 #endif

@@ -111,7 +111,10 @@ void Gui::updateStepCounter( uint32_t counter ){
 }
 
 void Gui::updateBatteryIcon( lv_icon_battery_t index ){
-	if(index >= LV_ICON_CALCULATION){
+	if( index == LV_ICON_UNKNOWN && ttgo->power->isChargeing() )
+		index = LV_ICON_CHARGE;
+
+	if( index >= LV_ICON_CALCULATION ){
 		int level = ttgo->power->getBattPercentage();
 		if(level > 95)
 			index = LV_ICON_BAT_FULL;

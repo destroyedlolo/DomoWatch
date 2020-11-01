@@ -251,6 +251,7 @@ void setup(){
 
 	/* Execute our own GUI interface */
 	gui = new Gui();
+	gui->updateBatteryIcon( Gui::LV_ICON_UNKNOWN );	// need to check if we're plugged
 
 	lv_disp_trig_activity(NULL); // Clear lvgl activity counter
 
