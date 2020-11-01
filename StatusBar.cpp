@@ -4,7 +4,7 @@
 
 #include "StatusBar.h"
 
-LV_IMG_DECLARE(step);
+LV_IMG_DECLARE(foot_16px);
 
 lv_obj_t *icon;
 
@@ -29,7 +29,7 @@ StatusBar::StatusBar( Gui *g, lv_obj_t *parent, const lv_obj_t *cloned ) : Conta
 
 		/* Step counter */
 	this->stepIcon = new Image( dynamic_cast<GfxObject *>(this) );
-	this->stepIcon->Set( &step );
+	this->stepIcon->Set( &foot_16px );
 	this->stepIcon->Align( LV_ALIGN_IN_LEFT_MID );
 
 	this->stepCounter = new Label( this );

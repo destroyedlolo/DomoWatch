@@ -15,3 +15,4 @@ In addition, the code has been made in **POO way** and being **very modular** (a
 ---
 
 This code is inspirated from examples comming with TTGO_TWatch_Library made by Lewis He.
+Some parts came from [sharandac/My-TTGO-Watch's project](https://github.com/sharandac/My-TTGO-Watch/)
