@@ -2,15 +2,14 @@
 *	Main tile : Hour and date
 *************************************************/
 
-#ifndef DTHR_H
-#define DTHR_H
+#ifndef TLDTHR_H
+#define TLDTHR_H
 
 #include "Gui.h"
 #include "Tile.h"
-#include "Container.h"
 #include "Label.h"
 
-class TlDateHour : public Tile /*, public Container */ {
+class TlDateHour : public Tile {
 	Gui *gui;
 
 	Label		*timelabel,

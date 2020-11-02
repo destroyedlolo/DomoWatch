@@ -20,12 +20,12 @@ TlDateHour::TlDateHour( Gui *g ) :
 	prev_day(-1)
 {
 
-		/* Update the container to align labels in
+		/* Update the tile to align labels in
 		 * the middle of the screen
 		 */
 	this->SetSize( lv_disp_get_hor_res( NULL ) , lv_disp_get_ver_res( NULL ) / 3 );
 	this->Align( LV_ALIGN_CENTER );
-	this->CopyStyle( gui->getStyle() );	// Copy gui style to container's local one & apply it
+	this->CopyStyle( gui->getStyle() );	// Copy gui style to tile's local one & apply it
 
 
 		/* Display time */
