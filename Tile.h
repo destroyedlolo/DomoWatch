@@ -14,6 +14,9 @@
 class Tile : virtual public GfxObject {
 	lv_obj_t *tile;
 
+protected:
+	Gui *gui;
+
 public:
 	Tile(Gui *);
 

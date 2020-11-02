@@ -10,8 +10,7 @@
 #include "Label.h"
 
 class TlDateHour : public Tile {
-	Gui *gui;
-
+	
 	Label		*timelabel,
 				*datelabel;
 
@@ -22,7 +21,6 @@ class TlDateHour : public Tile {
 public:
 	/* Date & hour tile's constructor
 	 * -> Gui * : the gui main class
-	 * -> parent, cloned : see Container
 	 */
 	TlDateHour( Gui * );
 

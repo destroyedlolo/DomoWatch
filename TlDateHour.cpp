@@ -16,7 +16,6 @@ LV_FONT_DECLARE(Ubuntu_16px);
 
 TlDateHour::TlDateHour( Gui *g ) :
 	Tile( g ),
-	gui( g ), 
 	prev_day(-1)
 {
 
