@@ -106,7 +106,7 @@ void wakeup( void ){
 void setup(){
 	Serial.begin(115200);
 
-	Serial.printf("starting Domo watch v %f\n", VERSION_H);
+	Serial.println("starting Domo watch v" VERSION_H);
 	Serial.printf("Configure watchdog to 30s: %d\n", esp_task_wdt_init( 30, true ) );
 	Serial.print("Wakeup raison : ");
 	switch( rtc_get_reset_reason(0) ){

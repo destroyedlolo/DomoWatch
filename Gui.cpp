@@ -4,6 +4,7 @@
 #include "Gui.h"
 #include "StatusBar.h"
 #include "TlDateHour.h"
+#include "TlSettings.h"
 
 #include "myfont.h"
 
@@ -23,14 +24,18 @@ LV_IMG_DECLARE(WALLPAPER_3_IMG);
 	 * objects
 	 *****/
 	
-Gui *gui;
-StatusBar *statusbar;
+		Gui *gui;
+static 	StatusBar	*statusbar;
 
 	/*****
 	 * Tiles
 	 *****/
 
-TlDateHour *hourdate;
+static TlDateHour	*hourdate;
+static TlSettings	*tlsettings;
+
+	/* set allowed navigation */
+static lv_point_t valid_pos[] = { {0,0}, {0,1} };
 
 	/*****
 	 * Automation
@@ -85,16 +90,16 @@ Gui::Gui( void ){
 	this->ApplyStyle();
 	lv_page_set_scrlbar_mode( this->mainbar, LV_SCRLBAR_MODE_OFF );
 
-		// For the moment, not movement 
-	lv_tileview_set_valid_positions( this->mainbar, NULL, 0 );
-	lv_tileview_set_edge_flash( this->mainbar, true);
-
 		/* Create status bar */
 	statusbar = new StatusBar( this, lv_scr_act() );
 
+		/* Where tiles will be positionned */
+	lv_tileview_set_valid_positions( this->mainbar, valid_pos, sizeof(valid_pos)/sizeof(valid_pos[1]) );
+	lv_tileview_set_edge_flash( this->mainbar, true);
+
 		/* Create tiles */
-/*D Change lv_scr_act() avec le tile */
 	hourdate = new TlDateHour( this );
+	tlsettings = new TlSettings( this );
 
 		/* The GUI is initialised,
 		 * ready to launch automation
