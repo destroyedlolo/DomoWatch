@@ -32,6 +32,7 @@ public :
 	Gui( void );
 
 	lv_obj_t *getMyself( void ){ return this->mainbar; }
+	lv_obj_t *getTileView( void ){ return this->mainbar; }
 
 		/* interfaces
 		 *

@@ -85,16 +85,16 @@ Gui::Gui( void ){
  	lv_obj_align( this->background, NULL, LV_ALIGN_CENTER, 0, 0 );
 	lv_obj_set_hidden( this->background, false );	// Image is visible
 
-		/* Tileview : how tiles will be managed */
-	this->mainbar = lv_tileview_create( lv_scr_act(), NULL);
-	this->ApplyStyle();
-	lv_page_set_scrlbar_mode( this->mainbar, LV_SCRLBAR_MODE_OFF );
-
 		/* Create status bar */
 	statusbar = new StatusBar( this, lv_scr_act() );
 
+		/* Tileview : how tiles will be managed */
+	this->mainbar = lv_tileview_create( lv_scr_act(), NULL);
+	this->ApplyStyle();
+
 		/* Where tiles will be positionned */
-	lv_tileview_set_valid_positions( this->mainbar, valid_pos, sizeof(valid_pos)/sizeof(valid_pos[1]) );
+//	lv_tileview_set_valid_positions( this->mainbar, valid_pos, sizeof(valid_pos)/sizeof(valid_pos[1]) );
+	lv_tileview_set_valid_positions( this->mainbar, valid_pos, 2 );
 	lv_tileview_set_edge_flash( this->mainbar, true);
 
 		/* Create tiles */
