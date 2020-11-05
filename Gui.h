@@ -8,23 +8,26 @@
 #include <Arduino.h>
 #include <lvgl/lvgl.h>
 
-class Gui {
-	lv_style_t style;
+#include "Style.h"
+
+class Gui : 
+	virtual public Style 	// default object style
+{
 	lv_obj_t *background;
 
 public:
+	virtual lv_obj_t *getMyself( void ) { return NULL; }
+
 	Gui( void );
 
-	lv_style_t *getStyle( void ){
-		return( &this->style );
-	}
 };
 
-extern class Gui *gui;
 
 	/***
 	 * Objects used elsewhere
 	 ***/
+
+extern class Gui *gui;
 extern TTGOClass *ttgo;
 
 #endif
