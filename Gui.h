@@ -27,7 +27,9 @@ public:
 	 * Objects used elsewhere
 	 ***/
 
-extern class Gui *gui;
+#define BARHEIGHT 30	// Status bar height
+
 extern TTGOClass *ttgo;
+extern class Gui *gui;
 
 #endif

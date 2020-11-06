@@ -16,7 +16,7 @@ protected:
 	 */
 	virtual lv_obj_t *getMyself( void ) = 0;
 
-public :
+public:
 
 	/* Style constructor
 	 * initialize an empty style
