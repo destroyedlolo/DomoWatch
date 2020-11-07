@@ -9,11 +9,15 @@
 #include <lvgl/lvgl.h>
 
 #include "Style.h"
+#include "Container.h"
+#include "TileView.h"
 
 class Gui : 
 	virtual public Style 	// default object style
 {
-	lv_obj_t *background;
+	lv_obj_t *_background;
+	Container *_maincont;	// main controler
+	TileView *_maintv;		// main tileview
 
 public:
 	virtual lv_obj_t *getMyself( void ) { return NULL; }

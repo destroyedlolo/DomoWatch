@@ -233,6 +233,7 @@ void setup(){
 
 	
 	/* Initialise clock */
+	Serial.println("Reading RTC ...");
 	ttgo->rtc->check();	// Check if the clock is valid or fallback to compilation time
 	ttgo->rtc->syncToSystem(); //Synchronize time to system time
 
@@ -249,6 +250,7 @@ void setup(){
 	}
 
 	/* Execute our own GUI interface */
+	Serial.println("Setting up the GUI ...");
 	gui = new Gui();
 /*D
 	gui->updateBatteryIcon( Gui::LV_ICON_UNKNOWN );	// need to check if we're plugged

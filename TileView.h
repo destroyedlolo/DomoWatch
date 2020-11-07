@@ -26,14 +26,14 @@ public:
 	}
 
 	/* Set allowed movements
-	 * -> lv_point_t valid_pos : array of valid tiles position
+	 * -> lv_point_t *valid_pos : array of valid tiles position
 	 * -> uint16_t valid_pos_cnt : number of entries in the array
 	 *
 	 * Notez-bien : Only a pointer to the array is kept. So it can't be a
 	 *  local variable, must be dynamically allocated, a global variable or
 	 *  static.
 	 */
-	void SetValidPositions( lv_point_t valid_pos, uint16_t valid_pos_cnt ){
+	void SetValidPositions( lv_point_t *valid_pos, uint16_t valid_pos_cnt ){
 		lv_tileview_set_valid_positions( this->getTileView(), valid_pos, valid_pos_cnt );
 	}
 
