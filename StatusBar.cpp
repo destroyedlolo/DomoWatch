@@ -6,8 +6,8 @@
 
 LV_IMG_DECLARE(foot_16px);
 
-StatusBar::StatusBar( lv_obj_t *parent, const lv_obj_t *cloned ) : Container( parent, cloned ){
-	this->copyStyle( gui->getStyle() );	// Copy gui style
+StatusBar::StatusBar( lv_style_t *mainstyle, lv_obj_t *parent, const lv_obj_t *cloned ) : Container( parent, cloned ){
+	this->copyStyle( mainstyle );	// Copy gui style
 
 		/* Custom style */
 	lv_style_set_bg_opa(this->getStyle(), LV_OBJ_PART_MAIN, LV_OPA_20);

@@ -9,7 +9,7 @@
 #include "Label.h"
 
 class TlSettings : public Container {
-	Label		*label;
+	Label		*_version;
 
 public:
 	TlSettings( lv_obj_t *parent=NULL, const lv_obj_t *cloned=NULL );

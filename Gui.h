@@ -12,6 +12,9 @@
 #include "Container.h"
 #include "TileView.h"
 
+// #include "StatusBar.h"
+class StatusBar;
+
 #include "TlDateTime.h"
 #include "TlSettings.h"
 
@@ -19,6 +22,7 @@ class Gui :
 	virtual public Style 	// default object style
 {
 	lv_obj_t *_background;
+	StatusBar *_statusbar;
 	Container *_maincont;	// main controler
 	TileView *_maintv;		// main tileview
 
@@ -42,6 +46,14 @@ public:
 
 	Gui( void );
 
+		/* interfaces
+		 *
+		 * Documentation are in StatusBar.h
+		 */
+
+	void updateStepCounter( uint32_t counter );
+	void updateBatteryIcon( lv_icon_battery_t index );
+	void updateBatteryLevel( void );
 };
 
 

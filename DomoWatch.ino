@@ -37,6 +37,7 @@
 
 #include "Version.h"
 #include "Gui.h"
+#include "CommandLine.h"
 
 #define G_EVENT_VBUS_PLUGIN         _BV(0)
 #define G_EVENT_VBUS_REMOVE         _BV(1)
@@ -93,11 +94,11 @@ void wakeup( void ){
 	ttgo->startLvglTick();
 	ttgo->displayWakeup();
 	ttgo->rtc->syncToSystem();
-/*D
+
 	gui->updateStepCounter(ttgo->bma->getCounter());
 	gui->updateBatteryLevel();
 	gui->updateBatteryIcon( Gui::LV_ICON_UNKNOWN );
-*/
+
 	lv_disp_trig_activity(NULL);
 	ttgo->openBL();
 	ttgo->bma->enableStepCountInterrupt();
@@ -252,9 +253,7 @@ void setup(){
 	/* Execute our own GUI interface */
 	Serial.println("Setting up the GUI ...");
 	gui = new Gui();
-/*D
 	gui->updateBatteryIcon( Gui::LV_ICON_UNKNOWN );	// need to check if we're plugged
-*/
 
 	lv_disp_trig_activity(NULL); // Clear lvgl activity counter
 
@@ -315,17 +314,14 @@ void loop(){
 				rlst =  ttgo->bma->readInterrupt();
 			while(!rlst);
 
-/*D
 			if(ttgo->bma->isStepCounter())
 				gui->updateStepCounter(ttgo->bma->getCounter());
-*/
 			break;
 
 		case Q_EVENT_AXP_INT:
 				// Power management
 			ttgo->power->readIRQ();
 
-/*D
 			if(ttgo->power->isVbusPlugInIRQ())
 				gui->updateBatteryIcon( Gui::LV_ICON_CHARGE );
 	
@@ -334,7 +330,6 @@ void loop(){
 
 			if(ttgo->power->isChargingDoneIRQ())
 				gui->updateBatteryIcon( Gui::LV_ICON_CALCULATION );
-*/
 
 				// Button push
 			if(ttgo->power->isPEKShortPressIRQ()){
@@ -353,9 +348,7 @@ void loop(){
 		}
 	}
 
-/*D
 	CommandLine::loop();
-*/
 
 	if(lv_disp_get_inactive_time(NULL) < DEFAULT_SCREEN_TIMEOUT)
 		lv_task_handler();

@@ -3,26 +3,19 @@
 *************************************************/
 
 #include "TlSettings.h"
+#include "Version.h"
 #include "font.h"
 
-LV_FONT_DECLARE(Ubuntu_48px);
+LV_FONT_DECLARE(Ubuntu_16px);
 
 TlSettings::TlSettings( lv_obj_t *parent, const lv_obj_t *cloned ) : 
 	Container( parent, cloned )
 {
-		/* Display time */
-	this->label = new Label( this );
-	this->label->setFont( &Ubuntu_48px );
-	this->label->setText( "Prout" );
-	this->label->Align( LV_ALIGN_IN_TOP_MID );
-	this->label->AutoRealign();
+		/* Display version */
+	this->_version = new Label( this );
+	this->_version->setFont( &Ubuntu_16px );
+	this->_version->setText( "DomoWatch " VERSION_H );
+	this->_version->Align( LV_ALIGN_IN_BOTTOM_MID );
+	this->_version->AutoRealign();
 
-			/* and date */
-/*
-	this->datelabel = new Label( this );
-	this->datelabel->SetFont( &Ubuntu_16px );
-	this->datelabel->SetText( "??.???? ????" );
-	this->datelabel->Align( LV_ALIGN_IN_BOTTOM_MID );
-	this->datelabel->AutoRealign();
-*/
 }

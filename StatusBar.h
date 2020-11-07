@@ -21,10 +21,12 @@ class StatusBar : public Container {
 	Image		*stepIcon;
 	Label 		*stepCounter;
 
+public:
 	/* status bar constructor
+	 * -> mainstyle : style to apply
 	 * -> parent, cloned : see Container
 	 */
-	StatusBar( lv_obj_t *parent=NULL, const lv_obj_t *cloned=NULL );
+	StatusBar( lv_style_t *mainstyle, lv_obj_t *parent=NULL, const lv_obj_t *cloned=NULL );
 
 	/* Update step counter label
 	 * -> uint32_t counter : value
