@@ -260,10 +260,10 @@ void setup(){
 
 	ttgo->openBL(); // Everything done, turn on the backlight
 
-	Serial.printf("Total heap: %d\r\n", ESP.getHeapSize());
-    Serial.printf("Free heap: %d\r\n", ESP.getFreeHeap());
-    Serial.printf("Total PSRAM: %d\r\n", ESP.getPsramSize());
-    Serial.printf("Free PSRAM: %d\r\n", ESP.getFreePsram());
+	Serial.printf("Total heap: %d\n", ESP.getHeapSize());
+    Serial.printf("Free heap: %d\n", ESP.getFreeHeap());
+    Serial.printf("Total PSRAM: %d\n", ESP.getPsramSize());
+    Serial.printf("Free PSRAM: %d\n", ESP.getFreePsram());
 
 	Serial.println("Initialisation completed");
 }

@@ -20,7 +20,7 @@ public:
 	 * -> lv_style_t *style : new style to be added
 	 * -> uint8_t part : which part to update (LV_OBJ_PART_MAIN)
 	 */
-	void AddStyle( lv_style_t *style, uint8_t part=LV_OBJ_PART_MAIN ){
+	void addStyle( lv_style_t *style, uint8_t part=LV_OBJ_PART_MAIN ){
 		lv_obj_add_style( this->getMyself(), part, style );
 	}
 
@@ -28,8 +28,29 @@ public:
 	 * -> lv_coord_t width
 	 * -> lv_coord_t height
 	 */
-	void SetSize( lv_coord_t width, lv_coord_t height ){
+	void setSize( lv_coord_t width, lv_coord_t height ){
 		lv_obj_set_size( this->getMyself(), width, height );
+	}
+
+	void setSize( GfxObject *source ){
+		lv_obj_set_size(
+			this->getMyself(),
+			source->getWidth(), source->getHeight()
+		);
+	}
+
+	/* Get object's width
+	 * <- lv_coord_t : width
+	 */
+	lv_coord_t getWidth( void ){
+		return lv_obj_get_width( this->getMyself() );
+	}
+
+	/* Get object's height
+	 * <- lv_coord_t : height
+	 */
+	lv_coord_t getHeight( void ){
+		return lv_obj_get_height( this->getMyself() );
 	}
 
 	/* Set Align attribut

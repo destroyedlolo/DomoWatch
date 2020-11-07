@@ -9,6 +9,7 @@
 
 #include "Style.h"
 #include "GfxObject.h"
+#include "Container.h"
 
 class TileView : virtual public Style, virtual public GfxObject {
 	lv_obj_t 	*_tileview;
@@ -25,6 +26,13 @@ public:
 		this->_tileview = lv_tileview_create( parent, cloned );
 	}
 
+	/* Add a tile
+	 * -> Container *tile
+	 */
+	void AddTile( Container *tile ){
+		lv_tileview_add_element( this->getTileView(), tile->getContainer() );
+	}
+
 	/* Set allowed movements
 	 * -> lv_point_t *valid_pos : array of valid tiles position
 	 * -> uint16_t valid_pos_cnt : number of entries in the array
@@ -33,7 +41,7 @@ public:
 	 *  local variable, must be dynamically allocated, a global variable or
 	 *  static.
 	 */
-	void SetValidPositions( lv_point_t *valid_pos, uint16_t valid_pos_cnt ){
+	void setValidPositions( lv_point_t *valid_pos, uint16_t valid_pos_cnt ){
 		lv_tileview_set_valid_positions( this->getTileView(), valid_pos, valid_pos_cnt );
 	}
 
@@ -41,21 +49,21 @@ public:
 	 * -> lv_coord_t x, y : tile position
 	 * -> lv_anim_enable_t anim : with LV_ANIM_ON or without LV_ANIM_OFF
 	 */
-	void SetActiveTile( lv_coord_t x, lv_coord_t y, lv_anim_enable_t anim ){
+	void setActiveTile( lv_coord_t x, lv_coord_t y, lv_anim_enable_t anim ){
 		lv_tileview_set_tile_act( this->getTileView(), x,y, anim );
 	}
 
 	/* get active tile position
 	 * -> lv_coord_t &x,&y : reference to variable that will hold the position
 	 */
-	void GetActiveTile( lv_coord_t &x, lv_coord_t &y ){
+	void getActiveTile( lv_coord_t &x, lv_coord_t &y ){
 		lv_tileview_get_tile_act( this->getTileView(), &x, &y );
 	}
 
 	/* Flash if an edge is reached
 	 * -> bool : true flash, false don't flash
 	 */
-	void SetEdgeFlash( bool en ){
+	void setEdgeFlash( bool en ){
 		lv_tileview_set_edge_flash( this->getTileView(), en );
 	}
 };

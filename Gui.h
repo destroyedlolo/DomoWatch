@@ -19,6 +19,9 @@ class Gui :
 	Container *_maincont;	// main controler
 	TileView *_maintv;		// main tileview
 
+	/* Tiles */
+	Container *TlDateTime;
+
 public:
 	virtual lv_obj_t *getMyself( void ) { return NULL; }
 
