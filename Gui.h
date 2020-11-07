@@ -29,6 +29,17 @@ class Gui :
 public:
 	virtual lv_obj_t *getMyself( void ) { return NULL; }
 
+	enum lv_icon_battery_t {
+		LV_ICON_BAT_EMPTY,
+		LV_ICON_BAT_1,
+		LV_ICON_BAT_2,
+		LV_ICON_BAT_3,
+		LV_ICON_BAT_FULL,
+		LV_ICON_CHARGE,			/* Plugged */
+		LV_ICON_CALCULATION,	/* calculated against charging percentage */
+		LV_ICON_UNKNOWN			/* check first of plugged */
+	};
+
 	Gui( void );
 
 };

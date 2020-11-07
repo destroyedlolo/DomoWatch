@@ -13,16 +13,18 @@ class Label : virtual public Style, virtual public GfxObject {
 
 public:
 	lv_obj_t *getMyself( void ) { return this->_label; }
+	lv_obj_t *getLabel( void ) { return this->_label; }
 
 	/* Container constructor
-	 * -> GfxObject *parent : parent object (default : NULL)
+	 * -> Container *parent : parent object (default : NULL)
 	 *  	if not null, its style is copied
 	 * -> const lv_obj_t *cloned : copy from this object (default : NULL)
 	 */
 	Label( Container *parent=NULL, Container *cloned=NULL ){
 		this->_label = lv_label_create( 
 			parent ? parent->getMyself() : NULL, 
-			cloned ? cloned->getMyself() : NULL );
+			cloned ? cloned->getMyself() : NULL
+		);
 
 		if(parent)
 			this->copyStyle( parent->getStyle() );

@@ -55,7 +55,6 @@ Gui::Gui( void ){
 //	this->_maintv->Align( LV_ALIGN_CENTER );
 	this->_maintv->copyStyle( this->getStyle() );	// Copy and apply the main style
 
-Serial.printf("*** tv : %d x %d\n", this->_maintv->getWidth(), this->_maintv->getHeight() );
 
 		/***
 		 * Tiles
