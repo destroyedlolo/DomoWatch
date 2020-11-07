@@ -20,7 +20,7 @@ public:
 	 * -> const lv_obj_t *cloned : copy from this object (default : NULL)
 	 */
 	Container( lv_obj_t *parent=NULL, const lv_obj_t *cloned=NULL ){
-		this->_container = lv_obj_create( parent, cloned );
+		this->_container = lv_cont_create( parent, cloned );
 	}
 
 };

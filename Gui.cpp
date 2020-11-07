@@ -40,24 +40,38 @@ Gui::Gui( void ){
 	lv_obj_set_hidden( this->_background, false );	// Image is visible
 
 		/* Main container : everything but status bar */
+/*
 	this->_maincont = new Container( lv_scr_act(), NULL );
 	this->_maincont->setSize( LV_HOR_RES, LV_VER_RES - BARHEIGHT );	// Keep some space for the statusbar
 	this->_maincont->Align( LV_ALIGN_IN_BOTTOM_MID );
 	this->_maincont->copyStyle( this->getStyle() );	// Copy and apply the main style
 
 	this->_maintv = new TileView( this->_maincont->getContainer() );
+*/
+	this->_maintv = new TileView( lv_scr_act() );
+	this->_maintv->setSize( LV_HOR_RES, LV_VER_RES - BARHEIGHT );	// Keep some space for the statusbar
+	this->_maintv->Align( LV_ALIGN_IN_BOTTOM_MID );
 	this->_maintv->setEdgeFlash( true );
-	this->_maintv->Align( LV_ALIGN_CENTER );
+//	this->_maintv->Align( LV_ALIGN_CENTER );
 	this->_maintv->copyStyle( this->getStyle() );	// Copy and apply the main style
+
+Serial.printf("*** tv : %d x %d\n", this->_maintv->getWidth(), this->_maintv->getHeight() );
 
 		/***
 		 * Tiles
 		 ***/
 	
 		/* Set valide tiles position */
-	this->_maintv->setValidPositions( NULL, 0 );
+	static lv_point_t valid_pos[] = { {0,0}, {0,1} };	// define tiles' position
+	this->_maintv->setValidPositions( valid_pos, 2 );	// apply it
 
 	this->_tile_datetime = new TlDateTime( this->_maintv->getTileView(), this->_maintv->getTileView() );
-	this->_tile_datetime->setSize( this->_maintv );
+	this->_tile_datetime->setSize( this->_maintv );	// Resize as per tileview
+	this->_tile_datetime->copyStyle( this->getStyle() );	// Copy and apply style
 	this->_maintv->AddTile( this->_tile_datetime );	// Add this tile
+
+	this->_tile_settings = new TlSettings( this->_maintv->getTileView(), this->_maintv->getTileView() );
+	this->_tile_settings->setSize( this->_maintv );
+	this->_tile_settings->copyStyle( this->getStyle() );	// Copy and apply style
+	this->_maintv->AddTile( this->_tile_settings );	// Add this tile
 }
