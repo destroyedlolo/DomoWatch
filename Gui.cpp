@@ -5,7 +5,7 @@
 #include "Gui.h"
 #include "font.h"
 
-#define BACKGROUND bg1
+#define BACKGROUND bg2
 
 	/*****
 	 * objects
@@ -41,8 +41,8 @@ Gui::Gui( void ){
 
 		/* Main container : everything but status bar */
 	this->_maincont = new Container( lv_scr_act(), NULL );
-	this->_maincont->setSize( LV_HOR_RES, LV_VER_RES - BARHEIGHT );
-	this->_maincont->Align( LV_ALIGN_OUT_BOTTOM_MID );
+	this->_maincont->setSize( LV_HOR_RES, LV_VER_RES - BARHEIGHT );	// Keep some space for the statusbar
+	this->_maincont->Align( LV_ALIGN_IN_BOTTOM_MID );
 	this->_maincont->copyStyle( this->getStyle() );	// Copy and apply the main style
 
 	this->_maintv = new TileView( this->_maincont->getContainer() );
