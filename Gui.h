@@ -12,6 +12,8 @@
 #include "Container.h"
 #include "TileView.h"
 
+#include "TlDateTime.h"
+
 class Gui : 
 	virtual public Style 	// default object style
 {
@@ -20,7 +22,7 @@ class Gui :
 	TileView *_maintv;		// main tileview
 
 	/* Tiles */
-	Container *TlDateTime;
+	TlDateTime *_tile_datetime;
 
 public:
 	virtual lv_obj_t *getMyself( void ) { return NULL; }

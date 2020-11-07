@@ -6,6 +6,7 @@
 #define LABEL_H
 
 #include "Style.h"
+#include "Container.h"
 
 class Label : virtual public Style, virtual public GfxObject {
 	lv_obj_t *_label;
@@ -18,16 +19,19 @@ public:
 	 *  	if not null, its style is copied
 	 * -> const lv_obj_t *cloned : copy from this object (default : NULL)
 	 */
-	Label( GfxObject *parent=NULL, const lv_obj_t *cloned=NULL ){
-		this->label = lv_label_create( parent ? **parent : NULL, cloned );
+	Label( Container *parent=NULL, Container *cloned=NULL ){
+		this->_label = lv_label_create( 
+			parent ? parent->getMyself() : NULL, 
+			cloned ? cloned->getMyself() : NULL );
+
 		if(parent)
-			this->CopyStyle( parent->getStyle() );
+			this->copyStyle( parent->getStyle() );
 	}
 
 		/* Set text
 		 * -> const char *text
 		 */
-	void SetText( const char *text ){
+	void setText( const char *text ){
 		lv_label_set_text( this->getMyself(), text );
 	}
 

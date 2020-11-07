@@ -5,7 +5,7 @@
 #include "Gui.h"
 #include "font.h"
 
-#define BACKGROUND WALLPAPER_3_IMG
+#define BACKGROUND bg1
 
 	/*****
 	 * objects
@@ -53,7 +53,11 @@ Gui::Gui( void ){
 		/***
 		 * Tiles
 		 ***/
-	this->TlDateTime = new Container( this->_maintv->getTileView(), this->_maintv->getTileView() );
-	this->TlDateTime->setSize( this->_maintv );
-	this->_maintv->AddTile( this->TlDateTime );	// Add this tile
+	
+		/* Set valide tiles position */
+	this->_maintv->setValidPositions( NULL, 0 );
+
+	this->_tile_datetime = new TlDateTime( this->_maintv->getTileView(), this->_maintv->getTileView() );
+	this->_tile_datetime->setSize( this->_maintv );
+	this->_maintv->AddTile( this->_tile_datetime );	// Add this tile
 }
