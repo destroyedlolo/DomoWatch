@@ -46,6 +46,11 @@ public:
 
 	Gui( void );
 
+	/* Launch automation tasks.
+	 * Has to be called ONLY when everything is initialised
+	 */
+	void initAutomation( void );
+
 		/* interfaces
 		 *
 		 * Documentation are in StatusBar.h

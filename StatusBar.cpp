@@ -3,6 +3,7 @@
 *************************************************/
 
 #include "StatusBar.h"
+#include "Gui.h"
 
 LV_IMG_DECLARE(foot_16px);
 
@@ -44,16 +45,41 @@ void StatusBar::updateBatteryLevel( void ){
 	this->batPercent->setText( (String(ttgo->power->getBattPercentage())+'%').c_str() );
 }
 
-void StatusBar::updateBatteryIcon( Gui::lv_icon_battery_t index, lv_color_t color ){
-	this->batIcon->Recolor( color );
-	this->updateBatteryIcon( index );
-}
-
 void StatusBar::updateBatteryIcon( Gui::lv_icon_battery_t index ){
+	lv_color_t color = LV_COLOR_WHITE;	// Default color
+	if( index == Gui::LV_ICON_UNKNOWN && ttgo->power->isChargeing() )	// Are we charging ?
+		index = Gui::LV_ICON_CHARGE;
+	
+	if( index == Gui::LV_ICON_CHARGE )
+		color = LV_COLOR_BLUE;
+	else if( index >= Gui::LV_ICON_CALCULATION ){	// Determine as per battery level
+		int level = ttgo->power->getBattPercentage();
+		if(level > 95){
+			color = LV_COLOR_GREEN;
+			index = Gui::LV_ICON_BAT_FULL;
+		} else if(level > 80)
+			index = Gui::LV_ICON_BAT_3;
+		else if(level > 45)
+			index = Gui::LV_ICON_BAT_2;
+		 else if(level > 20){
+			color = LV_COLOR_ORANGE;
+			index = Gui::LV_ICON_BAT_1;
+		} else {
+			color = LV_COLOR_RED;
+			index = Gui::LV_ICON_BAT_EMPTY;
+		}
+	}
+
+	this->batIcon->Recolor( color );	// Apply the color
+
 	static const char *icons[] = {LV_SYMBOL_BATTERY_EMPTY, LV_SYMBOL_BATTERY_1, LV_SYMBOL_BATTERY_2, LV_SYMBOL_BATTERY_3, LV_SYMBOL_BATTERY_FULL, LV_SYMBOL_CHARGE};
-	this->batIcon->Set( icons[index] );
+	this->batIcon->Set( icons[index] );	// And the icon
 }
 
-void StatusBar::initAutomation( void (*func)(lv_task_t *) ){
-	this->upd_bat_task = lv_task_create( func, 30000, LV_TASK_PRIO_LOWEST, NULL );
+static void cbUpdBat( lv_task_t *tsk ){
+	((StatusBar *)(tsk->user_data))->updateBatteryLevel();
+}
+
+void StatusBar::initAutomation( void ){
+	this->upd_bat_task = lv_task_create( cbUpdBat, 30000, LV_TASK_PRIO_LOWEST, this );
 }

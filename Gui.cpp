@@ -77,40 +77,27 @@ Gui::Gui( void ){
 	this->_tile_settings->setSize( this->_maintv );
 	this->_tile_settings->copyStyle( this->getStyle() );	// Copy and apply style
 	this->_maintv->AddTile( this->_tile_settings );	// Add this tile
+
+		/* The GUI is initialised,
+		 * ready to launch automation
+		 */
+	this->initAutomation();	// Launch automation
 }
 
 void Gui::updateStepCounter( uint32_t counter ){
-	_statusbar->updateStepCounter( counter );
+	this->_statusbar->updateStepCounter( counter );
 }
 
 void Gui::updateBatteryIcon( lv_icon_battery_t index ){
-	lv_color_t color = LV_COLOR_WHITE;
-	if( index == LV_ICON_UNKNOWN && ttgo->power->isChargeing() )
-		index = LV_ICON_CHARGE;
-	
-	if( index == LV_ICON_CHARGE )
-		color = LV_COLOR_BLUE;
-	else if( index >= LV_ICON_CALCULATION ){
-		int level = ttgo->power->getBattPercentage();
-		if(level > 95){
-			color = LV_COLOR_GREEN;
-			index = LV_ICON_BAT_FULL;
-		} else if(level > 80)
-			index = LV_ICON_BAT_3;
-		else if(level > 45)
-			index = LV_ICON_BAT_2;
-		 else if(level > 20){
-			color = LV_COLOR_ORANGE;
-			index = LV_ICON_BAT_1;
-		} else {
-			color = LV_COLOR_RED;
-			index = LV_ICON_BAT_EMPTY;
-		}
-	}
-
-	_statusbar->updateBatteryIcon( index, color );
+	this->_statusbar->updateBatteryIcon( index);
 }
 
 void Gui::updateBatteryLevel( void ){
-	_statusbar->updateBatteryLevel();
+	this->_statusbar->updateBatteryLevel();
 }
+
+void Gui::initAutomation( void ){
+		this->_statusbar->initAutomation();
+//		this->_tile_datetime->initAutomation();
+	}
+
