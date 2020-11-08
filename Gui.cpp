@@ -28,6 +28,17 @@ Gui::Gui( void ){
 	lv_style_set_bg_color( this->getStyle(), LV_OBJ_PART_MAIN, LV_COLOR_GRAY );
 	lv_style_set_bg_opa( this->getStyle(), LV_OBJ_PART_MAIN, LV_OPA_0 );
 	lv_style_set_border_width( this->getStyle(), LV_OBJ_PART_MAIN, 0 );
+	lv_style_set_pad_top( this->getStyle(), LV_OBJ_PART_MAIN, 0 );
+	lv_style_set_pad_bottom( this->getStyle(), LV_OBJ_PART_MAIN, 0 );
+	lv_style_set_pad_left( this->getStyle(), LV_OBJ_PART_MAIN, 0 );
+	lv_style_set_pad_right( this->getStyle(), LV_OBJ_PART_MAIN, 0 );
+	lv_style_set_pad_inner( this->getStyle(), LV_OBJ_PART_MAIN, 0 );
+
+	lv_style_set_margin_top( this->getStyle(), LV_OBJ_PART_MAIN, 0 );
+	lv_style_set_margin_bottom( this->getStyle(), LV_OBJ_PART_MAIN, 0 );
+	lv_style_set_margin_left( this->getStyle(), LV_OBJ_PART_MAIN, 0 );
+	lv_style_set_margin_right( this->getStyle(), LV_BTN_PART_MAIN, 0 );
+
 	lv_style_set_text_color( this->getStyle(), LV_OBJ_PART_MAIN, LV_COLOR_WHITE );
 	lv_style_set_image_recolor( this->getStyle(), LV_OBJ_PART_MAIN, LV_COLOR_WHITE );
 
@@ -44,21 +55,12 @@ Gui::Gui( void ){
 	this->_statusbar = new StatusBar( this->getStyle(), lv_scr_act() );
 
 		/* Main container : everything but status bar */
-/*
-	this->_maincont = new Container( lv_scr_act(), NULL );
-	this->_maincont->setSize( LV_HOR_RES, LV_VER_RES - BARHEIGHT );	// Keep some space for the statusbar
-	this->_maincont->Align( LV_ALIGN_IN_BOTTOM_MID );
-	this->_maincont->copyStyle( this->getStyle() );	// Copy and apply the main style
-
-	this->_maintv = new TileView( this->_maincont->getContainer() );
-*/
 	this->_maintv = new TileView( lv_scr_act() );
 	this->_maintv->setSize( LV_HOR_RES, LV_VER_RES - BARHEIGHT );	// Keep some space for the statusbar
-	this->_maintv->Align( LV_ALIGN_IN_BOTTOM_MID );
+	
+	this->_maintv->Align( LV_ALIGN_OUT_BOTTOM_MID, this->_statusbar);
 	this->_maintv->setEdgeFlash( true );
-//	this->_maintv->Align( LV_ALIGN_CENTER );
 	this->_maintv->copyStyle( this->getStyle() );	// Copy and apply the main style
-
 
 		/***
 		 * Tiles
@@ -68,12 +70,12 @@ Gui::Gui( void ){
 	static lv_point_t valid_pos[] = { {0,0}, {0,1} };	// define tiles' position
 	this->_maintv->setValidPositions( valid_pos, 2 );	// apply it
 
-	this->_tile_datetime = new TlDateTime( this->_maintv->getTileView(), this->_maintv->getTileView() );
+	this->_tile_datetime = new TlDateTime( this->getStyle(), this->_maintv->getTileView() , NULL );
 	this->_tile_datetime->setSize( this->_maintv );	// Resize as per tileview
 	this->_tile_datetime->copyStyle( this->getStyle() );	// Copy and apply style
 	this->_maintv->AddTile( this->_tile_datetime );	// Add this tile
 
-	this->_tile_settings = new TlSettings( this->_maintv->getTileView(), this->_maintv->getTileView() );
+	this->_tile_settings = new TlSettings( this->_maintv->getTileView() );
 	this->_tile_settings->setSize( this->_maintv );
 	this->_tile_settings->copyStyle( this->getStyle() );	// Copy and apply style
 	this->_maintv->AddTile( this->_tile_settings );	// Add this tile
@@ -98,6 +100,6 @@ void Gui::updateBatteryLevel( void ){
 
 void Gui::initAutomation( void ){
 		this->_statusbar->initAutomation();
-//		this->_tile_datetime->initAutomation();
+		this->_tile_datetime->initAutomation();
 	}
 

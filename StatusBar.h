@@ -21,6 +21,7 @@ class StatusBar : public Container {
 	Image		*stepIcon;
 	Label 		*stepCounter;
 
+	Gui::lv_icon_battery_t prev_idx;	// Previous index
 public:
 	/* status bar constructor
 	 * -> mainstyle : style to apply
@@ -43,7 +44,6 @@ public:
 	void updateBatteryIcon( Gui::lv_icon_battery_t index );
 
 	/* Initialise automation
-	 * 	-> batfunc : callback to be launched to update battery level
 	 */
 	void initAutomation( void );
 };

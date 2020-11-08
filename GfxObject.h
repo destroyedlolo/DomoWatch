@@ -8,6 +8,8 @@
 
 #include <lvgl/lvgl.h>
 
+class Container;
+
 class GfxObject {
 protected:
 	/* Accessor to the object that is needing this style.
@@ -22,6 +24,31 @@ public:
 	 */
 	void addStyle( lv_style_t *style, uint8_t part=LV_OBJ_PART_MAIN ){
 		lv_obj_add_style( this->getMyself(), part, style );
+	}
+
+	/* set position
+	 * 	lv_coord_t x,y
+	 */
+	void setPosX( lv_coord_t x ){
+		lv_obj_set_x( this->getMyself(), x );
+	}
+
+	void setPosY( lv_coord_t y ){
+		lv_obj_set_y( this->getMyself(), y );
+	}
+
+	void setPosXY( lv_coord_t x, lv_coord_t y ){
+		lv_obj_set_pos( this->getMyself(), x, y );
+	}
+
+	/* get position
+	 */
+	lv_coord_t getX( void ){
+		return lv_obj_get_x( this->getMyself() );
+	}
+
+	lv_coord_t getY( void ){
+		return lv_obj_get_y( this->getMyself() );
 	}
 
 	/* Set object's size
@@ -61,6 +88,7 @@ public:
 	void Align( lv_align_t align, const lv_obj_t *base=NULL, lv_coord_t x_mod=0, lv_coord_t y_mod=0){
 		lv_obj_align( this->getMyself(), base, align, x_mod, y_mod );
 	}
+	void Align( lv_align_t align, Container *base, lv_coord_t x_mod=0, lv_coord_t y_mod=0);
 
 	/* Set Auto-Realign attribut
 	 * -> bool activate : if true activate, desactivate otherwise (default: true)

@@ -7,8 +7,11 @@
 
 LV_IMG_DECLARE(foot_16px);
 
-StatusBar::StatusBar( lv_style_t *mainstyle, lv_obj_t *parent, const lv_obj_t *cloned ) : Container( parent, cloned ){
-	this->copyStyle( mainstyle );	// Copy gui style
+StatusBar::StatusBar( lv_style_t *mainstyle, lv_obj_t *parent, const lv_obj_t *cloned ) : 
+	Container( parent, cloned ),
+	prev_idx( Gui::LV_ICON_UNKNOWN )
+{
+	this->copyStyle( mainstyle, false );	// Copy gui style
 
 		/* Custom style */
 	lv_style_set_bg_opa(this->getStyle(), LV_OBJ_PART_MAIN, LV_OPA_20);
@@ -43,6 +46,7 @@ void StatusBar::updateStepCounter(uint32_t counter){
 
 void StatusBar::updateBatteryLevel( void ){
 	this->batPercent->setText( (String(ttgo->power->getBattPercentage())+'%').c_str() );
+	this->updateBatteryIcon( Gui::LV_ICON_UNKNOWN );	// Rethink the icon
 }
 
 void StatusBar::updateBatteryIcon( Gui::lv_icon_battery_t index ){
@@ -69,6 +73,10 @@ void StatusBar::updateBatteryIcon( Gui::lv_icon_battery_t index ){
 			index = Gui::LV_ICON_BAT_EMPTY;
 		}
 	}
+
+	if( this->prev_idx == index )	// Same icon index so no need to redraw
+		return;
+	this->prev_idx = index;
 
 	this->batIcon->Recolor( color );	// Apply the color
 
