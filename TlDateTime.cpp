@@ -17,18 +17,21 @@
 LV_FONT_DECLARE(Ubuntu_48px);
 LV_FONT_DECLARE(Ubuntu_16px);
 
-TlDateTime::TlDateTime( lv_style_t *mainstyle, lv_obj_t *parent, const lv_obj_t *cloned ) : 
+TlDateTime::TlDateTime( TileView *parent, TileView *cloned ) : 
 	Container( parent, cloned ),
 	daynum( -1 )
 {
 
 		/* Container to keep it centered */
 	this->cont = new Container( this );
-	this->cont->copyStyle( mainstyle, false );
+//	this->cont->copyStyle( parent->getStyle(), false );
 	lv_style_set_bg_opa(this->cont->getStyle(), LV_OBJ_PART_MAIN, LV_OPA_80);
 	this->applyStyle();
 	this->cont->setSize( this->getWidth(), this->getHeight()/3 );
-Serial.printf("par : %d x %d -> %d x %d\n", this->getWidth(), this->getHeight()/3, this->cont->getWidth(), this->cont->getHeight() );
+Serial.printf("par : %d,%d %dx%d -> %d,%d %dx%d\n", 
+	this->getX(), this->getY(), this->getWidth(), this->getHeight()/3,
+	this->cont->getX(), this->cont->getY(), this->cont->getWidth(), this->cont->getHeight()
+);
 Serial.printf("style : %d pad : %d %d %d %d %d mgr : %d %d %d %d\n",
 	lv_obj_get_style_size(this->getContainer(), LV_BTN_PART_MAIN),
 
@@ -47,14 +50,14 @@ Serial.printf("style : %d pad : %d %d %d %d %d mgr : %d %d %d %d\n",
 	this->cont->Align( LV_ALIGN_CENTER );
 
 		/* Display time */
-	this->timelabel = new Label( this );
+	this->timelabel = new Label( this->cont );
 	this->timelabel->setFont( &Ubuntu_48px );
 	this->timelabel->setText( "??:??" );
 	this->timelabel->Align( LV_ALIGN_IN_TOP_MID );
 	this->timelabel->AutoRealign();
 
 		/* and date */
-	this->datelabel = new Label( this );
+	this->datelabel = new Label( this->cont );
 	this->datelabel->setFont( &Ubuntu_16px );
 	this->datelabel->setText( "??.???? ????" );
 //	this->datelabel->Align( LV_ALIGN_IN_BOTTOM_MID );

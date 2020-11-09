@@ -5,6 +5,7 @@
 #ifndef TLDTHR_H
 #define TLDTHR_H
 
+#include "TileView.h"
 #include "Container.h"
 #include "Label.h"
 
@@ -22,7 +23,7 @@ public:
 	 * -> mainstyle : style to apply
 	 * -> parent, cloned : see Container
 	 */
-	TlDateTime( lv_style_t *mainstyle, lv_obj_t *parent=NULL, const lv_obj_t *cloned=NULL );
+	TlDateTime( TileView *parent=NULL, TileView *cloned=NULL );
 
 	/* update field */
 	void updateTime( void );

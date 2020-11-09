@@ -8,6 +8,8 @@
 #include "Style.h"
 #include "GfxObject.h"
 
+class TileView;
+
 class Container : virtual public Style, virtual public GfxObject {
 	lv_obj_t 	*_container;
 
@@ -20,19 +22,11 @@ public:
 	 * -> const lv_obj_t *cloned : copy from this object (default : NULL)
 	 */
 	Container( lv_obj_t *parent=NULL, const lv_obj_t *cloned=NULL ){
-		this->_container = lv_obj_create( parent, cloned );
+		this->_container = lv_cont_create( parent, cloned );
 	}
 
-	Container( Container *parent, Container *cloned=NULL ){
-		this->_container = lv_cont_create( 
-			parent ? parent->getMyself() : NULL, 
-			cloned ? cloned->getMyself() : NULL
-		);
-
-		if(parent)
-			this->copyStyle( parent->getStyle() );
-	}
-
+	Container( Container *parent, Container *cloned=NULL );
+	Container( TileView *parent, TileView *cloned=NULL );
 };
 
 #endif
