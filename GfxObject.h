@@ -29,11 +29,11 @@ public:
 	/* set position
 	 * 	lv_coord_t x,y
 	 */
-	void setPosX( lv_coord_t x ){
+	void setX( lv_coord_t x ){
 		lv_obj_set_x( this->getMyself(), x );
 	}
 
-	void setPosY( lv_coord_t y ){
+	void setY( lv_coord_t y ){
 		lv_obj_set_y( this->getMyself(), y );
 	}
 
@@ -96,5 +96,10 @@ public:
 	void AutoRealign( bool activate=true ){
 		lv_obj_set_auto_realign( this->getMyself(), activate );
 	}
+
+	/* Dump object value
+	 * Output on the serial console
+	 */
+	void dumpObj( const char *name=NULL );
 };
 #endif

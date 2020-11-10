@@ -21,32 +21,13 @@ TlDateTime::TlDateTime( TileView *parent, TileView *cloned ) :
 	Container( parent, cloned ),
 	daynum( -1 )
 {
+	this->setSize( parent );
 
 		/* Container to keep it centered */
 	this->cont = new Container( this );
-//	this->cont->copyStyle( parent->getStyle(), false );
 	lv_style_set_bg_opa(this->cont->getStyle(), LV_OBJ_PART_MAIN, LV_OPA_80);
 	this->applyStyle();
-	this->cont->setSize( this->getWidth(), this->getHeight()/3 );
-Serial.printf("par : %d,%d %dx%d -> %d,%d %dx%d\n", 
-	this->getX(), this->getY(), this->getWidth(), this->getHeight()/3,
-	this->cont->getX(), this->cont->getY(), this->cont->getWidth(), this->cont->getHeight()
-);
-Serial.printf("style : %d pad : %d %d %d %d %d mgr : %d %d %d %d\n",
-	lv_obj_get_style_size(this->getContainer(), LV_BTN_PART_MAIN),
-
-	lv_obj_get_style_pad_top(this->getContainer(), LV_BTN_PART_MAIN),
-	lv_obj_get_style_pad_bottom(this->getContainer(), LV_BTN_PART_MAIN),
-	lv_obj_get_style_pad_left(this->getContainer(), LV_BTN_PART_MAIN),
-	lv_obj_get_style_pad_right(this->getContainer(), LV_BTN_PART_MAIN),
-	lv_obj_get_style_pad_inner(this->getContainer(), LV_BTN_PART_MAIN),
-
-	lv_obj_get_style_margin_top(this->getContainer(), LV_BTN_PART_MAIN),
-	lv_obj_get_style_margin_bottom(this->getContainer(), LV_BTN_PART_MAIN),
-	lv_obj_get_style_margin_left(this->getContainer(), LV_BTN_PART_MAIN),
-	lv_obj_get_style_margin_right(this->getContainer(), LV_BTN_PART_MAIN)
-);
-
+	this->cont->setSize( this->getWidth(), this->getHeight()/2 );
 	this->cont->Align( LV_ALIGN_CENTER );
 
 		/* Display time */
@@ -60,9 +41,13 @@ Serial.printf("style : %d pad : %d %d %d %d %d mgr : %d %d %d %d\n",
 	this->datelabel = new Label( this->cont );
 	this->datelabel->setFont( &Ubuntu_16px );
 	this->datelabel->setText( "??.???? ????" );
-//	this->datelabel->Align( LV_ALIGN_IN_BOTTOM_MID );
-	this->datelabel->Align( LV_ALIGN_CENTER );
+	this->datelabel->Align( LV_ALIGN_IN_BOTTOM_MID );
 	this->datelabel->AutoRealign();
+
+	/* Debug */
+	parent->dumpObj( "Parent (tv)" );
+	this->dumpObj( "Tile (cont)" );
+	this->cont->dumpObj( "SubCont" );
 }
 
 void TlDateTime::updateTime( void ){

@@ -71,9 +71,9 @@ Serial.printf("tv : %d,%d %dx%d\n", this->_maintv->getX(), this->_maintv->getY()
 	static lv_point_t valid_pos[] = { {0,0}, {0,1} };	// define tiles' position
 	this->_maintv->setValidPositions( valid_pos, 2 );	// apply it
 
-	this->_tile_datetime = new TlDateTime( this->_maintv, this->_maintv );
-//	this->_tile_datetime->setSize( this->_maintv );	// Resize as per tileview
-//	this->_tile_datetime->copyStyle( this->getStyle() );	// Copy and apply style
+		// it's not possible to clone the tilevew otherwise, posX is copied as well
+		// the style is copied in the constructor
+	this->_tile_datetime = new TlDateTime( this->_maintv );
 	this->_maintv->AddTile( this->_tile_datetime );	// Add this tile
 
 	this->_tile_settings = new TlSettings( this->_maintv->getTileView() );
