@@ -6,9 +6,9 @@
 #include "TileView.h"
 
 Container::Container( Container *parent, Container *cloned ){
-	this->_container = lv_cont_create( 
-		parent->getContainer(),
-		cloned ? cloned->getContainer() : NULL
+	this->_obj = lv_cont_create( 
+		parent->getMyself(),
+		cloned ? cloned->getMyself() : NULL
 	);
 
 	if(parent)
@@ -16,9 +16,9 @@ Container::Container( Container *parent, Container *cloned ){
 }
 
 Container::Container( TileView *parent, TileView *cloned ){
-	this->_container = lv_cont_create( 
-		parent->getTileView(),
-		cloned ? cloned->getTileView() : NULL
+	this->_obj = lv_cont_create( 
+		parent->getMyself(),
+		cloned ? cloned->getMyself() : NULL
 	);
 
 	if(parent)

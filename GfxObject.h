@@ -12,10 +12,8 @@ class Container;
 
 class GfxObject {
 protected:
-	/* Accessor to the object that is needing this style.
-	 * Have to be overloaded on derived classes
-	 */
-	virtual lv_obj_t *getMyself( void ) = 0;
+	lv_obj_t 	*_obj;
+	virtual lv_obj_t *getMyself( void ){ return this->_obj; }
 
 public:
 	/* Add an external style to an object
@@ -96,6 +94,19 @@ public:
 	void AutoRealign( bool activate=true ){
 		lv_obj_set_auto_realign( this->getMyself(), activate );
 	}
+
+	/* Apply localy stored style
+	 * -> uint8_t part : which part to update (LV_OBJ_PART_MAIN)
+	 *
+	 * NOTEZ-BIEN :
+	 * 		Ignored if the derived class' getMyself() returns
+	 *		something different than NULL
+	 */
+	void applyStyle( uint8_t part=LV_OBJ_PART_MAIN ){
+		if( this->getMyself() )
+			lv_obj_add_style( this->getMyself(), part, &this->_style );
+	}
+
 
 	/* Dump object value
 	 * Output on the serial console

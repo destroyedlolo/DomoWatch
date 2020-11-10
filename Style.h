@@ -11,10 +11,6 @@ class Style {
 	lv_style_t	_style;
 
 protected:
-	/* Accessor to the object that is needing this style.
-	 * Have to be overloaded on derived classes
-	 */
-	virtual lv_obj_t *getMyself( void ) = 0;
 
 public:
 
@@ -33,37 +29,11 @@ public:
 
 	/* Copy a style to local one
 	 * -> lv_style_t *style : original style to copy from
-	 * -> bool apply : if true (default) apply immediately
-	 *
-	 * NOTEZ-BIEN :
-	 *  	apply is ignored if the derived class' getMyself() returns
-	 *  	something different than NULL
 	 */
 	void copyStyle( lv_style_t *style, bool apply=true ){
 		lv_style_copy( &(this->_style), style );
-		if( apply && this->getMyself() )
-			this->applyStyle();
 	}
 
-	/* Apply localy stored style
-	 * -> uint8_t part : which part to update (LV_OBJ_PART_MAIN)
-	 *
-	 * NOTEZ-BIEN :
-	 * 		Ignored if the derived class' getMyself() returns
-	 *		something different than NULL
-	 */
-	void applyStyle( uint8_t part=LV_OBJ_PART_MAIN ){
-		if( this->getMyself() )
-			lv_obj_add_style( this->getMyself(), part, &this->_style );
-	}
-
-		/* Set text font
-		 * -> lv_font_t *font : font to use
-		 * -> int state (default : LV_STATE_DEFAULT)
-		 */
-	void setFont( lv_font_t *font, int state=LV_STATE_DEFAULT ){
-		lv_style_set_text_font( &this->_style, state, font );
-	}
 };
 
 #endif

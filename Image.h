@@ -9,11 +9,8 @@
 #include "Container.h"
 
 class Image : virtual public Style, virtual public GfxObject {
-	lv_obj_t *_img;
 
 public:
-	lv_obj_t *getMyself( void ) { return this->_img; }
-	lv_obj_t *getImage( void ) { return this->_img; }
 
 	/* Container constructor
 	 * -> GfxObject *parent : parent object (default : NULL)
@@ -21,11 +18,11 @@ public:
 	 * -> const lv_obj_t *cloned : copy from this object (default : NULL)
 	 */
 	Image( lv_obj_t *parent=NULL, const lv_obj_t *cloned=NULL ) {
-		this->_img = lv_img_create( parent, cloned );
+		this->_obj = lv_img_create( parent, cloned );
 	}
 
 	Image( Container *parent, Container *cloned=NULL ){
-		this->_img = lv_img_create( 
+		this->_obj = lv_img_create( 
 			parent ? parent->getMyself() : NULL, 
 			cloned ? cloned->getMyself() : NULL
 		);
@@ -38,7 +35,7 @@ public:
 	 * -> const void *src : image's source
 	 */
 	void Set( const void *src ){
-		lv_img_set_src( this->_img, src );
+		lv_img_set_src( this->_obj, src );
 	}
 
 	/* recolor image's color
