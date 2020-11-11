@@ -5,7 +5,7 @@
 #ifndef TLDTHR_H
 #define TLDTHR_H
 
-#include "TileView.h"
+// #include "TileView.h"
 #include "Container.h"
 #include "Label.h"
 
@@ -23,7 +23,10 @@ public:
 	 * -> mainstyle : style to apply
 	 * -> parent, cloned : see Container
 	 */
+/*D
 	TlDateTime( TileView *parent=NULL, TileView *cloned=NULL );
+*/
+	TlDateTime( Container *parent=NULL, Container *cloned=NULL );
 
 	/* update field */
 	void updateTime( void );
@@ -32,5 +35,4 @@ public:
 	 */
 	void initAutomation( void );
 };
-
 #endif

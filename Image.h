@@ -5,13 +5,11 @@
 #ifndef IMAGE_H
 #define IMAGE_H
 
-#include "Style.h"
 #include "Container.h"
 
-class Image : virtual public Style, virtual public GfxObject {
+class Image : public GfxObject {
 
 public:
-
 	/* Container constructor
 	 * -> GfxObject *parent : parent object (default : NULL)
 	 *  	if not null, its style is copied

@@ -3,7 +3,6 @@
 *
 *	contains methods shared by all objects
 *************************************************/
-
 #include <Arduino.h>
 
 #include "GfxObject.h"

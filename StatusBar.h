@@ -1,5 +1,5 @@
 /************************************************
-*	Status bar : status icons
+*	Status bar : watch status icons
 *
 *	Technically it's a container with icons and
 *	labels inside
@@ -14,12 +14,14 @@
 #include "Image.h"
 
 class StatusBar : public Container {
+	/* Step counter */
+	Image		*stepIcon;
+	Label 		*stepCounter;
+
+	/* Battery */
 	Label 		*batPercent;
 	Image		*batIcon;
 	lv_task_t	*upd_bat_task;	// task to update battery level
-
-	Image		*stepIcon;
-	Label 		*stepCounter;
 
 	Gui::lv_icon_battery_t prev_idx;	// Previous index
 public:
@@ -48,3 +50,4 @@ public:
 	void initAutomation( void );
 };
 #endif
+

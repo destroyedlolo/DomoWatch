@@ -251,6 +251,7 @@ void setup(){
 	}
 
 	/* Execute our own GUI interface */
+
 	Serial.println("Setting up the GUI ...");
 	gui = new Gui();
 	gui->updateBatteryIcon( Gui::LV_ICON_UNKNOWN );	// need to check if we're plugged

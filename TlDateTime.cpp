@@ -17,7 +17,8 @@
 LV_FONT_DECLARE(Ubuntu_48px);
 LV_FONT_DECLARE(Ubuntu_16px);
 
-TlDateTime::TlDateTime( TileView *parent, TileView *cloned ) : 
+// TlDateTime::TlDateTime( TileView *parent, TileView *cloned ) : 
+TlDateTime::TlDateTime( Container *parent, Container *cloned ) : 
 	Container( parent, cloned ),
 	daynum( -1 )
 {
@@ -25,14 +26,16 @@ TlDateTime::TlDateTime( TileView *parent, TileView *cloned ) :
 
 		/* Container to keep it centered */
 	this->cont = new Container( this );
-	lv_style_set_bg_opa(this->cont->getStyle(), LV_OBJ_PART_MAIN, LV_OPA_80);
-	this->applyStyle();
+	this->cont->copyStyle( parent->getStyle() );
+	lv_style_set_bg_opa(this->cont->getStyle(), LV_OBJ_PART_MAIN, LV_OPA_20);
+	this->cont->applyStyle();
 	this->cont->setSize( this->getWidth(), this->getHeight()/2 );
 	this->cont->Align( LV_ALIGN_CENTER );
 
 		/* Display time */
 	this->timelabel = new Label( this->cont );
 	this->timelabel->setFont( &Ubuntu_48px );
+	this->timelabel->applyStyle();
 	this->timelabel->setText( "??:??" );
 	this->timelabel->Align( LV_ALIGN_IN_TOP_MID );
 	this->timelabel->AutoRealign();
@@ -40,14 +43,10 @@ TlDateTime::TlDateTime( TileView *parent, TileView *cloned ) :
 		/* and date */
 	this->datelabel = new Label( this->cont );
 	this->datelabel->setFont( &Ubuntu_16px );
+	this->datelabel->applyStyle();
 	this->datelabel->setText( "??.???? ????" );
 	this->datelabel->Align( LV_ALIGN_IN_BOTTOM_MID );
 	this->datelabel->AutoRealign();
-
-	/* Debug */
-	parent->dumpObj( "Parent (tv)" );
-	this->dumpObj( "Tile (cont)" );
-	this->cont->dumpObj( "SubCont" );
 }
 
 void TlDateTime::updateTime( void ){

@@ -8,21 +8,22 @@
 
 #include <lvgl/lvgl.h>
 
+#include "Style.h"
+
 class Container;
 
-class GfxObject {
+class GfxObject : public Style {
 protected:
 	lv_obj_t 	*_obj;
-	virtual lv_obj_t *getMyself( void ){ return this->_obj; }
 
 public:
-	/* Add an external style to an object
-	 * -> lv_style_t *style : new style to be added
-	 * -> uint8_t part : which part to update (LV_OBJ_PART_MAIN)
-	 */
-	void addStyle( lv_style_t *style, uint8_t part=LV_OBJ_PART_MAIN ){
-		lv_obj_add_style( this->getMyself(), part, style );
-	}
+	virtual lv_obj_t *getMyself( void ){ return this->_obj; }
+
+	/***
+	 * Position related
+	 *
+	 * Notez-bien : positions are _ALWAYS_ related to object's parent
+	 ***/
 
 	/* set position
 	 * 	lv_coord_t x,y
@@ -38,7 +39,7 @@ public:
 	void setPosXY( lv_coord_t x, lv_coord_t y ){
 		lv_obj_set_pos( this->getMyself(), x, y );
 	}
-
+	
 	/* get position
 	 */
 	lv_coord_t getX( void ){
@@ -47,6 +48,24 @@ public:
 
 	lv_coord_t getY( void ){
 		return lv_obj_get_y( this->getMyself() );
+	}
+
+	/***
+	 * Size related
+	 ***/
+
+	/* Get object's width
+	 * <- lv_coord_t : width
+	 */
+	lv_coord_t getWidth( void ){
+		return lv_obj_get_width( this->getMyself() );
+	}
+
+	/* Get object's height
+	 * <- lv_coord_t : height
+	 */
+	lv_coord_t getHeight( void ){
+		return lv_obj_get_height( this->getMyself() );
 	}
 
 	/* Set object's size
@@ -64,19 +83,10 @@ public:
 		);
 	}
 
-	/* Get object's width
-	 * <- lv_coord_t : width
-	 */
-	lv_coord_t getWidth( void ){
-		return lv_obj_get_width( this->getMyself() );
-	}
 
-	/* Get object's height
-	 * <- lv_coord_t : height
-	 */
-	lv_coord_t getHeight( void ){
-		return lv_obj_get_height( this->getMyself() );
-	}
+	/***
+	 * Align related
+	 ***/
 
 	/* Set Align attribut
 	 * -> lv_align_t align : type of alignment
@@ -95,6 +105,11 @@ public:
 		lv_obj_set_auto_realign( this->getMyself(), activate );
 	}
 
+
+	/***
+	 * Style related
+	 ***/
+
 	/* Apply localy stored style
 	 * -> uint8_t part : which part to update (LV_OBJ_PART_MAIN)
 	 *
@@ -107,6 +122,10 @@ public:
 			lv_obj_add_style( this->getMyself(), part, &this->_style );
 	}
 
+
+	/***
+	 * Misc
+	 ***/
 
 	/* Dump object value
 	 * Output on the serial console

@@ -10,40 +10,39 @@
 
 #include "Style.h"
 #include "Container.h"
-#include "TileView.h"
+#include "TlDateTime.h"
 
-// #include "StatusBar.h"
 class StatusBar;
 
-#include "TlDateTime.h"
-#include "TlSettings.h"
-
 class Gui : 
-	virtual public Style 	// default object style
+	public Style 	// default object style
 {
-	lv_obj_t *_background;
-	StatusBar *_statusbar;
-	Container *_maincont;	// main controler
-	TileView *_maintv;		// main tileview
+	lv_obj_t	*_background;	// Background image
+	StatusBar	*_statusbar;
+	Container	*_workarea;		// container of the work area (all but the status bar)
 
 	/* Tiles */
 	TlDateTime *_tile_datetime;
-	TlSettings *_tile_settings;
 
 public:
-	virtual lv_obj_t *getMyself( void ) { return NULL; }
 
+		/* Battery icons */
 	enum lv_icon_battery_t {
+			/* Icons ID */
 		LV_ICON_BAT_EMPTY,
 		LV_ICON_BAT_1,
 		LV_ICON_BAT_2,
 		LV_ICON_BAT_3,
 		LV_ICON_BAT_FULL,
-		LV_ICON_CHARGE,			/* Plugged */
-		LV_ICON_CALCULATION,	/* calculated against charging percentage */
-		LV_ICON_UNKNOWN			/* check first of plugged */
+		LV_ICON_CHARGE,			// Plugged
+
+			/* Fake id : some calculation needed */
+		LV_ICON_CALCULATION,	// calculated against charging percentage
+		LV_ICON_UNKNOWN			// check first of plugged
 	};
 
+	/* Build the GUI
+	 */
 	Gui( void );
 
 	/* Launch automation tasks.

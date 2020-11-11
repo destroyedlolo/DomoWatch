@@ -5,12 +5,11 @@
 #ifndef CONT_H
 #define CONT_H
 
-#include "Style.h"
 #include "GfxObject.h"
 
 class TileView;
 
-class Container : virtual public Style, virtual public GfxObject {
+class Container : public GfxObject {
 public:
 
 	/* Container constructor
@@ -22,7 +21,9 @@ public:
 	}
 
 	Container( Container *parent, Container *cloned=NULL );
+/*D
 	Container( TileView *parent, TileView *cloned=NULL );
+*/
 };
 
 #endif

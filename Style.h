@@ -8,9 +8,9 @@
 #include <lvgl/lvgl.h>
 
 class Style {
-	lv_style_t	_style;
 
 protected:
+	lv_style_t	_style;
 
 public:
 
@@ -32,6 +32,14 @@ public:
 	 */
 	void copyStyle( lv_style_t *style, bool apply=true ){
 		lv_style_copy( &(this->_style), style );
+	}
+
+	/* Set text font
+	 * -> lv_font_t *font : font to use
+	 * -> int state (default : LV_STATE_DEFAULT)
+	 */
+	void setFont( lv_font_t *font, int state=LV_STATE_DEFAULT ){
+		lv_style_set_text_font( &this->_style, state, font );
 	}
 
 };

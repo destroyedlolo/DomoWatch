@@ -5,12 +5,10 @@
 #ifndef LABEL_H
 #define LABEL_H
 
-#include "Style.h"
 #include "Container.h"
 
-class Label : virtual public Style, virtual public GfxObject {
+class Label : public GfxObject {
 public:
-
 	/* Container constructor
 	 * -> Container *parent : parent object (default : NULL)
 	 *  	if not null, its style is copied
@@ -34,5 +32,4 @@ public:
 	}
 
 };
-
 #endif
