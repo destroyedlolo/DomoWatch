@@ -22,7 +22,9 @@ TlDateTime::TlDateTime( Container *parent, Container *cloned ) :
 	Container( parent, cloned ),
 	daynum( -1 )
 {
+
 	this->setSize( parent );
+
 
 		/* Container to keep it centered */
 	this->cont = new Container( this );
@@ -47,6 +49,10 @@ TlDateTime::TlDateTime( Container *parent, Container *cloned ) :
 	this->datelabel->setText( "??.???? ????" );
 	this->datelabel->Align( LV_ALIGN_IN_BOTTOM_MID );
 	this->datelabel->AutoRealign();
+
+this->dumpObj("*** Tile");
+this->cont->dumpObj("*** Cont");
+this->timelabel->dumpObj("*** time");
 }
 
 void TlDateTime::updateTime( void ){

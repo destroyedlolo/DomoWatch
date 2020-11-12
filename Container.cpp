@@ -11,8 +11,10 @@ Container::Container( Container *parent, Container *cloned ){
 		cloned ? cloned->getMyself() : NULL
 	);
 
-	if(parent)
+	if(parent){
+		parent->dumpObj("*** parent");
 		this->copyStyle( parent->getStyle() );
+	}
 }
 
 /*D

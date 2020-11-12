@@ -31,7 +31,7 @@ public:
 	 * -> lv_style_t *style : original style to copy from
 	 */
 	void copyStyle( lv_style_t *style, bool apply=true ){
-		lv_style_copy( &(this->_style), style );
+		lv_style_copy( &this->_style, style );
 	}
 
 	/* Set text font
