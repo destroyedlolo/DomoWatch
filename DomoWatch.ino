@@ -29,12 +29,11 @@
 #include <freertos/task.h>
 #include <freertos/timers.h>
 #include <freertos/queue.h>
-#include <soc/rtc.h>
-#include <rom/rtc.h>
 
-// #include "esp_wifi.h"
-#include <esp_sleep.h>
-#include <esp_task_wdt.h>
+#include <esp_task_wdt.h>	// Watchdog
+
+#include <soc/rtc.h>	// RTC interface
+#include <rom/rtc.h>	// RTC wakeup code
 
 #include "Version.h"
 #include "Gui.h"
@@ -95,9 +94,11 @@ void wakeup( void ){
 	ttgo->startLvglTick();
 	ttgo->displayWakeup();
 	ttgo->rtc->syncToSystem();
+
 	gui->updateStepCounter(ttgo->bma->getCounter());
 	gui->updateBatteryLevel();
 	gui->updateBatteryIcon( Gui::LV_ICON_UNKNOWN );
+
 	lv_disp_trig_activity(NULL);
 	ttgo->openBL();
 	ttgo->bma->enableStepCountInterrupt();
@@ -159,23 +160,25 @@ void setup(){
 		Serial.println("Who know ...");
 	}
 
-	// Initialize time zone (France)
-	setenv("TZ", "GMT0BST,M3.5.0/01,M10.5.0/02",1);
+	/* Initialize time zone (France) */
+	setenv("TZ", "GMT0BST,M3.5.0/01,M10.5.0/02",1);	// France
 	tzset();
 
-	//Create a program that allows the required message objects and group flags
+	/* Create a program that allows the required message objects 
+	 * and group flags
+	 */
 	g_event_queue_handle = xQueueCreate(20, sizeof(uint8_t));
 	g_event_group = xEventGroupCreate();
 	isr_group = xEventGroupCreate();
 
-	//Initialize TWatch
+	/* handling the watch */
 	ttgo = TTGOClass::getWatch();	
-	ttgo->begin();
+	ttgo->begin();	// start peripherals
 
-	//Initialize lvgl
+	/* starting with LVGL */
 	ttgo->lvgl_begin();
 
-
+	/* Power */
 	Serial.println("Setting up interrupts ...");
 
 	// Turn on the IRQ used
@@ -230,8 +233,8 @@ void setup(){
 	}, FALLING);
 
 	
-
 	/* Initialise clock */
+	Serial.println("Reading RTC ...");
 	ttgo->rtc->check();	// Check if the clock is valid or fallback to compilation time
 	ttgo->rtc->syncToSystem(); //Synchronize time to system time
 
@@ -247,9 +250,9 @@ void setup(){
 		Serial.println(buf);
 	}
 
-	Serial.println("Starting up GUI ...");
-
 	/* Execute our own GUI interface */
+
+	Serial.println("Setting up the GUI ...");
 	gui = new Gui();
 	gui->updateBatteryIcon( Gui::LV_ICON_UNKNOWN );	// need to check if we're plugged
 
@@ -257,10 +260,10 @@ void setup(){
 
 	ttgo->openBL(); // Everything done, turn on the backlight
 
-	Serial.printf("Total heap: %d\r\n", ESP.getHeapSize());
-    Serial.printf("Free heap: %d\r\n", ESP.getFreeHeap());
-    Serial.printf("Total PSRAM: %d\r\n", ESP.getPsramSize());
-    Serial.printf("Free PSRAM: %d\r\n", ESP.getFreePsram());
+	Serial.printf("Total heap: %d\n", ESP.getHeapSize());
+    Serial.printf("Free heap: %d\n", ESP.getFreeHeap());
+    Serial.printf("Total PSRAM: %d\n", ESP.getPsramSize());
+    Serial.printf("Free PSRAM: %d\n", ESP.getFreePsram());
 
 	Serial.println("Initialisation completed");
 }
