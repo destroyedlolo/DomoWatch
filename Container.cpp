@@ -12,8 +12,8 @@ Container::Container( Container *parent, Container *cloned ){
 	);
 
 	if(parent){
-		parent->dumpObj("*** parent");
 		this->copyStyle( parent->getStyle() );
+		this->applyStyle();
 	}
 }
 

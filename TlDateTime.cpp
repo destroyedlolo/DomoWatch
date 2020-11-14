@@ -29,7 +29,6 @@ TlDateTime::TlDateTime( Container *parent, Container *cloned ) :
 		/* Container to keep it centered */
 	this->cont = new Container( this );
 	this->cont->copyStyle( parent->getStyle() );
-	lv_style_set_bg_opa(this->cont->getStyle(), LV_OBJ_PART_MAIN, LV_OPA_20);
 	this->cont->applyStyle();
 	this->cont->setSize( this->getWidth(), this->getHeight()/2 );
 	this->cont->Align( LV_ALIGN_CENTER );
@@ -49,10 +48,6 @@ TlDateTime::TlDateTime( Container *parent, Container *cloned ) :
 	this->datelabel->setText( "??.???? ????" );
 	this->datelabel->Align( LV_ALIGN_IN_BOTTOM_MID );
 	this->datelabel->AutoRealign();
-
-this->dumpObj("*** Tile");
-this->cont->dumpObj("*** Cont");
-this->timelabel->dumpObj("*** time");
 }
 
 void TlDateTime::updateTime( void ){

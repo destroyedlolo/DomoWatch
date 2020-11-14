@@ -5,7 +5,7 @@
 #include "Gui.h"
 #include "StatusBar.h"
 
-#define BACKGROUND bg3	// Which background to use
+#define BACKGROUND bg2	// Which background to use
 
 	/*****
 	 * objects
@@ -56,10 +56,10 @@ Gui::Gui( void ){
 	this->_workarea = new Container( lv_scr_act() );
 	this->_workarea->setSize( LV_HOR_RES, LV_VER_RES - BARHEIGHT );	// Keep some space for the statusbar
 	this->_workarea->copyStyle( this->getStyle() );
-	lv_style_set_bg_opa( this->_workarea->getStyle(), LV_OBJ_PART_MAIN, LV_OPA_20 );
+//	lv_style_set_bg_opa( this->_workarea->getStyle(), LV_OBJ_PART_MAIN, LV_OPA_20 );
 	this->_workarea->Align( LV_ALIGN_OUT_BOTTOM_MID, this->_statusbar);
 	this->_workarea->applyStyle();
-this->_workarea->dumpObj("*** WorkArea");
+
 		/***
 		 * Define tiles
 		 ***/
@@ -86,5 +86,5 @@ void Gui::updateBatteryLevel( void ){
 
 void Gui::initAutomation( void ){
 	this->_statusbar->initAutomation();
-//	this->_tile_datetime->initAutomation();
+	this->_tile_datetime->initAutomation();
 }

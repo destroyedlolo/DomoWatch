@@ -20,8 +20,10 @@ public:
 			cloned ? cloned->getMyself() : NULL
 		);
 
-		if(parent)
+		if(parent){
 			this->copyStyle( parent->getStyle() );
+			this->applyStyle();
+		}
 	}
 
 		/* Set text

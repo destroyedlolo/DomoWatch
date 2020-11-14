@@ -5,6 +5,8 @@
 #ifndef CONT_H
 #define CONT_H
 
+#include <Arduino.h>
+
 #include "GfxObject.h"
 
 class TileView;
@@ -18,6 +20,7 @@ public:
 	 */
 	Container( lv_obj_t *parent=NULL, const lv_obj_t *cloned=NULL ){
 		this->_obj = lv_cont_create( parent, cloned );
+Serial.println("*def cnt*");
 	}
 
 	Container( Container *parent, Container *cloned=NULL );
