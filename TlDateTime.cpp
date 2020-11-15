@@ -17,14 +17,10 @@
 LV_FONT_DECLARE(Ubuntu_48px);
 LV_FONT_DECLARE(Ubuntu_16px);
 
-// TlDateTime::TlDateTime( TileView *parent, TileView *cloned ) : 
-TlDateTime::TlDateTime( Container *parent, Container *cloned ) : 
+TlDateTime::TlDateTime( TileView *parent, TileView *cloned ) : 
 	Container( parent, cloned ),
 	daynum( -1 )
 {
-
-	this->setSize( parent );
-
 
 		/* Container to keep it centered */
 	this->cont = new Container( this );
@@ -37,7 +33,7 @@ TlDateTime::TlDateTime( Container *parent, Container *cloned ) :
 	this->timelabel = new Label( this->cont );
 	this->timelabel->setFont( &Ubuntu_48px );
 	this->timelabel->applyStyle();
-	this->timelabel->setText( "??:??" );
+	this->timelabel->setText( "??:??:??" );
 	this->timelabel->Align( LV_ALIGN_IN_TOP_MID );
 	this->timelabel->AutoRealign();
 

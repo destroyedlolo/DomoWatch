@@ -20,13 +20,10 @@ public:
 	 */
 	Container( lv_obj_t *parent=NULL, const lv_obj_t *cloned=NULL ){
 		this->_obj = lv_cont_create( parent, cloned );
-Serial.println("*def cnt*");
 	}
 
 	Container( Container *parent, Container *cloned=NULL );
-/*D
 	Container( TileView *parent, TileView *cloned=NULL );
-*/
 };
 
 #endif

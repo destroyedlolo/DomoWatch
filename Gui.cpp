@@ -60,10 +60,31 @@ Gui::Gui( void ){
 	this->_workarea->Align( LV_ALIGN_OUT_BOTTOM_MID, this->_statusbar);
 	this->_workarea->applyStyle();
 
+		
+		/***
+		 * Tileview
+		 ***/
+	this->_tileview = new TileView( this->_workarea );
+	this->_tileview->setEdgeFlash( true );
+
+		/***
+		 * And allowed movements
+		 ***/
+	static lv_point_t valid_pos[] = { {0,0}, {1,0} };	// define tiles' position
+	this->_tileview->setValidPositions( valid_pos, 2 );	// apply it
+	
 		/***
 		 * Define tiles
 		 ***/
-	this->_tile_datetime = new TlDateTime( this->_workarea );
+		 // main tile placed at 0,0
+	this->_tile_datetime = new TlDateTime( this->_tileview, this->_tileview );
+	this->_tileview->AddTile( this->_tile_datetime );	// Add this tile
+
+		// settings one, placed on the right
+	this->_tile_settings = new TlSettings( this->_tileview, this->_tileview );
+	this->_tile_settings->setPosXY( LV_HOR_RES, 0 );	// place it on the right
+	this->_tileview->AddTile( this->_tile_settings );	// Add this tile
+
 
 		/* The GUI is initialised,
 		 * ready to launch automation

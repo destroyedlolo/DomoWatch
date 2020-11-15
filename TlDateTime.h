@@ -5,7 +5,7 @@
 #ifndef TLDTHR_H
 #define TLDTHR_H
 
-// #include "TileView.h"
+#include "TileView.h"
 #include "Container.h"
 #include "Label.h"
 
@@ -20,13 +20,9 @@ class TlDateTime : public Container {
 	int 		daynum;		// number of the day of the year
 public:
 	/* DateTime tile constructor
-	 * -> mainstyle : style to apply
 	 * -> parent, cloned : see Container
 	 */
-/*D
 	TlDateTime( TileView *parent=NULL, TileView *cloned=NULL );
-*/
-	TlDateTime( Container *parent=NULL, Container *cloned=NULL );
 
 	/* update field */
 	void updateTime( void );

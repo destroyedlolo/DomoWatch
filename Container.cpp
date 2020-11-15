@@ -3,7 +3,7 @@
 *************************************************/
 
 #include "Container.h"
-// #include "TileView.h"
+#include "TileView.h"
 
 Container::Container( Container *parent, Container *cloned ){
 	this->_obj = lv_cont_create( 
@@ -17,7 +17,6 @@ Container::Container( Container *parent, Container *cloned ){
 	}
 }
 
-/*D
 Container::Container( TileView *parent, TileView *cloned ){
 	this->_obj = lv_cont_create( 
 		parent->getMyself(),
@@ -27,4 +26,3 @@ Container::Container( TileView *parent, TileView *cloned ){
 	if(parent)
 		this->copyStyle( parent->getStyle() );
 }
-*/
