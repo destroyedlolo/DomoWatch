@@ -56,7 +56,7 @@ Gui::Gui( void ){
 	this->_workarea = new Container( lv_scr_act() );
 	this->_workarea->setSize( LV_HOR_RES, LV_VER_RES - BARHEIGHT );	// Keep some space for the statusbar
 	this->_workarea->copyStyle( this->getStyle() );
-//	lv_style_set_bg_opa( this->_workarea->getStyle(), LV_OBJ_PART_MAIN, LV_OPA_20 );
+//	lv_style_set_bg_opa( this->_workarea->getStyle(), LV_OBJ_PART_MAIN, LV_OPA_10 );
 	this->_workarea->Align( LV_ALIGN_OUT_BOTTOM_MID, this->_statusbar);
 	this->_workarea->applyStyle();
 
@@ -76,15 +76,17 @@ Gui::Gui( void ){
 		/***
 		 * Define tiles
 		 ***/
-		 // main tile placed at 0,0
+		 // main tile placed at 1,0
 	this->_tile_datetime = new TlDateTime( this->_tileview, this->_tileview );
+	this->_tile_datetime->setPosXY( LV_HOR_RES, 0 );	// place it on the right
 	this->_tileview->AddTile( this->_tile_datetime );	// Add this tile
 
-		// settings one, placed on the right
-	this->_tile_settings = new TlSettings( this->_tileview, this->_tileview );
-	this->_tile_settings->setPosXY( LV_HOR_RES, 0 );	// place it on the right
-	this->_tileview->AddTile( this->_tile_settings );	// Add this tile
+		// settings one, placed on the left
+	this->_tile_status = new TlStatus( this->_tileview, this->_tileview );
+	this->_tileview->AddTile( this->_tile_status );	// Add this tile
 
+		// date and time is the default tile
+	this->_tileview->setActiveTile( 1,0, LV_ANIM_OFF );
 
 		/* The GUI is initialised,
 		 * ready to launch automation
@@ -108,4 +110,5 @@ void Gui::updateBatteryLevel( void ){
 void Gui::initAutomation( void ){
 	this->_statusbar->initAutomation();
 	this->_tile_datetime->initAutomation();
+	this->_tile_status->initAutomation();
 }

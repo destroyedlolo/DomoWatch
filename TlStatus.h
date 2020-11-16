@@ -1,5 +1,5 @@
 /************************************************
-*	Settings tile
+*	Status tile
 *************************************************/
 
 #ifndef TLSET_H
@@ -9,14 +9,24 @@
 #include "Container.h"
 #include "Label.h"
 
-class TlSettings : public Container {
+class TlStatus : public Container {
+	Label		*_battery;
 	Label		*_version;
+
+	lv_task_t	*upd_task;	// Task to update the Gui
 
 public:
 	/* Settings' tile constructor
 	 * -> parent, cloned : see Container
 	 */
-	TlSettings( TileView *parent=NULL, TileView *cloned=NULL );
+	TlStatus( TileView *parent=NULL, TileView *cloned=NULL );
+
+	/* update field */
+	void updatefields( void );
+
+	/* Initialise automation
+	 */
+	void initAutomation( void );
 };
 
 #endif

@@ -254,7 +254,9 @@ void setup(){
 
 	Serial.println("Setting up the GUI ...");
 	gui = new Gui();
-	gui->updateBatteryIcon( Gui::LV_ICON_UNKNOWN );	// need to check if we're plugged
+
+	gui->updateBatteryLevel();	// Initial values
+	gui->updateBatteryIcon( Gui::LV_ICON_UNKNOWN );
 
 	lv_disp_trig_activity(NULL); // Clear lvgl activity counter
 

@@ -33,5 +33,12 @@ public:
 		lv_label_set_text( this->getMyself(), text );
 	}
 
+		/* Set long text mode
+		 * -> lv_label_long_mode_t mode
+		 *  see : https://docs.lvgl.io/latest/en/html/widgets/label.html
+		 */
+	void SetLongTextMode( lv_label_long_mode_t mode ){
+		lv_label_set_long_mode( this->getMyself(), mode );
+	}
 };
 #endif
