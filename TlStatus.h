@@ -13,6 +13,9 @@ class TlStatus : public Container {
 	Label		*_battery;
 	Label		*_version;
 
+	Label		*_ram;
+	Label		*_PSram;
+
 	lv_task_t	*upd_task;	// Task to update the Gui
 
 public:
@@ -27,6 +30,11 @@ public:
 	/* Initialise automation
 	 */
 	void initAutomation( void );
+
+private:
+	void updAXP( void );
+	void updRam( void );
+	void updPSRam( void );
 };
 
 #endif
