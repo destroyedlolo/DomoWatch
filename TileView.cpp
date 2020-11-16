@@ -10,6 +10,7 @@ TileView::TileView( Container *parent, Container *cloned ){
 		cloned ? cloned->getMyself() : NULL
 	);
 
+	this->setSize( parent );
 	this->copyStyle( parent->getStyle() );	// Copy style from parent
 	this->applyStyle();
 
