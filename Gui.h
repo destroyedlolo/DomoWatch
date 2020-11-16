@@ -10,7 +10,9 @@
 
 #include "Style.h"
 #include "Container.h"
+#include "TileView.h"
 #include "TlDateTime.h"
+#include "TlStatus.h"
 
 class StatusBar;
 
@@ -20,9 +22,11 @@ class Gui :
 	lv_obj_t	*_background;	// Background image
 	StatusBar	*_statusbar;
 	Container	*_workarea;		// container of the work area (all but the status bar)
+	TileView	*_tileview;
 
 	/* Tiles */
-	TlDateTime *_tile_datetime;
+	TlDateTime	*_tile_datetime;
+	TlStatus	*_tile_status;
 
 public:
 

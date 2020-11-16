@@ -83,6 +83,13 @@ public:
 		);
 	}
 
+	void setWidth( lv_coord_t width ){
+		lv_obj_set_width( this->getMyself(), width );
+	}
+
+	void setHeight( lv_coord_t height ){
+		lv_obj_set_height( this->getMyself(), height );
+	}
 
 	/***
 	 * Align related
