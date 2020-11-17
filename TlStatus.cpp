@@ -23,15 +23,34 @@ TlStatus::TlStatus( TileView *parent, TileView *cloned ) :
 	this->_ram = new Label( this );
 	this->_ram->setFont( &Ubuntu_16px );
 	this->_ram->SetLongTextMode( LV_LABEL_LONG_SROLL_CIRC );
-	this->_ram->setWidth( parent->getWidth()/2 );
+	this->_ram->setWidth( parent->getWidth()/2 - 5 );
 	this->_ram->Align( LV_ALIGN_OUT_BOTTOM_LEFT, this->_battery, 0,10 );
+
+	this->_ramg = new BarGauge( this, NULL, 0, ESP.getHeapSize() );
+	lv_style_set_radius( this->_ramg->getStyle(), LV_OBJ_PART_MAIN, 8 );	// set custom style
+	lv_style_set_bg_color( this->_ramg->getStyle(), LV_OBJ_PART_MAIN, LV_COLOR_BLUE );
+	lv_style_set_bg_opa( this->_ramg->getStyle(), LV_OBJ_PART_MAIN, LV_OPA_100 );
+	lv_style_set_border_width( this->_ramg->getStyle(), LV_OBJ_PART_MAIN, 3 );
+	lv_style_set_text_color( this->_ramg->getStyle(), LV_OBJ_PART_MAIN, LV_COLOR_WHITE );
+	this->_ramg->applyStyle();
+	this->_ramg->setSize( parent->getWidth()/2 -10, 16 );
+	this->_ramg->setPosXY( parent->getWidth()/2 +5, this->_ram->getY() );
+//	this->_ramg->Align( LV_ALIGN_OUT_RIGHT_TOP, this->_ram );
 	this->updRam();
 
 	this->_PSram = new Label( this );
 	this->_PSram->setFont( &Ubuntu_16px );
 	this->_PSram->SetLongTextMode( LV_LABEL_LONG_SROLL_CIRC );
-	this->_PSram->setWidth( parent->getWidth()/2 );
+	this->_PSram->setWidth( parent->getWidth()/2 - 5 );
 	this->_PSram->Align( LV_ALIGN_OUT_BOTTOM_LEFT, this->_ram );
+
+	this->_PSramg = new BarGauge( this, NULL, 0, ESP.getPsramSize() );
+	this->_PSramg->copyStyle( this->_ramg->getStyle() );	// Apply the same style
+	this->_PSramg->applyStyle();
+	this->_PSramg->setSize( parent->getWidth()/2 -10, 16 );
+	this->_PSramg->setPosXY( parent->getWidth()/2 +5, this->_PSram->getY() );
+//	this->_PSramg->Align( LV_ALIGN_OUT_RIGHT_TOP, this->_PSram );
+
 	this->updPSRam();
 
 		/* Display version */
@@ -40,8 +59,6 @@ TlStatus::TlStatus( TileView *parent, TileView *cloned ) :
 	this->_version->setText( "DomoWatch " VERSION_H );
 	this->_version->Align( LV_ALIGN_IN_BOTTOM_MID );
 	this->_version->AutoRealign();
-
-	this->updatefields();	// Tile built, initial fields update
 }
 
 void TlStatus::updAXP( void ){
@@ -79,6 +96,7 @@ void TlStatus::updRam( void ){
 	val += "%)";
 
 	this->_ram->setText( val.c_str() );
+	this->_ramg->setValue( ESP.getHeapSize() - ESP.getFreeHeap() );
 }
 
 void TlStatus::updPSRam( void ){
@@ -91,6 +109,7 @@ void TlStatus::updPSRam( void ){
 	val += "%)";
 
 	this->_PSram->setText( val.c_str() );
+	this->_PSramg->setValue( ESP.getPsramSize() - ESP.getFreePsram() );
 }
 
 void TlStatus::updatefields( void ){
