@@ -41,7 +41,7 @@ public:
 	 * -> lv_anim_enable_t anim : LV_ANIM_ON (default) / LV_ANIM_OFF
 	 */
 	void setValue( int16_t val, lv_anim_enable_t anim=LV_ANIM_ON ){
-		lv_bar_set_start_value( this->_obj, val, anim );
+		lv_bar_set_value( this->_obj, val, anim );
 	}
 
 	/* Set the anim time
