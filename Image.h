@@ -9,8 +9,17 @@
 
 class Image : public GfxObject {
 
+protected:
+	/* internal image constructor
+	 * it should be ONLY used when the object is initialised afterward
+	 * like within ClKImage otherwise ... Guru
+	 */
+	Image(){
+		this->_obj = NULL;
+	}
+
 public:
-	/* Container constructor
+	/* Image constructor
 	 * -> GfxObject *parent : parent object (default : NULL)
 	 *  	if not null, its style is copied
 	 * -> const lv_obj_t *cloned : copy from this object (default : NULL)
