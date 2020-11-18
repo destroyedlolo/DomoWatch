@@ -8,10 +8,16 @@
 #include "TileView.h"
 #include "Container.h"
 #include "Label.h"
+#include "BarGauge.h"
 
 class TlStatus : public Container {
 	Label		*_battery;
 	Label		*_version;
+
+	Label		*_ram;
+	BarGauge	*_ramg;
+	Label		*_PSram;
+	BarGauge	*_PSramg;
 
 	lv_task_t	*upd_task;	// Task to update the Gui
 
@@ -27,6 +33,11 @@ public:
 	/* Initialise automation
 	 */
 	void initAutomation( void );
+
+private:
+	void updAXP( void );
+	void updRam( void );
+	void updPSRam( void );
 };
 
 #endif

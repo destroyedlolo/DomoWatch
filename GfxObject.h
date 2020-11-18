@@ -11,6 +11,7 @@
 #include "Style.h"
 
 class Container;
+class Label;
 
 class GfxObject : public Style {
 protected:
@@ -104,6 +105,7 @@ public:
 		lv_obj_align( this->getMyself(), base, align, x_mod, y_mod );
 	}
 	void Align( lv_align_t align, Container *base, lv_coord_t x_mod=0, lv_coord_t y_mod=0);
+	void Align( lv_align_t align, Label *base, lv_coord_t x_mod=0, lv_coord_t y_mod=0);
 
 	/* Set Auto-Realign attribut
 	 * -> bool activate : if true activate, desactivate otherwise (default: true)

@@ -30,7 +30,7 @@ public:
 	/* Copy a style to local one
 	 * -> lv_style_t *style : original style to copy from
 	 */
-	void copyStyle( lv_style_t *style, bool apply=true ){
+	void copyStyle( lv_style_t *style ){
 		lv_style_copy( &this->_style, style );
 	}
 

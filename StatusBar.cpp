@@ -10,7 +10,7 @@ StatusBar::StatusBar( lv_style_t *mainstyle, lv_obj_t *parent, const lv_obj_t *c
 	Container( parent, cloned ),
 	prev_idx( Gui::LV_ICON_UNKNOWN )
 {
-	this->copyStyle( mainstyle, false );	// Copy gui style
+	this->copyStyle( mainstyle );	// Copy gui style
 
 		/* Customize style */
 	lv_style_set_bg_opa(this->getStyle(), LV_OBJ_PART_MAIN, LV_OPA_20);
