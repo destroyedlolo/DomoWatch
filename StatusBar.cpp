@@ -11,16 +11,25 @@ StatusBar::StatusBar( lv_style_t *mainstyle, lv_obj_t *parent, const lv_obj_t *c
 {
 	this->copyStyle( mainstyle );	// Copy gui style
 
-		/* Customize style */
+		/***
+		 * Customize style of the bar
+		 ***/
+
 	lv_style_set_bg_opa(this->getStyle(), LV_OBJ_PART_MAIN, LV_OPA_20);
 	this->setSize( LV_HOR_RES, BARHEIGHT );
 	this->applyStyle();
 
-		/* Step counter related */
+
+		/***
+		 * Step counter related 
+		 ***/
+
+		/* Create of button above step counter to reset it */
 	this->stepButton = new Button( this );
-	this->stepButton->setHeight( BARHEIGHT );
-	this->stepButton->setFit( LV_FIT_NONE, LV_FIT_TIGHT );
-	this->stepButton->Align( LV_ALIGN_IN_LEFT_MID );
+//	this->stepButton->setHeight( BARHEIGHT );
+	this->stepButton->setLayout( LV_LAYOUT_ROW_MID );	// child are horizontally aligned
+	this->stepButton->setFit( LV_FIT_TIGHT );	// Its size is the one of it's child
+	this->stepButton->Align( LV_ALIGN_IN_LEFT_MID );	// it is itself aligned on the left
 	lv_style_set_bg_opa( this->stepButton->getStyle(), LV_OBJ_PART_MAIN, LV_OPA_0 );
 	this->stepButton->applyStyle();
 /* Needed ?
@@ -28,24 +37,28 @@ StatusBar::StatusBar( lv_style_t *mainstyle, lv_obj_t *parent, const lv_obj_t *c
 	lv_btn_set_style( this->_btn, LV_BTN_STYLE_PR, &this->_transp_style);
 */
 
+		/* Only an image of a foot */
 	this->stepIcon = new Image( this->stepButton );
 	this->stepIcon->Set( &foot_16px );
-//	this->stepIcon->Align( LV_ALIGN_IN_LEFT_MID );
 	this->stepIcon->setClickable( false );	// Pass click to the parent
 
 	this->stepCounter = new Label( this->stepButton );
-	this->stepCounter->Align( LV_ALIGN_OUT_RIGHT_MID, this->stepIcon->getMyself(), 5 );
 	this->stepCounter->setText( "0" );
 	this->stepCounter->AutoRealign();
 	this->stepCounter->setClickable( false );	// Pass click to the parent
 
-		/* Battery related */
-	this->batPercent = new Label( this );
+		/***
+		 * Battery related
+		 *
+		 * No need for a button around as no action is possible
+		 * so using "classical" alignment
+		 ***/
+	this->batPercent = new Label( this );	// Battery value
 	this->batPercent->setText( "100%" );
 	this->batPercent->Align( LV_ALIGN_IN_RIGHT_MID );
 	this->batPercent->AutoRealign();
 
-	this->batIcon = new Image( this );
+	this->batIcon = new Image( this );		// corresponding icon
 	this->batIcon->Set( LV_SYMBOL_BATTERY_FULL );
 	this->batIcon->Align( LV_ALIGN_OUT_LEFT_MID,  this->batPercent->getMyself(), -5);
 	this->batPercent->AutoRealign();

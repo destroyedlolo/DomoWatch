@@ -20,6 +20,13 @@ public:
 	Button( Container *parent, Container *cloned=NULL );
 	Button( StatusBar *parent, StatusBar *cloned=NULL );
 
+	/* Set layout policy
+	 * lv_layout_t layout
+	 */
+	void setLayout( lv_layout_t layout ){
+		lv_btn_set_layout( this->getMyself(), layout );
+	}
+
 	/* Set the fit policy
 	 *	-> lv_fit_t all : policy in all directions
 	 *	-> lv_fit_t hor,ver
