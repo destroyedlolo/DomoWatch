@@ -20,9 +20,9 @@ protected:
 
 public:
 	/* Image constructor
-	 * -> GfxObject *parent : parent object (default : NULL)
+	 * -> Container *parent : parent object (default : NULL)
 	 *  	if not null, its style is copied
-	 * -> const lv_obj_t *cloned : copy from this object (default : NULL)
+	 * -> const Container *cloned : copy from this object (default : NULL)
 	 */
 	Image( lv_obj_t *parent=NULL, const lv_obj_t *cloned=NULL ) {
 		this->_obj = lv_img_create( parent, cloned );
