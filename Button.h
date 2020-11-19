@@ -9,24 +9,16 @@
 
 #include "Container.h"
 
-class Button : public Container {
+class StatusBar;
 
+class Button : public Container {
 public:
 	/* ClkImage constructor 
 	 *	-> Container *parent : parent object (default : NULL)
 	 *  	if not null, its style is copied
 	 */
-	Button( Container *parent, Container *cloned ){
-		this->_obj = lv_btn_create( 
-			parent->getMyself(),
-			cloned ? cloned->getMyself() : NULL
-		);
-
-		if(parent){
-			this->copyStyle( parent->getStyle() );
-			this->applyStyle();
-		}
-	}
+	Button( Container *parent, Container *cloned=NULL );
+	Button( StatusBar *parent, StatusBar *cloned=NULL );
 
 	/* Set the fit policy
 	 *	-> lv_fit_t all : policy in all directions

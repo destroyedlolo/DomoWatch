@@ -12,9 +12,11 @@
 #include "Container.h"
 #include "Label.h"
 #include "Image.h"
+#include "Button.h"
 
 class StatusBar : public Container {
 	/* Step counter */
+	Button		*stepButton;
 	Image		*stepIcon;
 	Label 		*stepCounter;
 

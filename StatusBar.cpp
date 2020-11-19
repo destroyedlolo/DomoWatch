@@ -17,14 +17,27 @@ StatusBar::StatusBar( lv_style_t *mainstyle, lv_obj_t *parent, const lv_obj_t *c
 	this->applyStyle();
 
 		/* Step counter related */
-	this->stepIcon = new Image( this );
-	this->stepIcon->Set( &foot_16px );
-	this->stepIcon->Align( LV_ALIGN_IN_LEFT_MID );
+	this->stepButton = new Button( this );
+	this->stepButton->setHeight( BARHEIGHT );
+	this->stepButton->setFit( LV_FIT_NONE, LV_FIT_TIGHT );
+	this->stepButton->Align( LV_ALIGN_IN_LEFT_MID );
+	lv_style_set_bg_opa( this->stepButton->getStyle(), LV_OBJ_PART_MAIN, LV_OPA_0 );
+	this->stepButton->applyStyle();
+/* Needed ?
+	lv_btn_set_style( this->_btn, LV_BTN_STYLE_REL, &this->_transp_style);
+	lv_btn_set_style( this->_btn, LV_BTN_STYLE_PR, &this->_transp_style);
+*/
 
-	this->stepCounter = new Label( this );
+	this->stepIcon = new Image( this->stepButton );
+	this->stepIcon->Set( &foot_16px );
+//	this->stepIcon->Align( LV_ALIGN_IN_LEFT_MID );
+	this->stepIcon->setClickable( false );	// Pass click to the parent
+
+	this->stepCounter = new Label( this->stepButton );
 	this->stepCounter->Align( LV_ALIGN_OUT_RIGHT_MID, this->stepIcon->getMyself(), 5 );
 	this->stepCounter->setText( "0" );
 	this->stepCounter->AutoRealign();
+	this->stepCounter->setClickable( false );	// Pass click to the parent
 
 		/* Battery related */
 	this->batPercent = new Label( this );
