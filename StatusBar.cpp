@@ -7,8 +7,7 @@
 LV_IMG_DECLARE(foot_16px);
 
 StatusBar::StatusBar( lv_style_t *mainstyle, lv_obj_t *parent, const lv_obj_t *cloned ) : 
-	Container( parent, cloned ),
-	prev_idx( Gui::LV_ICON_UNKNOWN )
+	Container( parent, cloned )
 {
 	this->copyStyle( mainstyle );	// Copy gui style
 
@@ -50,6 +49,7 @@ void StatusBar::updateBatteryLevel( void ){
 
 void StatusBar::updateBatteryIcon( Gui::lv_icon_battery_t index ){
 	lv_color_t color = LV_COLOR_WHITE;	// Default color
+
 	if( index == Gui::LV_ICON_UNKNOWN && ttgo->power->isChargeing() )	// Are we charging ?
 		index = Gui::LV_ICON_CHARGE;
 	
@@ -60,9 +60,10 @@ void StatusBar::updateBatteryIcon( Gui::lv_icon_battery_t index ){
 		if(level > 95){
 			color = LV_COLOR_GREEN;
 			index = Gui::LV_ICON_BAT_FULL;
-		} else if(level > 80)
+		} else if(level > 80){
+			color = LV_COLOR_GREEN;
 			index = Gui::LV_ICON_BAT_3;
-		else if(level > 45)
+		} else if(level > 45)
 			index = Gui::LV_ICON_BAT_2;
 		 else if(level > 20){
 			color = LV_COLOR_ORANGE;
@@ -72,10 +73,6 @@ void StatusBar::updateBatteryIcon( Gui::lv_icon_battery_t index ){
 			index = Gui::LV_ICON_BAT_EMPTY;
 		}
 	}
-
-	if( this->prev_idx == index )	// Same icon index so no need to redraw
-		return;
-	this->prev_idx = index;
 
 	this->batIcon->Recolor( color );	// Apply the color
 

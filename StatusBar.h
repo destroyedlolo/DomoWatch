@@ -23,7 +23,6 @@ class StatusBar : public Container {
 	Image		*batIcon;
 	lv_task_t	*upd_bat_task;	// task to update battery level
 
-	Gui::lv_icon_battery_t prev_idx;	// Previous index
 public:
 	/* status bar constructor
 	 * -> mainstyle : style to apply

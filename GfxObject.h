@@ -136,6 +136,13 @@ public:
 	 * Misc
 	 ***/
 
+	/* Enable or disable the clicking of an object
+	 * if disabled, clicking events are transfered to parent
+	 */
+	void setClickable( bool en ){
+		lv_obj_set_click( this->getMyself(), en );
+	}
+
 	/* Dump object value
 	 * Output on the serial console
 	 */
