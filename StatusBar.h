@@ -35,7 +35,7 @@ public:
 	/* Update step counter label
 	 * -> uint32_t counter : value
 	 */
-	void updateStepCounter( uint32_t counter );
+	void updateStepCounter( void );
 
 	/* Update battery level label
 	 */

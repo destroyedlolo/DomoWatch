@@ -63,10 +63,12 @@ StatusBar::StatusBar( lv_style_t *mainstyle, lv_obj_t *parent, const lv_obj_t *c
 	this->batIcon->Set( LV_SYMBOL_BATTERY_FULL );
 	this->batIcon->Align( LV_ALIGN_OUT_LEFT_MID,  this->batPercent->getMyself(), -5);
 	this->batPercent->AutoRealign();
+
+	this->updateStepCounter();	// Ensure the counter is not "????" :)
 }
 
-void StatusBar::updateStepCounter(uint32_t counter){
-	this->stepCounter->setText( String(counter).c_str() );
+void StatusBar::updateStepCounter( void ){
+	this->stepCounter->setText( String(ttgo->bma->getCounter()).c_str() );
 }
 
 void StatusBar::updateBatteryLevel( void ){
