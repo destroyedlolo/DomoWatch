@@ -109,7 +109,7 @@ void TlStatus::updAXP( bool init ){
 void TlStatus::updRam( bool init ){
 	String val = "Ram : ";
 	if( init )
-		val += "????/???? (???%)";
+		val += "???8/???? (???%)";
 	else {
 		val += String( ESP.getFreeHeap() / 1024 );
 		val += "/";
@@ -126,7 +126,7 @@ void TlStatus::updRam( bool init ){
 void TlStatus::updPSRam( bool init ){
 	String val = "PSRam : ";
 	if( init )
-		val += "????/???? (???%)";
+		val += "???8/???? (???%)";
 	else {
 		val += String( ESP.getFreePsram() / 1024 );
 		val += "/";
