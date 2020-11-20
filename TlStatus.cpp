@@ -18,7 +18,7 @@ TlStatus::TlStatus( TileView *parent, TileView *cloned ) :
 	this->_battery->SetLongTextMode( LV_LABEL_LONG_BREAK );	// Has to be done BEFORE setWidth()
 	this->_battery->setWidth( parent->getWidth() );	// otherwise, it is ignored
 	this->_battery->Align( LV_ALIGN_IN_TOP_LEFT, (const lv_obj_t *)NULL, 0,5 );
-	this->updAXP();	// Initial update otherwise alignment will be wrong
+	this->updAXP( true );	// Initial update otherwise alignment will be wrong
 
 	this->_ram = new Label( this );
 	this->_ram->setFont( &Ubuntu_16px );
@@ -41,7 +41,7 @@ TlStatus::TlStatus( TileView *parent, TileView *cloned ) :
 	this->_ramg->setSize( parent->getWidth()/2 -10, 16 );
 	this->_ramg->setPosXY( parent->getWidth()/2 +5, this->_ram->getY() );
 //	this->_ramg->Align( LV_ALIGN_OUT_RIGHT_TOP, this->_ram );
-	this->updRam();
+	this->updRam( true );
 
 	this->_PSram = new Label( this );
 	this->_PSram->setFont( &Ubuntu_16px );
@@ -56,7 +56,7 @@ TlStatus::TlStatus( TileView *parent, TileView *cloned ) :
 	this->_PSramg->setPosXY( parent->getWidth()/2 +5, this->_PSram->getY() );
 //	this->_PSramg->Align( LV_ALIGN_OUT_RIGHT_TOP, this->_PSram );
 
-	this->updPSRam();
+	this->updPSRam( true );
 
 		/* Display version */
 	this->_version = new Label( this );
@@ -66,22 +66,37 @@ TlStatus::TlStatus( TileView *parent, TileView *cloned ) :
 	this->_version->AutoRealign();
 }
 
-void TlStatus::updAXP( void ){
+void TlStatus::updAXP( bool init ){
 	String val = "Voltage : ";
-	val += ttgo->power->getBattVoltage()/1000;
+	if( init )
+		val += "?.??";
+	else
+		val += ttgo->power->getBattVoltage()/1000;
 	val += "V\n";
 
-	val += ttgo->power->isChargeing() ? "Charging :" : "Discharging : ";
-	val += ttgo->power->isChargeing() ? ttgo->power->getBattChargeCurrent() : ttgo->power->getBattDischargeCurrent();
+	val += (ttgo->power->isChargeing() and !init) ? "Charging :" : "Discharging : ";
+	if( init )
+		val += "???.??";
+	else
+		val += ttgo->power->isChargeing() ? ttgo->power->getBattChargeCurrent() : ttgo->power->getBattDischargeCurrent();
 	val += "mA\n";
 
 	val += "Temp : ";
-	val += ttgo->power->getTemp();
+	if( init )
+		val += "??.??";
+	else
+		val += ttgo->power->getTemp();
+#if 0	// Seems note used on TWatch 2020
 	val += " / TSTemp : ";
-	val += ttgo->power->getTSTemp();
-
+	if( init )
+		val += "??.??";
+	else
+		val += ttgo->power->getTSTemp();
+#endif
 	val += "\nVBus : ";
-	if( ttgo->power->isVBUSPlug() ){
+	if( init )
+		val += "??.??V / ???.??mA";
+	else if( ttgo->power->isVBUSPlug() ){
 		val += ttgo->power->getVbusVoltage() / 1000;
 		val += "V / ";
 		val += ttgo->power->getVbusCurrent();
@@ -91,27 +106,35 @@ void TlStatus::updAXP( void ){
 	this->_battery->setText( val.c_str() );
 }
 
-void TlStatus::updRam( void ){
+void TlStatus::updRam( bool init ){
 	String val = "Ram : ";
-	val += String( ESP.getFreeHeap() / 1024 );
-	val += "/";
-	val += String( ESP.getHeapSize() / 1024 );
-	val += " (";
-	val += String( 100 - ESP.getFreeHeap()*100/ESP.getHeapSize(), DEC);
-	val += "%)";
+	if( init )
+		val += "????/???? (???%)";
+	else {
+		val += String( ESP.getFreeHeap() / 1024 );
+		val += "/";
+		val += String( ESP.getHeapSize() / 1024 );
+		val += " (";
+		val += String( 100 - ESP.getFreeHeap()*100/ESP.getHeapSize(), DEC);
+		val += "%)";
+	}
 
 	this->_ram->setText( val.c_str() );
 	this->_ramg->setValue( 100 - ESP.getFreeHeap()*100/ESP.getHeapSize() );
 }
 
-void TlStatus::updPSRam( void ){
+void TlStatus::updPSRam( bool init ){
 	String val = "PSRam : ";
-	val += String( ESP.getFreePsram() / 1024 );
-	val += "/";
-	val += String( ESP.getPsramSize() / 1024 );
-	val += " (";
-	val += String( 100 - ESP.getFreePsram()*100/ESP.getPsramSize(), DEC);
-	val += "%)";
+	if( init )
+		val += "????/???? (???%)";
+	else {
+		val += String( ESP.getFreePsram() / 1024 );
+		val += "/";
+		val += String( ESP.getPsramSize() / 1024 );
+		val += " (";
+		val += String( 100 - ESP.getFreePsram()*100/ESP.getPsramSize(), DEC);
+		val += "%)";
+	}
 
 	this->_PSram->setText( val.c_str() );
 	this->_PSramg->setValue( 100 - ESP.getFreePsram()*100/ESP.getPsramSize() );

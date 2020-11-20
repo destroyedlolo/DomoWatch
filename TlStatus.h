@@ -35,9 +35,9 @@ public:
 	void initAutomation( void );
 
 private:
-	void updAXP( void );
-	void updRam( void );
-	void updPSRam( void );
+	void updAXP( bool init=false );
+	void updRam( bool init=false );
+	void updPSRam( bool init=false );
 };
 
 #endif

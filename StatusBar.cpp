@@ -44,8 +44,8 @@ StatusBar::StatusBar( lv_style_t *mainstyle, lv_obj_t *parent, const lv_obj_t *c
 	this->stepIcon->setClickable( false );	// Pass click to the parent
 
 	this->stepCounter = new Label( this->stepButton );
-	this->stepCounter->setText( "0" );
-	this->stepCounter->AutoRealign();
+	this->stepCounter->setText( "??????" );
+//	this->stepCounter->AutoRealign();
 	this->stepCounter->setClickable( false );	// Pass click to the parent
 
 		/***
