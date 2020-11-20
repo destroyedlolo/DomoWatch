@@ -3,6 +3,7 @@
 *************************************************/
 
 #include "StatusBar.h"
+#include "MsgBox.h"
 
 LV_IMG_DECLARE(foot_16px);
 
