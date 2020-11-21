@@ -40,16 +40,11 @@ StatusBar::StatusBar( lv_style_t *mainstyle, lv_obj_t *parent, const lv_obj_t *c
 
 		/* Create of button above step counter to reset it */
 	this->stepButton = new Button( this );
-//	this->stepButton->setHeight( BARHEIGHT );
 	this->stepButton->setLayout( LV_LAYOUT_ROW_MID );	// child are horizontally aligned
 	this->stepButton->setFit( LV_FIT_TIGHT );	// Its size is the one of it's child
 	this->stepButton->Align( LV_ALIGN_IN_LEFT_MID );	// it is itself aligned on the left
 	lv_style_set_bg_opa( this->stepButton->getStyle(), LV_OBJ_PART_MAIN, LV_OPA_0 );
 	this->stepButton->applyStyle();
-/* Needed ?
-	lv_btn_set_style( this->_btn, LV_BTN_STYLE_REL, &this->_transp_style);
-	lv_btn_set_style( this->_btn, LV_BTN_STYLE_PR, &this->_transp_style);
-*/
 
 		/* Only an image of a foot */
 	this->stepIcon = new Image( this->stepButton );
@@ -58,7 +53,6 @@ StatusBar::StatusBar( lv_style_t *mainstyle, lv_obj_t *parent, const lv_obj_t *c
 
 	this->stepCounter = new Label( this->stepButton );
 	this->stepCounter->setText( "??????" );
-//	this->stepCounter->AutoRealign();
 	this->stepCounter->setClickable( false );	// Pass click to the parent
 
 	this->stepButton->attacheEventeHandler( stepclicked );
