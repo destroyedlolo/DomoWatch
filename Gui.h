@@ -59,7 +59,7 @@ public:
 		 * Documentation are in StatusBar.h
 		 */
 
-	void updateStepCounter( uint32_t counter );
+	void updateStepCounter( void );
 	void updateBatteryIcon( lv_icon_battery_t index );
 	void updateBatteryLevel( void );
 };

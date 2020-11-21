@@ -95,8 +95,8 @@ Gui::Gui( void ){
 }
 
 
-void Gui::updateStepCounter( uint32_t counter ){
-	this->_statusbar->updateStepCounter( counter );
+void Gui::updateStepCounter( void ){
+	this->_statusbar->updateStepCounter();
 }
 
 void Gui::updateBatteryIcon( lv_icon_battery_t index ){

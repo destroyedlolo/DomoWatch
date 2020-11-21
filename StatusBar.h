@@ -12,9 +12,11 @@
 #include "Container.h"
 #include "Label.h"
 #include "Image.h"
+#include "Button.h"
 
 class StatusBar : public Container {
 	/* Step counter */
+	Button		*stepButton;
 	Image		*stepIcon;
 	Label 		*stepCounter;
 
@@ -23,7 +25,6 @@ class StatusBar : public Container {
 	Image		*batIcon;
 	lv_task_t	*upd_bat_task;	// task to update battery level
 
-	Gui::lv_icon_battery_t prev_idx;	// Previous index
 public:
 	/* status bar constructor
 	 * -> mainstyle : style to apply
@@ -34,7 +35,7 @@ public:
 	/* Update step counter label
 	 * -> uint32_t counter : value
 	 */
-	void updateStepCounter( uint32_t counter );
+	void updateStepCounter( void );
 
 	/* Update battery level label
 	 */

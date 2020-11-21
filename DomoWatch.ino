@@ -95,7 +95,7 @@ void wakeup( void ){
 	ttgo->displayWakeup();
 	ttgo->rtc->syncToSystem();
 
-	gui->updateStepCounter(ttgo->bma->getCounter());
+	gui->updateStepCounter();
 	gui->updateBatteryLevel();
 	gui->updateBatteryIcon( Gui::LV_ICON_UNKNOWN );
 
@@ -318,7 +318,7 @@ void loop(){
 			while(!rlst);
 
 			if(ttgo->bma->isStepCounter())
-				gui->updateStepCounter(ttgo->bma->getCounter());
+				gui->updateStepCounter();
 			break;
 
 		case Q_EVENT_AXP_INT:
