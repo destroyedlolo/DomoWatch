@@ -92,6 +92,12 @@ void TlStatus::updAXP( bool init ){
 		val += "??.??";
 	else
 		val += ttgo->power->getTSTemp();
+#else	// From BMA chip
+	val += " / Amb : ";
+	if( init )
+		val += "??.??";
+	else
+		val += ttgo->bma->temperature();
 #endif
 	val += "\nVBus : ";
 	if( init )

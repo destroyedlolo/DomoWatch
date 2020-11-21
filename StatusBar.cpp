@@ -1,9 +1,22 @@
 /************************************************
 *	Status bar : status icons
 *************************************************/
+// #include <Arduino.h>
 
 #include "StatusBar.h"
 #include "MsgBox.h"
+
+	/****
+	 * Stepcounter callback
+	 ***/
+
+static void stepclicked( lv_obj_t *, lv_event_t event ){
+	if(event == LV_EVENT_CLICKED){
+		Serial.println("RAZ podo");
+		ttgo->bma->resetStepCounter();
+		gui->updateStepCounter();
+	}
+}
 
 LV_IMG_DECLARE(foot_16px);
 
@@ -47,6 +60,8 @@ StatusBar::StatusBar( lv_style_t *mainstyle, lv_obj_t *parent, const lv_obj_t *c
 	this->stepCounter->setText( "??????" );
 //	this->stepCounter->AutoRealign();
 	this->stepCounter->setClickable( false );	// Pass click to the parent
+
+	this->stepButton->attacheEventeHandler( stepclicked );
 
 		/***
 		 * Battery related
