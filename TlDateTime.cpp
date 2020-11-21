@@ -28,6 +28,7 @@ TlDateTime::TlDateTime( TileView *parent, TileView *cloned ) :
 	this->cont->applyStyle();
 	this->cont->setSize( this->getWidth(), this->getHeight()/2 );
 	this->cont->Align( LV_ALIGN_CENTER );
+	this->cont->setClickable( false );	// Pass click to the parent
 
 		/* Display time */
 	this->timelabel = new Label( this->cont );
@@ -36,6 +37,7 @@ TlDateTime::TlDateTime( TileView *parent, TileView *cloned ) :
 	this->timelabel->setText( "??:??:??" );
 	this->timelabel->Align( LV_ALIGN_IN_TOP_MID );
 	this->timelabel->AutoRealign();
+	this->timelabel->setClickable( false );	// Pass click to the parent
 
 		/* and date */
 	this->datelabel = new Label( this->cont );
@@ -44,6 +46,7 @@ TlDateTime::TlDateTime( TileView *parent, TileView *cloned ) :
 	this->datelabel->setText( "??.???? ????" );
 	this->datelabel->Align( LV_ALIGN_IN_BOTTOM_MID );
 	this->datelabel->AutoRealign();
+	this->datelabel->setClickable( false );	// Pass click to the parent
 }
 
 void TlDateTime::updateTime( void ){
