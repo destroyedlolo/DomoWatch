@@ -9,10 +9,10 @@
 
 class BarGauge : public GfxObject {
 public:
-	/* Container constructor
+	/* BarGauge constructor
 	 * -> Container *parent : parent object (default : NULL)
 	 *  	if not null, its style is copied
-	 * -> const lv_obj_t *cloned : copy from this object (default : NULL)
+	 * -> Container *cloned : copy from this object (default : NULL)
 	 * -> int16_t min,max : min and maximum value (default 0, 100)
 	 */
 	BarGauge( Container *parent=NULL, Container *cloned=NULL, int16_t min=0, int16_t max=100 ){

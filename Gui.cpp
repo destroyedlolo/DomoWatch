@@ -70,8 +70,8 @@ Gui::Gui( void ){
 		/***
 		 * And allowed movements
 		 ***/
-	static lv_point_t valid_pos[] = { {0,0}, {1,0} };	// define tiles' position
-	this->_tileview->setValidPositions( valid_pos, 2 );	// apply it
+	static lv_point_t valid_pos[] = { {0,0}, {1,0}, {1,1} };	// define tiles' position
+	this->_tileview->setValidPositions( valid_pos, sizeof(valid_pos) / sizeof(valid_pos[1]) );	// apply it
 	
 		/***
 		 * Define tiles
@@ -81,9 +81,14 @@ Gui::Gui( void ){
 	this->_tile_datetime->setPosXY( LV_HOR_RES, 0 );	// place it on the right
 	this->_tileview->AddTile( this->_tile_datetime );	// Add this tile
 
-		// settings one, placed on the left
+		// status one, placed on the left
 	this->_tile_status = new TlStatus( this->_tileview, this->_tileview );
 	this->_tileview->AddTile( this->_tile_status );	// Add this tile
+
+		// settings
+	this->_tile_settings = new TlSettings( this->_tileview, this->_tileview );
+	this->_tile_settings->setPosXY( LV_HOR_RES, LV_VER_RES );
+	this->_tileview->AddTile( this->_tile_settings );	// Add this tile
 
 		// date and time is the default tile
 	this->_tileview->setActiveTile( 1,0, LV_ANIM_OFF );

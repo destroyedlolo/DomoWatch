@@ -10,7 +10,7 @@
 	 * Stepcounter callback
 	 ***/
 
-static void stepclicked( lv_obj_t *, lv_event_t event ){
+static void stepClicked( lv_obj_t *, lv_event_t event ){
 	if(event == LV_EVENT_CLICKED){
 		Serial.println("RAZ podo");
 		ttgo->bma->resetStepCounter();
@@ -55,7 +55,7 @@ StatusBar::StatusBar( lv_style_t *mainstyle, lv_obj_t *parent, const lv_obj_t *c
 	this->stepCounter->setText( "??????" );
 	this->stepCounter->setClickable( false );	// Pass click to the parent
 
-	this->stepButton->attacheEventeHandler( stepclicked );
+	this->stepButton->attacheEventeHandler( stepClicked );
 
 		/***
 		 * Battery related

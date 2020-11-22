@@ -22,7 +22,7 @@ class TlStatus : public Container {
 	lv_task_t	*upd_task;	// Task to update the Gui
 
 public:
-	/* Settings' tile constructor
+	/* Status' tile constructor
 	 * -> parent, cloned : see Container
 	 */
 	TlStatus( TileView *parent=NULL, TileView *cloned=NULL );
