@@ -65,6 +65,7 @@ TlSettings::TlSettings( TileView *parent, TileView *cloned ) :
 	this->brightnessSlider->setSize( parent->getWidth() - this->brightnessIcon->getWidth() -30, 10 );
 	lv_style_set_bg_color( this->brightnessSlider->getStyle(), LV_OBJ_PART_MAIN, LV_COLOR_AQUA );
 	this->brightnessSlider->applyStyle();
+//	this->brightnessSlider->setValue( );
 	this->brightnessSlider->attacheEventeHandler( brightnessModified );
 
 		/* Saver */
@@ -84,21 +85,25 @@ TlSettings::TlSettings( TileView *parent, TileView *cloned ) :
 
 	lv_style_set_bg_color( this->saverSlider->getStyle(), LV_OBJ_PART_MAIN, LV_COLOR_AQUA );
 	this->saverSlider->applyStyle();
+	this->saverSlider->setValue( inactive_counter/1000 );	// Set initial value
 	this->saverSlider->attacheEventeHandler( saverModified );
 
 	this->saverLabel = new Label( this->saverCont );
 	this->saverLabel->setFont( &Ubuntu_16px );
 	this->saverLabel->applyStyle();
 	this->saverLabel->setText( (String( inactive_counter/1000 ) + " seconds").c_str() );
+	this->saverLabel->AutoRealign();
 	this->saverLabel->Align( LV_ALIGN_OUT_BOTTOM_MID, this->saverSlider->getMyself(), 20 );
 	this->saverLabel->setClickable( false );	// Pass click to the parent
 
 	saverLbl = this->saverLabel->getMyself();
 
+/*	Debug
 	this->brightnessCont->dumpObj("brightnessCont");
 	this->brightnessIcon->dumpObj("brightnessIcon");
 	this->brightnessSlider->dumpObj("brightnessSlider");
 	this->saverCont->dumpObj("saverCont");
 	this->saverIcon->dumpObj("saverIcon");
 	this->saverSlider->dumpObj("saverSlider");
+*/
 }
