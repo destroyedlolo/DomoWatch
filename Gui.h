@@ -13,7 +13,7 @@
 #include "TileView.h"
 #include "TlDateTime.h"
 #include "TlStatus.h"
-#include "TlSettings.h"
+#include "TlScreen.h"
 
 class StatusBar;
 
@@ -28,7 +28,7 @@ class Gui :
 	/* Tiles */
 	TlDateTime	*_tile_datetime;
 	TlStatus	*_tile_status;
-	TlSettings	*_tile_settings;
+	TlScreen	*_tile_screen;
 
 public:
 

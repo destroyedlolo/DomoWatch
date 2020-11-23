@@ -1,9 +1,9 @@
 /************************************************
-*	Settings tile
+*	Screen's settings tile
 *************************************************/
 
 #include "Gui.h"
-#include "TlSettings.h"
+#include "TlScreen.h"
 
 	/*****
 	 * Brighness related
@@ -45,7 +45,7 @@ static void saverModified( lv_obj_t *obj, lv_event_t event ){
 }
 
 
-TlSettings::TlSettings( TileView *parent, TileView *cloned ) : 
+TlScreen::TlScreen( TileView *parent, TileView *cloned ) : 
 	Container( parent, cloned )
 {
 

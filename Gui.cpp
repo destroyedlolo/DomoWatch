@@ -86,9 +86,9 @@ Gui::Gui( void ){
 	this->_tileview->AddTile( this->_tile_status );	// Add this tile
 
 		// settings
-	this->_tile_settings = new TlSettings( this->_tileview, this->_tileview );
-	this->_tile_settings->setPosXY( LV_HOR_RES, LV_VER_RES );
-	this->_tileview->AddTile( this->_tile_settings );	// Add this tile
+	this->_tile_screen = new TlScreen( this->_tileview, this->_tileview );
+	this->_tile_screen->setPosXY( LV_HOR_RES, LV_VER_RES );
+	this->_tileview->AddTile( this->_tile_screen );	// Add this tile
 
 		// date and time is the default tile
 	this->_tileview->setActiveTile( 1,0, LV_ANIM_OFF );
