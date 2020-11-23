@@ -48,7 +48,8 @@ enum {
     Q_EVENT_AXP_INT,
 } ;
 
-#define DEFAULT_SCREEN_TIMEOUT  30*1000
+	/* Go to sleep after this time w/o any activities */
+uint32_t inactive_counter = 30*1000;
 
 #define WATCH_FLAG_SLEEP_MODE   _BV(1)
 #define WATCH_FLAG_SLEEP_EXIT   _BV(2)
@@ -353,7 +354,7 @@ void loop(){
 
 	CommandLine::loop();
 
-	if(lv_disp_get_inactive_time(NULL) < DEFAULT_SCREEN_TIMEOUT)
+	if(lv_disp_get_inactive_time(NULL) < inactive_counter)
 		lv_task_handler();
 	else {	// No activities : going to sleep
 		Serial.println("No activity : Go to sleep");

@@ -71,6 +71,8 @@ public:
 	 * Objects used elsewhere
 	 ***/
 
+extern uint32_t inactive_counter;
+
 #define BARHEIGHT 30	// Status bar height
 
 extern TTGOClass *ttgo;

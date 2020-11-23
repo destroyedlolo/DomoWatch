@@ -12,8 +12,14 @@
 #include "Slider.h"
 
 class TlSettings : public Container {
+	Container	*brightnessCont;
 	Image		*brightnessIcon;
 	Slider		*brightnessSlider;
+
+	Container	*saverCont;
+	Image		*saverIcon;
+	Slider		*saverSlider;
+	Label		*saverLabel;
 
 public:
 	/* Settings' tile constructor
