@@ -65,7 +65,7 @@ TlScreen::TlScreen( TileView *parent, TileView *cloned ) :
 	this->brightnessSlider->setSize( parent->getWidth() - this->brightnessIcon->getWidth() -30, 10 );
 	lv_style_set_bg_color( this->brightnessSlider->getStyle(), LV_OBJ_PART_MAIN, LV_COLOR_AQUA );
 	this->brightnessSlider->applyStyle();
-//	this->brightnessSlider->setValue( );
+	this->brightnessSlider->setValue( ttgo->bl->getLevel() );
 	this->brightnessSlider->attacheEventeHandler( brightnessModified );
 
 		/* Saver */

@@ -11,7 +11,7 @@
 /* Set the system date
  * format : YYYYMMDD.HHmmSS
  */
-void setdate( const String &arg ){
+void cmd_setdate( const String &arg ){
 	struct tm tm;
 
 	tm.tm_year = atoi( arg.substring(0,4).c_str() ) - 1900;
@@ -32,12 +32,18 @@ void setdate( const String &arg ){
 	Serial.print( ctime(&tv.tv_sec) );
 }
 
+/* Reboot the ESP */
+void cmd_reboot( const String & ){
+	ESP.restart();
+}
+
 const struct _command {
 	const char *nom;
 	const char *desc;
 	void (*func)( const String & );
 } commands[] = {
-	{ "setDate", "Set date and time : YYYYMMDD.HHMMSS", setdate },
+	{ "setDate", "Set date and time : YYYYMMDD.HHMMSS", cmd_setdate },
+	{ "reboot", "reboot the watch", cmd_reboot },
 	{ NULL, NULL, NULL }
 };
 
