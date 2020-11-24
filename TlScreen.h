@@ -1,5 +1,6 @@
 /************************************************
-*	Screen's settings tile*************************************************/
+*	Screen's settings tile
+*************************************************/
 
 #ifndef TLSCREEN_H
 #define TLSCREEN_H
@@ -21,7 +22,7 @@ class TlScreen : public Container {
 	Label		*saverLabel;
 
 public:
-	/* Settings' tile constructor
+	/* Screen's tile constructor
 	 * -> parent, cloned : see Container
 	 */
 	TlScreen( TileView *parent, TileView *cloned=NULL );

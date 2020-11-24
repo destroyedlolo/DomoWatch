@@ -24,6 +24,13 @@ public:
 
 	Container( Container *parent, Container *cloned=NULL );
 	Container( TileView *parent, TileView *cloned=NULL );
+
+	/*	set position as a tile
+	 * 	lv_point_t pos
+	 */
+	void setTilePos( lv_point_t pos ){
+		this->setPosXY( pos.x * LV_HOR_RES, pos.y * LV_VER_RES );
+	}
 };
 
 #endif
