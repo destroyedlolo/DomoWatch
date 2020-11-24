@@ -41,7 +41,8 @@ StatusBar::StatusBar( lv_style_t *mainstyle, lv_obj_t *parent, const lv_obj_t *c
 		/* Create of button above step counter to reset it */
 	this->stepButton = new Button( this );
 	this->stepButton->setLayout( LV_LAYOUT_ROW_MID );	// child are horizontally aligned
-	this->stepButton->setFit( LV_FIT_TIGHT );	// Its size is the one of it's child
+	this->stepButton->setSize( this->getWidth() / 2, this->getHeight() );
+//	this->stepButton->setFit( LV_FIT_TIGHT );	// Its size is the one of it's child
 	this->stepButton->Align( LV_ALIGN_IN_LEFT_MID );	// it is itself aligned on the left
 	lv_style_set_bg_opa( this->stepButton->getStyle(), LV_OBJ_PART_MAIN, LV_OPA_0 );
 	this->stepButton->applyStyle();
