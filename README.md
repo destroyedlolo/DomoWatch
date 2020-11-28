@@ -31,12 +31,12 @@ The **main tile** only displays the current date and time with a **status bar** 
 	 --------       -------------
 	| Status | <-> | Time & Date |
 	 --------       -------------
-						/|\
-						 |
-						\|/
-					 -----------
-					| Scrn set  |
-					 -----------
+			    /|\
+			     |
+			    \|/
+			 -----------
+			| Scrn set  |
+			 -----------
 ```
   - On it's left, the *status tile* that is displaying some watch's figures (consumption, RAM, ...).
   - On it's bottom, the *setting tile* :
