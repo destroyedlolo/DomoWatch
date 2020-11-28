@@ -13,7 +13,8 @@
 #include "TileView.h"
 #include "TlDateTime.h"
 #include "TlStatus.h"
-#include "TlSettings.h"
+#include "TlScreen.h"
+// #include "TlNetwork.h"
 
 class StatusBar;
 
@@ -28,7 +29,7 @@ class Gui :
 	/* Tiles */
 	TlDateTime	*_tile_datetime;
 	TlStatus	*_tile_status;
-	TlSettings	*_tile_settings;
+	TlScreen	*_tile_screen;
 
 public:
 
@@ -70,6 +71,8 @@ public:
 	/***
 	 * Objects used elsewhere
 	 ***/
+
+extern uint32_t inactive_counter;
 
 #define BARHEIGHT 30	// Status bar height
 

@@ -78,17 +78,18 @@ Gui::Gui( void ){
 		 ***/
 		 // main tile placed at 1,0
 	this->_tile_datetime = new TlDateTime( this->_tileview, this->_tileview );
-	this->_tile_datetime->setPosXY( LV_HOR_RES, 0 );	// place it on the right
+	this->_tile_datetime->setTilePos( {1, 0} );	// place it on the right
 	this->_tileview->AddTile( this->_tile_datetime );	// Add this tile
 
 		// status one, placed on the left
 	this->_tile_status = new TlStatus( this->_tileview, this->_tileview );
+	this->_tile_status->setTilePos( {0, 0} );
 	this->_tileview->AddTile( this->_tile_status );	// Add this tile
 
 		// settings
-	this->_tile_settings = new TlSettings( this->_tileview, this->_tileview );
-	this->_tile_settings->setPosXY( LV_HOR_RES, LV_VER_RES );
-	this->_tileview->AddTile( this->_tile_settings );	// Add this tile
+	this->_tile_screen = new TlScreen( this->_tileview, this->_tileview );
+	this->_tile_screen->setTilePos( {1, 1} );
+	this->_tileview->AddTile( this->_tile_screen );	// Add this tile
 
 		// date and time is the default tile
 	this->_tileview->setActiveTile( 1,0, LV_ANIM_OFF );

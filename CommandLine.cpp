@@ -6,12 +6,13 @@
 #include <time.h>
 #include <sys/time.h>
 
+#include "Gui.h"
 #include "CommandLine.h"
 
 /* Set the system date
  * format : YYYYMMDD.HHmmSS
  */
-void setdate( const String &arg ){
+void cmd_setdate( const String &arg ){
 	struct tm tm;
 
 	tm.tm_year = atoi( arg.substring(0,4).c_str() ) - 1900;
@@ -24,12 +25,26 @@ void setdate( const String &arg ){
 
 	tm.tm_isdst = 0;
 
-	struct timeval tv;
-	tv.tv_sec = mktime( &tm );
-	tv.tv_usec = 0;
+	struct timeval val;
+	val.tv_sec = mktime(&tm);
+    val.tv_usec = 0;
 
-	Serial.print( "Setting time to : " );
-	Serial.print( ctime(&tv.tv_sec) );
+	settimeofday(&val, NULL);
+
+	ttgo->rtc->syncToRtc();
+
+	Serial.printf("Set date to %s", ctime( &val.tv_sec ));
+	Serial.printf("RTC %s\n", ttgo->rtc->formatDateTime( PCF_TIMEFORMAT_YYYY_MM_DD_H_M_S ) );
+}
+
+/* display RTC time */
+void cmd_rtc( const String & ){
+	Serial.printf("RTC %s\n", ttgo->rtc->formatDateTime( PCF_TIMEFORMAT_YYYY_MM_DD_H_M_S ) );
+}
+
+/* Reboot the ESP */
+void cmd_reboot( const String & ){
+	ESP.restart();
 }
 
 const struct _command {
@@ -37,7 +52,9 @@ const struct _command {
 	const char *desc;
 	void (*func)( const String & );
 } commands[] = {
-	{ "setDate", "Set date and time : YYYYMMDD.HHMMSS", setdate },
+	{ "setDate", "Set date and time : YYYYMMDD.HHMMSS", cmd_setdate },
+	{ "rtc", "get stored RTC time", cmd_rtc },
+	{ "reboot", "reboot the watch", cmd_reboot },
 	{ NULL, NULL, NULL }
 };
 
@@ -68,6 +85,11 @@ void CommandLine::loop( void ){
 				}
 				Serial.println( "" );
 			}
+		} else for( const struct _command *icmd = commands; icmd->nom; icmd++ ){
+			if( cmd == icmd->nom ){
+				icmd->func( arg );
+			}
 		}
+		lv_disp_trig_activity(NULL); // avoid twatch sleeping
 	}
 }

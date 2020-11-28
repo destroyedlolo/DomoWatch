@@ -23,11 +23,33 @@ This project can be build using **Arduino IDE** and needs [Xinyuan-LilyGO /TTGO_
 
 ## User guide
 
+### GUI
+
 The **main tile** only displays the current date and time with a **status bar** containing *battery level* and a *step counter*. Clicking on it to reset.
 
+```
+	 --------       -------------
+	| Status | <-> | Time & Date |
+	 --------       -------------
+			    /|\
+			     |
+			    \|/
+			 -----------
+			| Scrn set  |
+			 -----------
+```
   - On it's left, the *status tile* that is displaying some watch's figures (consumption, RAM, ...).
   - On it's bottom, the *setting tile* :
-    - *brightness level* : take in account it's value is not stored but in memory. In case of a reboot, previous value is lost.
+  - *Screen settings* : take in account it's value is not stored but in memory. In case of a reboot, previous value is lost.
+
+### Commands line
+
+Most of settings (date & time, networks, ...) can be set using the console command line. The special command '**?**' without argument display the list a known commands. With an argument, a short description of the given commande.
+
+	?
+	Known commands : setDate rtc reboot
+	? setDate
+	setDate:Set date and time : YYYYMMDD.HHMMSS
 
 ---
 
