@@ -161,9 +161,11 @@ void setup(){
 		Serial.println("Who know ...");
 	}
 
+#if 0	/* NO : the RTC is already in the correct time zone */
 	/* Initialize time zone (France) */
-	setenv("TZ", "GMT0BST,M3.5.0/01,M10.5.0/02",1);	// France
+	setenv("TZ", "CET-1CEST-2,M3.5.0/02:00:00,M10.5.0/03:00:00",1);	// France
 	tzset();
+#endif
 
 	/* Create a program that allows the required message objects 
 	 * and group flags
