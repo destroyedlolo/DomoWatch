@@ -62,6 +62,7 @@ EventGroupHandle_t isr_group = NULL;
 bool lenergy = false;
 TTGOClass *ttgo;
 
+bool mvtWakeup = true; // can wakeup from mouvement
 
 /*****
  * Handle sleep
@@ -84,10 +85,13 @@ void low_energy( void ){
 		Serial.println("ENTER IN LIGHT SLEEEP MODE");
 		delay(500);
 		
-		gpio_wakeup_enable ((gpio_num_t)AXP202_INT, GPIO_INTR_LOW_LEVEL);
-		gpio_wakeup_enable ((gpio_num_t)BMA423_INT1, GPIO_INTR_HIGH_LEVEL);
+		gpio_wakeup_enable( (gpio_num_t)AXP202_INT, GPIO_INTR_LOW_LEVEL );
+		if(mvtWakeup)
+			gpio_wakeup_enable( (gpio_num_t)BMA423_INT1, GPIO_INTR_HIGH_LEVEL );
+		else
+			gpio_wakeup_disable( (gpio_num_t)BMA423_INT1, GPIO_INTR_HIGH_LEVEL );
 		esp_sleep_enable_gpio_wakeup (); // work only in light sleep mode
-		esp_sleep_enable_uart_wakeup(); // work only in light sleep mode
+		esp_sleep_enable_uart_wakeup(0); // work only in light sleep mode
 
 		esp_light_sleep_start();
 //	}
