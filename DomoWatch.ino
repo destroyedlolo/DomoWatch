@@ -89,7 +89,7 @@ void low_energy( void ){
 		if(mvtWakeup)
 			gpio_wakeup_enable( (gpio_num_t)BMA423_INT1, GPIO_INTR_HIGH_LEVEL );
 		else
-			gpio_wakeup_disable( (gpio_num_t)BMA423_INT1, GPIO_INTR_HIGH_LEVEL );
+			gpio_wakeup_disable( (gpio_num_t)BMA423_INT1 );
 		esp_sleep_enable_gpio_wakeup (); // work only in light sleep mode
 		esp_sleep_enable_uart_wakeup(0); // work only in light sleep mode
 

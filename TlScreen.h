@@ -10,6 +10,7 @@
 #include "Label.h"
 #include "Image.h"
 #include "Slider.h"
+#include "Checkbox.h"
 
 class TlScreen : public Container {
 	Container	*brightnessCont;
@@ -20,6 +21,8 @@ class TlScreen : public Container {
 	Image		*saverIcon;
 	Slider		*saverSlider;
 	Label		*saverLabel;
+
+	Checkbox	*wakeupFromMouvement;
 
 public:
 	/* Screen's tile constructor

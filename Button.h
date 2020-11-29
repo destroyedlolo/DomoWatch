@@ -13,7 +13,7 @@ class StatusBar;
 
 class Button : public Container {
 public:
-	/* ClkImage constructor 
+	/* Button constructor 
 	 *	-> Container *parent : parent object (default : NULL)
 	 *  	if not null, its style is copied
 	 */
