@@ -83,9 +83,12 @@ void low_energy( void ){
 
 		Serial.println("ENTER IN LIGHT SLEEEP MODE");
 		delay(500);
+		
 		gpio_wakeup_enable ((gpio_num_t)AXP202_INT, GPIO_INTR_LOW_LEVEL);
 		gpio_wakeup_enable ((gpio_num_t)BMA423_INT1, GPIO_INTR_HIGH_LEVEL);
-		esp_sleep_enable_gpio_wakeup ();
+		esp_sleep_enable_gpio_wakeup (); // work only in light sleep mode
+		esp_sleep_enable_uart_wakeup(); // work only in light sleep mode
+
 		esp_light_sleep_start();
 //	}
 }
@@ -170,7 +173,7 @@ void setup(){
 	/* Create a program that allows the required message objects 
 	 * and group flags
 	 */
-	g_event_queue_handle = xQueueCreate(20, sizeof(uint8_t));
+	g_event_queue_handle = xQueueCreate(60, sizeof(uint8_t));
 	g_event_group = xEventGroupCreate();
 	isr_group = xEventGroupCreate();
 
