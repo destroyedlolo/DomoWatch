@@ -83,16 +83,19 @@ void low_energy( void ){
 		setCpuFrequencyMhz(20);
 
 		Serial.println("ENTER IN LIGHT SLEEEP MODE");
-		delay(500);
 		
 		gpio_wakeup_enable( (gpio_num_t)AXP202_INT, GPIO_INTR_LOW_LEVEL );
-		if(mvtWakeup)
+		if(mvtWakeup){
 			gpio_wakeup_enable( (gpio_num_t)BMA423_INT1, GPIO_INTR_HIGH_LEVEL );
-		else
+			Serial.println("BMA allowed");
+		} else {
 			gpio_wakeup_disable( (gpio_num_t)BMA423_INT1 );
-		esp_sleep_enable_gpio_wakeup (); // work only in light sleep mode
+			Serial.println("BMA disabled");
+		}
+		esp_sleep_enable_gpio_wakeup(); // work only in light sleep mode
 		esp_sleep_enable_uart_wakeup(0); // work only in light sleep mode
 
+		delay(500);
 		esp_light_sleep_start();
 //	}
 }

@@ -8,6 +8,7 @@
 #include "Container.h"
 
 class Checkbox : public Container {
+public :
 	/* Checkbox constructor 
 	 *	-> Container *parent : parent object (default : NULL)
 	 *  	if not null, its style is copied
