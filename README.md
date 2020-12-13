@@ -13,13 +13,14 @@ In addition, the code has been made in **POO way** and being **very modular** (a
 
 ## Install
 
-This project can be build using **Arduino IDE** and needs [Xinyuan-LilyGO /TTGO_TWatch_Library](https://github.com/Xinyuan-LilyGO/TTGO_TWatch_Library) and dependancies to be installed.
+This project can be build using **Arduino IDE** and needs :
+- [Xinyuan-LilyGO /TTGO_TWatch_Library](https://github.com/Xinyuan-LilyGO/TTGO_TWatch_Library) and dependancies to be installed
+- [emToile](https://github.com/destroyedlolo/emToile) 
 
 ## Code convention
 
   - **header files** (\*.h) are containing class definition and **C++ ones** the implementation of heavy methods. They have the same name as the class implemented.
   - **Tl\* files** are for tiles definitions which are ordered inside Gui's constructor (**Gui.cpp**)
-  - others are mostly C++ implementation of LvGL's objects (well subset of them)
 
 ## User guide
 
