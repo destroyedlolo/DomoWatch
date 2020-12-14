@@ -79,4 +79,6 @@ extern uint32_t inactive_counter;
 extern TTGOClass *ttgo;
 extern class Gui *gui;
 
+extern bool mvtWakeup;
+
 #endif

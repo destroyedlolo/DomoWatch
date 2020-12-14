@@ -44,6 +44,17 @@ static void saverModified( lv_obj_t *obj, lv_event_t event ){
 	}
 }
 
+	/*********
+	 * Wakeup related
+	 *********/
+
+static void mvtWakeupChanged( lv_obj_t *obj, lv_event_t event ){
+	if(event == LV_EVENT_VALUE_CHANGED){
+		mvtWakeup = lv_checkbox_is_checked( obj );
+		Serial.println( mvtWakeup ? "Movement wakeup activated" : "Movement wakeup disabled");
+	}
+}
+
 
 TlScreen::TlScreen( TileView *parent, TileView *cloned ) : 
 	Container( parent, cloned )
@@ -97,6 +108,13 @@ TlScreen::TlScreen( TileView *parent, TileView *cloned ) :
 	this->saverLabel->setClickable( false );	// Pass click to the parent
 
 	saverLbl = this->saverLabel->getMyself();
+
+		/* Accelerometer wakeup ? */
+	this->wakeupFromMouvement = new Checkbox( this );
+	this->wakeupFromMouvement->Align( LV_ALIGN_OUT_BOTTOM_LEFT, this->saverCont );
+	this->wakeupFromMouvement->setText( "Wakeup by movement");
+	this->wakeupFromMouvement->setChecked( mvtWakeup );
+	this->wakeupFromMouvement->attacheEventeHandler( mvtWakeupChanged );
 
 /*	Debug
 	this->brightnessCont->dumpObj("brightnessCont");
