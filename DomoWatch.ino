@@ -39,81 +39,19 @@
 #include "Gui.h"
 #include "CommandLine.h"
 
-#define G_EVENT_VBUS_PLUGIN         _BV(0)
-#define G_EVENT_VBUS_REMOVE         _BV(1)
-#define G_EVENT_CHARGE_DONE         _BV(2)
 
-enum {
-    Q_EVENT_BMA_INT,
-    Q_EVENT_AXP_INT,
-} ;
+	/****
+	* Shared object
+	*****/
 
-	/* Go to sleep after this time w/o any activities */
-uint32_t inactive_counter = 30*1000;
-
-#define WATCH_FLAG_SLEEP_MODE   _BV(1)
-#define WATCH_FLAG_SLEEP_EXIT   _BV(2)
-#define WATCH_FLAG_BMA_IRQ      _BV(3)
-#define WATCH_FLAG_AXP_IRQ      _BV(4)
-
-QueueHandle_t g_event_queue_handle = NULL;
-EventGroupHandle_t g_event_group = NULL;
-EventGroupHandle_t isr_group = NULL;
-bool lenergy = false;
 TTGOClass *ttgo;
 
-bool mvtWakeup = true; // can wakeup from mouvement
 
-/*****
- * Handle sleep
- *****/
-
-void low_energy( void ){
-/* Enter in low energy */
-
-	xEventGroupSetBits(isr_group, WATCH_FLAG_SLEEP_MODE);
-	ttgo->closeBL();
-	ttgo->stopLvglTick();
-	ttgo->bma->enableStepCountInterrupt(false);
-	ttgo->displaySleep();
-
-//	if(!WiFi.isConnected()){
-		lenergy = true;
-// 		WiFi.mode(WIFI_OFF);
-		setCpuFrequencyMhz(20);
-
-		Serial.println("ENTER IN LIGHT SLEEEP MODE");
-		
-		gpio_wakeup_enable( (gpio_num_t)AXP202_INT, GPIO_INTR_LOW_LEVEL );
-		if(mvtWakeup){
-			gpio_wakeup_enable( (gpio_num_t)BMA423_INT1, GPIO_INTR_HIGH_LEVEL );
-			Serial.println("BMA allowed");
-		} else {
-			gpio_wakeup_disable( (gpio_num_t)BMA423_INT1 );
-			Serial.println("BMA disabled");
-		}
-		esp_sleep_enable_gpio_wakeup(); // work only in light sleep mode
-		esp_sleep_enable_uart_wakeup(0); // work only in light sleep mode
-
-		delay(500);
-		esp_light_sleep_start();
-//	}
-}
-
-/* wake up from low energy mode */
-void wakeup( void ){
-	ttgo->startLvglTick();
-	ttgo->displayWakeup();
-	ttgo->rtc->syncToSystem();
-
-	gui->updateStepCounter();
-	gui->updateBatteryLevel();
-	gui->updateBatteryIcon( Gui::LV_ICON_UNKNOWN );
-
-	lv_disp_trig_activity(NULL);
-	ttgo->openBL();
-	ttgo->bma->enableStepCountInterrupt();
-}
+	/*********************
+	* Initialization
+	* Called when the watch is starting after power-up
+	* but also when waked-up after deep-sleep
+	**********************/
 
 void setup(){
 	Serial.begin(115200);
@@ -171,33 +109,13 @@ void setup(){
 		Serial.println("Who know ...");
 	}
 
-#if 0	/* NO : the RTC is already in the correct time zone */
-	/* Initialize time zone (France) */
-	setenv("TZ", "CET-1CEST-2,M3.5.0/02:00:00,M10.5.0/03:00:00",1);	// France
-	tzset();
-#endif
+		/****
+		* Handle the watch
+		*****/
 
-	/* Create a program that allows the required message objects 
-	 * and group flags
-	 */
-	g_event_queue_handle = xQueueCreate(60, sizeof(uint8_t));
-	g_event_group = xEventGroupCreate();
-	isr_group = xEventGroupCreate();
-
-	/* handling the watch */
-	ttgo = TTGOClass::getWatch();	
-	ttgo->begin();	// start peripherals
-
-	/* starting with LVGL */
-	ttgo->lvgl_begin();
-
-	/* Power */
-	Serial.println("Setting up interrupts ...");
-
-	// Turn on the IRQ used
-	ttgo->power->adc1Enable(AXP202_BATT_VOL_ADC1 | AXP202_BATT_CUR_ADC1 | AXP202_VBUS_VOL_ADC1 | AXP202_VBUS_CUR_ADC1, AXP202_ON);
-	ttgo->power->enableIRQ(AXP202_VBUS_REMOVED_IRQ | AXP202_VBUS_CONNECT_IRQ | AXP202_CHARGING_FINISHED_IRQ, AXP202_ON);
-	ttgo->power->clearIRQ();
+	ttgo = TTGOClass::getWatch();
+	ttgo->begin();			// start peripherals
+	ttgo->lvgl_begin();		// start LVGL
 
 	// Turn off unused power
 	ttgo->power->setPowerOutPut(AXP202_EXTEN, AXP202_OFF);
@@ -205,75 +123,19 @@ void setup(){
 	ttgo->power->setPowerOutPut(AXP202_LDO3, AXP202_OFF);
 	ttgo->power->setPowerOutPut(AXP202_LDO4, AXP202_OFF);
 
-	// Enable BMA423 interrupt 
-	// The default interrupt configuration,
-	// you need to set the acceleration parameters, please refer to the BMA423_Accel example
-	ttgo->bma->attachInterrupt();
 
-	//Connection interrupted to the specified pin
-	pinMode(BMA423_INT1, INPUT);
-	attachInterrupt(BMA423_INT1, [] {
-		BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-		EventBits_t  bits = xEventGroupGetBitsFromISR(isr_group);
-		if(bits & WATCH_FLAG_SLEEP_MODE){ //! For quick wake up, use the group flag
-			xEventGroupSetBitsFromISR(isr_group, WATCH_FLAG_SLEEP_EXIT | WATCH_FLAG_BMA_IRQ, &xHigherPriorityTaskWoken);
-		} else {
-			uint8_t data = Q_EVENT_BMA_INT;
-			xQueueSendFromISR(g_event_queue_handle, &data, &xHigherPriorityTaskWoken);
-		}
+		/****
+		* Initialize the clock
+		*****/
 
-		if(xHigherPriorityTaskWoken){
-			portYIELD_FROM_ISR();
-		}
-	}, RISING);
-
-	// Connection interrupted to the specified pin
-	pinMode(AXP202_INT, INPUT);
-	attachInterrupt(AXP202_INT, [] {
-		BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-		EventBits_t  bits = xEventGroupGetBitsFromISR(isr_group);
-		if(bits & WATCH_FLAG_SLEEP_MODE){
-			//! For quick wake up, use the group flag
-			xEventGroupSetBitsFromISR(isr_group, WATCH_FLAG_SLEEP_EXIT | WATCH_FLAG_AXP_IRQ, &xHigherPriorityTaskWoken);
-		} else {
-			uint8_t data = Q_EVENT_AXP_INT;
-			xQueueSendFromISR(g_event_queue_handle, &data, &xHigherPriorityTaskWoken);
-		}
-
-		if(xHigherPriorityTaskWoken){
-			portYIELD_FROM_ISR ();
-		}
-	}, FALLING);
-
-	
-	/* Initialise clock */
 	Serial.println("Reading RTC ...");
-	ttgo->rtc->check();	// Check if the clock is valid or fallback to compilation time
-	ttgo->rtc->syncToSystem(); //Synchronize time to system time
+	ttgo->rtc->check();			// Ensure the RTC is valid (if not use compilation time)
+	ttgo->rtc->syncToSystem();	// sync with ESP32
 
-	{	// Debugging
-		time_t now;
-		struct tm  info;
-		char buf[64];
 
-		time(&now);
-		localtime_r(&now, &info);
-		strftime(buf, sizeof(buf), "%H:%M:%S", &info);
-		Serial.print("Setting clock to ");
-		Serial.println(buf);
-	}
-
-	/* Execute our own GUI interface */
-
-	Serial.println("Setting up the GUI ...");
-	gui = new Gui();
-
-	gui->updateBatteryLevel();	// Initial values
-	gui->updateBatteryIcon( Gui::LV_ICON_UNKNOWN );
-
-	lv_disp_trig_activity(NULL); // Clear lvgl activity counter
-
-	ttgo->openBL(); // Everything done, turn on the backlight
+		/****
+		* Completed
+		*****/
 
 	Serial.printf("Total heap: %d\n", ESP.getHeapSize());
     Serial.printf("Free heap: %d\n", ESP.getFreeHeap());
@@ -283,93 +145,14 @@ void setup(){
 	Serial.println("Initialisation completed");
 }
 
+	/*******************
+	*	loop() is mandatory when using Arduino IDE
+	*	In RTOS, loop() is a task like another one with a priority 1
+	*	
+	*	In DomoWatch, loop() is handling :
+	*		- CLI
+	*		- lvgl timeout
+	********************/
 void loop(){
-	bool  rlst;
-	uint8_t data;
-
-	/* Test about wake up irq */
-	EventBits_t  bits = xEventGroupGetBits(isr_group);
-	if(bits & WATCH_FLAG_SLEEP_EXIT){
-		Serial.println("Waking up");
-		if(lenergy){
-			Serial.println("from low energy mode.");
-			lenergy = false;
-			setCpuFrequencyMhz(160);
-		}
-
-		wakeup();
-
-		if(bits & WATCH_FLAG_BMA_IRQ){
-			Serial.println("IRQ BMA");
-			do {
-				rlst =  ttgo->bma->readInterrupt();
-			} while(!rlst);
-			xEventGroupClearBits(isr_group, WATCH_FLAG_BMA_IRQ);
-		}
-		if(bits & WATCH_FLAG_AXP_IRQ){
-			Serial.println("IRQ AXP");
-			ttgo->power->readIRQ();
-			ttgo->power->clearIRQ();
-				//TODO: Only accept axp power pek key short press
-			xEventGroupClearBits(isr_group, WATCH_FLAG_AXP_IRQ);
-		}
-		xEventGroupClearBits(isr_group, WATCH_FLAG_SLEEP_EXIT);
-		xEventGroupClearBits(isr_group, WATCH_FLAG_SLEEP_MODE);
-	}
-
-	if((bits & WATCH_FLAG_SLEEP_MODE)){
-		//! No event processing after entering the information screen
-		return;
-	}
-
-	/* other activities */
-	if(xQueueReceive(g_event_queue_handle, &data, 5 / portTICK_RATE_MS) == pdPASS){
-		switch(data){
-		case Q_EVENT_BMA_INT: // step counter
-			do
-				rlst =  ttgo->bma->readInterrupt();
-			while(!rlst);
-
-			if(ttgo->bma->isStepCounter())
-				gui->updateStepCounter();
-			break;
-
-		case Q_EVENT_AXP_INT:
-				// Power management
-			ttgo->power->readIRQ();
-
-			if(ttgo->power->isVbusPlugInIRQ())
-				gui->updateBatteryIcon( Gui::LV_ICON_CHARGE );
-	
-			if(ttgo->power->isVbusRemoveIRQ())
-				gui->updateBatteryIcon( Gui::LV_ICON_CALCULATION );
-
-			if(ttgo->power->isChargingDoneIRQ())
-				gui->updateBatteryIcon( Gui::LV_ICON_CALCULATION );
-
-				// Button push
-			if(ttgo->power->isPEKShortPressIRQ()){
-				Serial.println("Button pressed");
-				ttgo->power->clearIRQ();
-				if(ttgo->bl->isOn())
-					low_energy();
-				else
-					wakeup();
-				return;
-			}
-
-			ttgo->power->clearIRQ();
-			break;
-
-		}
-	}
-
-	CommandLine::loop();
-
-	if(lv_disp_get_inactive_time(NULL) < inactive_counter)
-		lv_task_handler();
-	else {	// No activities : going to sleep
-		Serial.println("No activity : Go to sleep");
-		low_energy();
-	}
 }
+
