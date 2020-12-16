@@ -45,7 +45,7 @@
 	*****/
 
 TTGOClass *ttgo;
-
+uint32_t inactive_counter = 30*1000;	// The watch is going to sleep if no GUI activities
 
 	/*********************
 	* Initialization
@@ -152,7 +152,22 @@ void setup(){
 	*	In DomoWatch, loop() is handling :
 	*		- CLI
 	*		- lvgl timeout
+	*
+	*	CAUTION : as not event driven, it's important to
+	*	avoid blocking or long standing activities in loop()
 	********************/
 void loop(){
+	CommandLine::loop();	// Any command to handle ?
+
+	if(lv_disp_get_inactive_time(NULL) < inactive_counter)
+		lv_task_handler();	// let Lvgl to handle it's own internals
+#if 0
+	else {	// No activities : going to sleep
+		Serial.println("No activity : Go to sleep");
+		low_energy();
+	}
+#endif
+
+	delay( 500 );
 }
 
