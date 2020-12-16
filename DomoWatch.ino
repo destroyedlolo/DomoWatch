@@ -46,6 +46,7 @@
 
 TTGOClass *ttgo;
 uint32_t inactive_counter = 30*1000;	// The watch is going to sleep if no GUI activities
+bool mvtWakeup = true; // can wakeup from mouvement
 
 	/*********************
 	* Initialization
@@ -115,7 +116,6 @@ void setup(){
 
 	ttgo = TTGOClass::getWatch();
 	ttgo->begin();			// start peripherals
-	ttgo->lvgl_begin();		// start LVGL
 
 	// Turn off unused power
 	ttgo->power->setPowerOutPut(AXP202_EXTEN, AXP202_OFF);
@@ -123,9 +123,22 @@ void setup(){
 	ttgo->power->setPowerOutPut(AXP202_LDO3, AXP202_OFF);
 	ttgo->power->setPowerOutPut(AXP202_LDO4, AXP202_OFF);
 
+		/****
+		* start the GUI
+		*****/
+
+	Serial.println("Setting up the GUI ...");
+
+	ttgo->lvgl_begin();		// start LVGL
+	gui = new Gui();
+	gui->updateBatteryLevel();	// Initial values
+	gui->updateBatteryIcon( Gui::LV_ICON_UNKNOWN );
+	lv_disp_trig_activity(NULL); // Clear lvgl activity counter
+
+	ttgo->openBL(); // Everything done, turn on the backlight
 
 		/****
-		* Initialize the clock
+		* restore the time
 		*****/
 
 	Serial.println("Reading RTC ...");
@@ -168,6 +181,6 @@ void loop(){
 	}
 #endif
 
-	delay( 500 );
+	delay( 5 );
 }
 
