@@ -28,7 +28,7 @@
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
 #include <freertos/timers.h>
-#include <freertos/queue.h>
+#include <freertos/event_groups.h>
 
 #include <esp_task_wdt.h>	// Watchdog
 
@@ -46,7 +46,42 @@
 
 TTGOClass *ttgo;
 uint32_t inactive_counter = 30*1000;	// The watch is going to sleep if no GUI activities
-bool mvtWakeup = true; // can wakeup from mouvement
+bool mvtWakeup = true; // can wakeup from movement
+
+
+	/*****
+	* flags shared among tasks/IRQ
+	* so arbitration is needed
+	 *****/
+
+#define WATCH_SLEEP		_BV(0)	// The watch is starting up
+#define WATCH_IRQ_AXP	_BV(1)	// IRQ from the power management
+#define WATCH_IRQ_BMA	_BV(2)	// IRQ from movements
+
+EventGroupHandle_t flags = NULL;
+
+TaskHandle_t powerTask = NULL;
+
+void handlePowerIRQ( void *pvParameters ){
+	for(;;){
+		EventBits_t bits = xEventGroupWaitBits(
+			flags, 
+			WATCH_IRQ_AXP | WATCH_IRQ_BMA,	// which even to wait for
+			pdTRUE,							// clear them when got
+			pdFALSE,						// no need to have all
+			portMAX_DELAY					// wait forever
+		);
+
+		Serial.printf("bip %x\n", bits);
+		if( bits & WATCH_IRQ_AXP ){
+			ttgo->power->clearIRQ();	// Reset IRQ
+			if(ttgo->bl->isOn())
+				ttgo->closeBL();
+			else
+				ttgo->openBL();
+		}
+	}
+}
 
 	/*********************
 	* Initialization
@@ -123,6 +158,7 @@ void setup(){
 	ttgo->power->setPowerOutPut(AXP202_LDO3, AXP202_OFF);
 	ttgo->power->setPowerOutPut(AXP202_LDO4, AXP202_OFF);
 
+
 		/****
 		* start the GUI
 		*****/
@@ -137,6 +173,7 @@ void setup(){
 
 	ttgo->openBL(); // Everything done, turn on the backlight
 
+
 		/****
 		* restore the time
 		*****/
@@ -144,6 +181,36 @@ void setup(){
 	Serial.println("Reading RTC ...");
 	ttgo->rtc->check();			// Ensure the RTC is valid (if not use compilation time)
 	ttgo->rtc->syncToSystem();	// sync with ESP32
+
+
+		/****
+		* IRQ and events
+		*****/
+
+	Serial.println("Setting up interrupts ...");
+	flags = xEventGroupCreate();
+
+	// power on interrupt
+	pinMode(AXP202_INT, INPUT);
+	attachInterrupt(AXP202_INT, [] {
+		BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+		xEventGroupSetBitsFromISR(flags, WATCH_IRQ_AXP, &xHigherPriorityTaskWoken);
+
+		if(xHigherPriorityTaskWoken)
+			portYIELD_FROM_ISR ();
+	}, FALLING);
+
+	ttgo->power->clearIRQ();
+
+	if( pdPASS != xTaskCreate( 
+		handlePowerIRQ,				// function to call
+		"Power", 					// name
+		/* configMINIMAL_STACK_SIZE */ 65535,	// stack size (default)
+		NULL,						// Argument
+		10,							// priority
+		&powerTask					// Task's handle
+	) )
+		Serial.println("Power task creation failed");
 
 
 		/****
