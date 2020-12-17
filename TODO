@@ -2,3 +2,17 @@ Thing to do ... or not
 **********************
 
 If deep_sleep, probably the backlight has to be changed in RTC
+
+AXP
+***
+
+Several press : managed by setlongPressTime( axp_loonPress_time_t )
+isPEKShortPressIRQ();
+isPEKLongtPressIRQ();
+
+Shutdown by : setShutdownTime( axp_poweroff_time_t )
+
+see also setTimeOutShutdown()
+
+There is also a timer
+
