@@ -48,24 +48,43 @@ TTGOClass *ttgo;
 uint32_t inactive_counter = 30*1000;	// The watch is going to sleep if no GUI activities
 bool mvtWakeup = true; // can wakeup from movement
 
+	/*******
+	* Signaling
+	 *******/
 
-	/*****
-	* flags shared among tasks/IRQ
-	* so arbitration is needed
-	 *****/
+	/* IRQ own codes are running in dedicated environment so
+	 * are having reduced API and must run as fast as possible.
+	 * Consequently, they are only positioning some flags and 
+	 * actions are done in handler that are running  as normal
+	 * tasks.
+	 */
 
-#define WATCH_SLEEP		_BV(0)	// The watch is starting up
-#define WATCH_IRQ_AXP	_BV(1)	// IRQ from the power management
-#define WATCH_IRQ_BMA	_BV(2)	// IRQ from movements
+#define WATCH_IRQ_AXP	_BV(0)	// IRQ from the power management
+#define WATCH_IRQ_BMA	_BV(1)	// IRQ from movements
 
-EventGroupHandle_t flags = NULL;
+EventGroupHandle_t irqs = NULL;
+
+	/* Lvgl's related need to run in one dedicated task as not
+	 * multi-tasking compliant.
+	 * We don't have to exchange data with it (as it will retrieve
+	 * figures to be displayed directly for the hardware).
+	 * Additionally, we don't have to take care if an event happened
+	 * several times.
+	 * All in all, standard event are enough.
+	 */
+
+#define WATCH_GL_WAKEUP			_BV(0)	// GUI need to be restarted
+#define WATCH_GL_LIGHT_SLEEP	_BV(1)	// Need to enter in light sleep
+#define WATCH_GL_DEEP_SLEEP		_BV(2)	// For (near ?) future
+
+EventGroupHandle_t gui_actions = NULL;
 
 TaskHandle_t powerTask = NULL;
 
 void handlePowerIRQ( void *pvParameters ){
 	for(;;){
 		EventBits_t bits = xEventGroupWaitBits(
-			flags, 
+			irqs, 
 			WATCH_IRQ_AXP | WATCH_IRQ_BMA,	// which even to wait for
 			pdTRUE,							// clear them when got
 			pdFALSE,						// no need to have all
@@ -75,7 +94,7 @@ void handlePowerIRQ( void *pvParameters ){
 		Serial.printf("bip %x\n", bits);
 		if( bits & WATCH_IRQ_AXP ){
 			ttgo->power->clearIRQ();	// Reset IRQ
-			if(ttgo->bl->isOn())
+			if(ttgo->bl->isOn())	// check if we are sleeping
 				ttgo->closeBL();
 			else
 				ttgo->openBL();
@@ -188,13 +207,14 @@ void setup(){
 		*****/
 
 	Serial.println("Setting up interrupts ...");
-	flags = xEventGroupCreate();
+	irqs = xEventGroupCreate();
+	gui_actions = xEventGroupCreate();
 
 	// power on interrupt
 	pinMode(AXP202_INT, INPUT);
 	attachInterrupt(AXP202_INT, [] {
 		BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-		xEventGroupSetBitsFromISR(flags, WATCH_IRQ_AXP, &xHigherPriorityTaskWoken);
+		xEventGroupSetBitsFromISR(irqs, WATCH_IRQ_AXP, &xHigherPriorityTaskWoken);
 
 		if(xHigherPriorityTaskWoken)
 			portYIELD_FROM_ISR ();
@@ -231,7 +251,8 @@ void setup(){
 	*	
 	*	In DomoWatch, loop() is handling :
 	*		- CLI
-	*		- lvgl timeout
+	*		- lvgl related things (ALL related things as it seems
+	*	lvgl is not currently multi-tasking aware.
 	*
 	*	CAUTION : as not event driven, it's important to
 	*	avoid blocking or long standing activities in loop()
