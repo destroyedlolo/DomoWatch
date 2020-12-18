@@ -2,6 +2,7 @@ Thing to do ... or not
 **********************
 
 If deep_sleep, probably the backlight has to be changed in RTC
+Flush uart in Deep_sleep mode, not in light_sleep
 
 AXP
 ***
