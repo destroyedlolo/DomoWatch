@@ -99,11 +99,13 @@ void handlePowerIRQ( void *pvParameters ){
 		Serial.printf("bip %x\n", bits);
 
 		if( bits & WATCH_IRQ_AXP ){
+			ttgo->power->readIRQ();			// Transter AXP register to buffer
+			if(ttgo->power->isPEKShortPressIRQ()){
+				xEventGroupSetBits( gui_actions,								// send an event ...
+					ttgo->bl->isOn() ? WATCH_GL_LIGHT_SLEEP : WATCH_GL_WAKEUP	// depending on the current status
+				);
+			}
 			ttgo->power->clearIRQ();	// Reset IRQ
-			if(ttgo->bl->isOn())	// check if we are sleeping
-				ttgo->closeBL();
-			else
-				ttgo->openBL();
 		}
 	}
 }
@@ -266,6 +268,19 @@ void setup(){
 	*	avoid blocking or long standing activities in loop()
 	********************/
 void loop(){
+	EventBits_t bits = xEventGroupWaitBits(
+		gui_actions, 
+		WATCH_GL_LIGHT_SLEEP | WATCH_GL_WAKEUP,	// which even to wait for
+		pdTRUE,							// clear them when got
+		pdFALSE,						// no need to have all
+		5 / portTICK_RATE_MS			// 5 ms then let loop to let recurrent tasks
+	);
+
+	if( !!(bits & WATCH_GL_LIGHT_SLEEP) )
+		ttgo->closeBL();
+	if( !!(bits & WATCH_GL_WAKEUP) )
+		ttgo->openBL();
+
 	CommandLine::loop();	// Any command to handle ?
 
 	if(lv_disp_get_inactive_time(NULL) < inactive_counter)
