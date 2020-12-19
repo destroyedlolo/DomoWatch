@@ -41,22 +41,6 @@
 #include "CommandLine.h"
 
 
-	/*****
-	* flags shared among tasks/IRQ
-	* so arbitration is needed
-	 *****/
-
-EventGroupHandle_t flags = NULL;
-
-#define WATCH_IRQ_AXP	_BV(0)	// IRQ from the power management
-#define WATCH_IRQ_BMA	_BV(1)	// IRQ from movements
-#define	WATCH_WACKUP	_BV(2)	// wakeup
-
-EventGroupHandle_t watch_mode = NULL;
-
-#define WATCH_MODE_SLEEP _BV(0)	// We're in sleep mode
-
-
 	/****
 	* Shared object
 	*****/
@@ -96,40 +80,11 @@ EventGroupHandle_t irqs = NULL;
 
 EventGroupHandle_t gui_actions = NULL;
 
-void light_sleep(){
-	low_energy();
-
-	Serial.println("ENTER IN LIGHT SLEEEP MODE");
-
-	xEventGroupSetBits( watch_mode, WATCH_MODE_SLEEP );	// Notifying we want to sleep
-
-	gpio_wakeup_enable( (gpio_num_t)AXP202_INT, GPIO_INTR_LOW_LEVEL );
-	esp_sleep_enable_gpio_wakeup();		// work only in light sleep mode
-
-#if 0
-	uart_set_wakeup_threshold(UART_NUM_0,3);
-	esp_sleep_enable_uart_wakeup(UART_NUM_0);	// work only in light sleep mode
-	Serial.println("Type 'a' to wake-up");
-#endif
-
-	setCpuFrequencyMhz(20);	// Slow down processor
-
-	delay(500);	// let some time to flush serial
-
-	esp_light_sleep_start();	// Go to sleep
-
-	Serial.println("Waked ...");
-
-	setCpuFrequencyMhz(160);
-	xEventGroupSetBits( flags, WATCH_WACKUP );
-}
-
 
 	/****
 	* IRQ from PEK / AXP
 	 ****/
 TaskHandle_t powerTask = NULL;
-TaskHandle_t wakeupTask = NULL;
 
 void handlePowerIRQ( void *pvParameters ){
 	for(;;){
@@ -143,35 +98,16 @@ void handlePowerIRQ( void *pvParameters ){
 
 		Serial.printf("bip %x\n", bits);
 
-		EventBits_t bmode = xEventGroupGetBits( watch_mode );
-
 		if( bits & WATCH_IRQ_AXP ){
-			ttgo->power->readIRQ();
 			ttgo->power->clearIRQ();	// Reset IRQ
 			if(ttgo->bl->isOn())	// check if we are sleeping
 				ttgo->closeBL();
 			else
-				Serial.println("Sleeping");
+				ttgo->openBL();
 		}
 	}
 }
 
-void handleWakeup( void *pvParameters ){
-	for(;;){
-		xEventGroupWaitBits(
-			flags, 
-			WATCH_WACKUP,	// which even to wait for
-			pdTRUE,			// clear them when got
-			pdFALSE,		// no need to have all
-			portMAX_DELAY	// wait forever
-		);
-		
-		start_everything();
-
-Serial.println("wakeup");
-		xEventGroupClearBits( watch_mode, WATCH_MODE_SLEEP );
-	}
-}
 
 	/*********************
 	* Initialization
@@ -303,16 +239,6 @@ void setup(){
 	) )
 		Serial.println("Power task creation failed");
 
-	if( pdPASS != xTaskCreate( 
-		handleWakeup,				// function to call
-		"wakeup", 					// name
-		/* configMINIMAL_STACK_SIZE */ 65535,	// stack size (default)
-		NULL,						// Argument
-		10,							// priority
-		&wakeupTask					// Task's handle
-	) )
-		Serial.println("Wakeup task creation failed");
-
 
 		/****
 		* Completed
@@ -326,6 +252,7 @@ void setup(){
 	Serial.println("Initialisation completed");
 }
 
+
 	/*******************
 	*	loop() is mandatory when using Arduino IDE
 	*	In RTOS, loop() is a task like another one with a priority 1
@@ -333,7 +260,7 @@ void setup(){
 	*	In DomoWatch, loop() is handling :
 	*		- CLI
 	*		- lvgl related things (ALL related things as it seems
-	*	lvgl is not currently multi-tasking aware.
+	*	lvgl is not currently multi-tasking aware).
 	*
 	*	CAUTION : as not event driven, it's important to
 	*	avoid blocking or long standing activities in loop()
@@ -345,7 +272,7 @@ void loop(){
 		lv_task_handler();	// let Lvgl to handle it's own internals
 	else {	// No activities : going to sleep
 		Serial.println("No activity : Go to sleep");
-		light_sleep();
+lv_task_handler();	// let Lvgl to handle it's own internals
 	}
 
 	delay( 5 );
