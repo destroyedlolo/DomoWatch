@@ -65,51 +65,6 @@ bool mvtWakeup = true; // can wakeup from movement
 
 EventGroupHandle_t irqs = NULL;
 
-	/* Lvgl's related need to run in one dedicated task as not
-	 * multi-tasking compliant.
-	 * We don't have to exchange data with it (as it will retrieve
-	 * figures to be displayed directly for the hardware).
-	 * Additionally, we don't have to take care if an event happened
-	 * several times.
-	 * All in all, standard event are enough.
-	 */
-
-#define WATCH_GL_WAKEUP			_BV(0)	// GUI need to be restarted
-#define WATCH_GL_LIGHT_SLEEP	_BV(1)	// Need to enter in light sleep
-#define WATCH_GL_DEEP_SLEEP		_BV(2)	// For (near ?) future
-
-EventGroupHandle_t gui_actions = NULL;
-
-
-	/****
-	* IRQ from PEK / AXP
-	 ****/
-TaskHandle_t powerTask = NULL;
-
-void handlePowerIRQ( void *pvParameters ){
-	for(;;){
-		EventBits_t bits = xEventGroupWaitBits(
-			irqs, 
-			WATCH_IRQ_AXP | WATCH_IRQ_BMA,	// which even to wait for
-			pdTRUE,							// clear them when got
-			pdFALSE,						// no need to have all
-			portMAX_DELAY					// wait forever
-		);
-
-		Serial.printf("bip %x\n", bits);
-
-		if( bits & WATCH_IRQ_AXP ){
-			ttgo->power->readIRQ();			// Transter AXP register to buffer
-			if(ttgo->power->isPEKShortPressIRQ()){
-				xEventGroupSetBits( gui_actions,								// send an event ...
-					ttgo->bl->isOn() ? WATCH_GL_LIGHT_SLEEP : WATCH_GL_WAKEUP	// depending on the current status
-				);
-			}
-			ttgo->power->clearIRQ();	// Reset IRQ
-		}
-	}
-}
-
 
 	/*********************
 	* Initialization
@@ -217,7 +172,6 @@ void setup(){
 
 	Serial.println("Setting up interrupts ...");
 	irqs = xEventGroupCreate();
-	gui_actions = xEventGroupCreate();
 
 	// power on interrupt
 	pinMode(AXP202_INT, INPUT);
@@ -229,17 +183,8 @@ void setup(){
 			portYIELD_FROM_ISR ();
 	}, FALLING);
 
+	ttgo->power->enableIRQ(AXP202_PEK_SHORTPRESS_IRQ | AXP202_VBUS_REMOVED_IRQ | AXP202_VBUS_CONNECT_IRQ | AXP202_CHARGING_IRQ, true);
 	ttgo->power->clearIRQ();
-
-	if( pdPASS != xTaskCreate( 
-		handlePowerIRQ,				// function to call
-		"Power", 					// name
-		/* configMINIMAL_STACK_SIZE */ 65535,	// stack size (default)
-		NULL,						// Argument
-		10,							// priority
-		&powerTask					// Task's handle
-	) )
-		Serial.println("Power task creation failed");
 
 
 		/****
@@ -269,27 +214,67 @@ void setup(){
 	********************/
 void loop(){
 	EventBits_t bits = xEventGroupWaitBits(
-		gui_actions, 
-		WATCH_GL_LIGHT_SLEEP | WATCH_GL_WAKEUP,	// which even to wait for
+		irqs, 
+		WATCH_IRQ_AXP,	// which even to wait for
 		pdTRUE,							// clear them when got
 		pdFALSE,						// no need to have all
 		5 / portTICK_RATE_MS			// 5 ms then let loop to let recurrent tasks
 	);
 
-	if( !!(bits & WATCH_GL_LIGHT_SLEEP) )
-		ttgo->closeBL();
-	if( !!(bits & WATCH_GL_WAKEUP) )
-		ttgo->openBL();
+	if( bits & WATCH_IRQ_AXP ){
+		ttgo->power->readIRQ();	// update library buffer
+
+		if(ttgo->power->isPEKShortPressIRQ())
+				Serial.println("PEK");
+
+	    ttgo->power->clearIRQ();	// Free for other interrupt
+		ttgo->power->readIRQ();	// DEBUG
+
+		if( ttgo->bl->isOn() ){
+			ttgo->closeBL();		// turn off back light
+			ttgo->stopLvglTick();	// stop Lvgl
+			ttgo->displaySleep();	// turn off touchscreen
+
+			gpio_wakeup_enable( (gpio_num_t)AXP202_INT, GPIO_INTR_LOW_LEVEL );	// IRQ to wakeup
+			esp_sleep_enable_gpio_wakeup();
+
+			Serial.println("ENTER IN LIGHT SLEEP MODE");
+			setCpuFrequencyMhz(20);
+			delay(500);	// let time to flush uart
+
+			esp_light_sleep_start();	// dodo
+
+			setCpuFrequencyMhz(160);
+			Serial.println("Hello, I'm back");
+
+			return;	// lets loop() doing another turn
+		} else {
+			Serial.println("wake up");
+
+			ttgo->startLvglTick();
+			ttgo->displayWakeup();
+			ttgo->rtc->syncToSystem();
+
+			gui->updateStepCounter();
+			gui->updateBatteryLevel();
+			gui->updateBatteryIcon( Gui::LV_ICON_UNKNOWN );
+
+			lv_disp_trig_activity(NULL);
+			ttgo->openBL();
+
+			return;	// lets loop() doing another turn
+		}
+	}
 
 	CommandLine::loop();	// Any command to handle ?
 
+#if 0
 	if(lv_disp_get_inactive_time(NULL) < inactive_counter)
 		lv_task_handler();	// let Lvgl to handle it's own internals
 	else {	// No activities : going to sleep
 		Serial.println("No activity : Go to sleep");
-lv_task_handler();	// let Lvgl to handle it's own internals
 	}
-
-	delay( 5 );
+#endif
+	lv_task_handler();	// let Lvgl to handle it's own internals
 }
 
