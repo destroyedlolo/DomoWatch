@@ -89,14 +89,23 @@ void wakeup(){
 
 	lv_disp_trig_activity(NULL);
 	ttgo->openBL();
+	ttgo->bma->enableStepCountInterrupt();	// Restore step counter follow-up
 }
 
 void light_sleep(){
 	ttgo->closeBL();		// turn off back light
 	ttgo->stopLvglTick();	// stop Lvgl
 	ttgo->displaySleep();	// turn off touchscreen
+	ttgo->bma->enableStepCountInterrupt(false);	// Step counter will not generate interrupt
 
 	gpio_wakeup_enable( (gpio_num_t)AXP202_INT, GPIO_INTR_LOW_LEVEL );	// IRQ to wakeup
+	if(mvtWakeup){
+		gpio_wakeup_enable( (gpio_num_t)BMA423_INT1, GPIO_INTR_HIGH_LEVEL );
+		Serial.println("BMA allowed");
+	} else {
+		gpio_wakeup_disable( (gpio_num_t)BMA423_INT1 );
+		Serial.println("BMA disabled");
+	}
 	esp_sleep_enable_gpio_wakeup();
 
 	Serial.println("ENTER IN LIGHT SLEEP MODE");
