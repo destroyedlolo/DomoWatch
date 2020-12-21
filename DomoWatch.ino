@@ -47,6 +47,7 @@
 
 TTGOClass *ttgo;
 uint32_t inactive_counter = 30*1000;	// The watch is going to sleep if no GUI activities
+bool wakingup = true;
 bool mvtWakeup = true; // can wakeup from movement
 
 
@@ -71,6 +72,21 @@ EventGroupHandle_t irqs = NULL;
 	*	Sleeping
 	**********************/
 
+void wakeup(){
+	Serial.println("wake up");
+
+	ttgo->startLvglTick();
+	ttgo->displayWakeup();
+	ttgo->rtc->syncToSystem();
+
+	gui->updateStepCounter();
+//	gui->updateBatteryLevel();
+//	gui->updateBatteryIcon( Gui::LV_ICON_UNKNOWN );
+
+	lv_disp_trig_activity(NULL);
+	ttgo->openBL();
+}
+
 void light_sleep(){
 	ttgo->closeBL();		// turn off back light
 	ttgo->stopLvglTick();	// stop Lvgl
@@ -87,21 +103,8 @@ void light_sleep(){
 
 	setCpuFrequencyMhz(160);
 	Serial.println("Hello, I'm back");
-}
-
-void wakeup(){
-	Serial.println("wake up");
-
-	ttgo->startLvglTick();
-	ttgo->displayWakeup();
-	ttgo->rtc->syncToSystem();
-
-	gui->updateStepCounter();
-	gui->updateBatteryLevel();
-	gui->updateBatteryIcon( Gui::LV_ICON_UNKNOWN );
-
-	lv_disp_trig_activity(NULL);
-	ttgo->openBL();
+	wakeup();
+	wakingup = true;
 }
 
 	/*********************
@@ -266,19 +269,26 @@ void loop(){
 	if( bits & WATCH_IRQ_AXP ){
 		ttgo->power->readIRQ();	// update library buffer
 
-		bool longPEK = ttgo->power->isPEKLongtPressIRQ();	// for future usage
-		if( longPEK )
+		bool longPEK;
+
+		if( ((longPEK = ttgo->power->isPEKLongtPressIRQ()) || ttgo->power->isPEKShortPressIRQ()) && 
+		  !wakingup ){	// want to shutdown
+		    ttgo->power->clearIRQ();	// Free for other interrupt
+			if( longPEK )
 				Serial.println("Long PEK");
-
-	    ttgo->power->clearIRQ();	// Free for other interrupt
-		ttgo->power->readIRQ();	// DEBUG
-
-		if( ttgo->bl->isOn() )
 			light_sleep();
-		else
-			wakeup();
+			return;
+		} else {	// Probably sharing IRQ
+		    ttgo->power->clearIRQ();	// Free for other interrupt
+			gui->updateBatteryLevel();
+			gui->updateBatteryIcon( Gui::LV_ICON_UNKNOWN );
+
+			if( !ttgo->bl->isOn() )
+				wakeup();
+		}
 	}
 
+	wakingup = false;
 	CommandLine::loop();	// Any command to handle ?
 
 	if(lv_disp_get_inactive_time(NULL) < inactive_counter)
