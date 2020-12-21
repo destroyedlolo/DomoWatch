@@ -49,6 +49,7 @@ TTGOClass *ttgo;
 uint32_t inactive_counter = 30*1000;	// The watch is going to sleep if no GUI activities
 bool mvtWakeup = true; // can wakeup from movement
 
+
 	/*******
 	* Signaling
 	 *******/
@@ -65,6 +66,43 @@ bool mvtWakeup = true; // can wakeup from movement
 
 EventGroupHandle_t irqs = NULL;
 
+
+	/*********************
+	*	Sleeping
+	**********************/
+
+void light_sleep(){
+	ttgo->closeBL();		// turn off back light
+	ttgo->stopLvglTick();	// stop Lvgl
+	ttgo->displaySleep();	// turn off touchscreen
+
+	gpio_wakeup_enable( (gpio_num_t)AXP202_INT, GPIO_INTR_LOW_LEVEL );	// IRQ to wakeup
+	esp_sleep_enable_gpio_wakeup();
+
+	Serial.println("ENTER IN LIGHT SLEEP MODE");
+	setCpuFrequencyMhz(20);
+	delay(500);	// let time to flush uart
+
+	esp_light_sleep_start();	// dodo
+
+	setCpuFrequencyMhz(160);
+	Serial.println("Hello, I'm back");
+}
+
+void wakeup(){
+	Serial.println("wake up");
+
+	ttgo->startLvglTick();
+	ttgo->displayWakeup();
+	ttgo->rtc->syncToSystem();
+
+	gui->updateStepCounter();
+	gui->updateBatteryLevel();
+	gui->updateBatteryIcon( Gui::LV_ICON_UNKNOWN );
+
+	lv_disp_trig_activity(NULL);
+	ttgo->openBL();
+}
 
 	/*********************
 	* Initialization
@@ -196,11 +234,15 @@ void setup(){
     Serial.printf("Total PSRAM: %d\n", ESP.getPsramSize());
     Serial.printf("Free PSRAM: %d\n", ESP.getFreePsram());
 
-	Serial.println("Initialisation completed");
+	Serial.printf("\nLong PRESS : %d in 10thS\n", ttgo->power->getlongPressTime());
+	Serial.printf("Startup PRESS : %d in 10thS\n", ttgo->power->getStartupTime());
+	Serial.printf("Shutdown PRESS : %d in 10thS\n", ttgo->power->getShutdownTime());
+
+	Serial.println("\nInitialisation completed");
 }
 
 
-	/*******************
+	/*******************n
 	*	loop() is mandatory when using Arduino IDE
 	*	In RTOS, loop() is a task like another one with a priority 1
 	*	
@@ -213,7 +255,7 @@ void setup(){
 	*	avoid blocking or long standing activities in loop()
 	********************/
 void loop(){
-	EventBits_t bits = xEventGroupWaitBits(
+	EventBits_t bits = xEventGroupWaitBits(	// Waiting for event
 		irqs, 
 		WATCH_IRQ_AXP,	// which even to wait for
 		pdTRUE,							// clear them when got
@@ -224,57 +266,26 @@ void loop(){
 	if( bits & WATCH_IRQ_AXP ){
 		ttgo->power->readIRQ();	// update library buffer
 
-		if(ttgo->power->isPEKShortPressIRQ())
-				Serial.println("PEK");
+		bool longPEK = ttgo->power->isPEKLongtPressIRQ();	// for future usage
+		if( longPEK )
+				Serial.println("Long PEK");
 
 	    ttgo->power->clearIRQ();	// Free for other interrupt
 		ttgo->power->readIRQ();	// DEBUG
 
-		if( ttgo->bl->isOn() ){
-			ttgo->closeBL();		// turn off back light
-			ttgo->stopLvglTick();	// stop Lvgl
-			ttgo->displaySleep();	// turn off touchscreen
-
-			gpio_wakeup_enable( (gpio_num_t)AXP202_INT, GPIO_INTR_LOW_LEVEL );	// IRQ to wakeup
-			esp_sleep_enable_gpio_wakeup();
-
-			Serial.println("ENTER IN LIGHT SLEEP MODE");
-			setCpuFrequencyMhz(20);
-			delay(500);	// let time to flush uart
-
-			esp_light_sleep_start();	// dodo
-
-			setCpuFrequencyMhz(160);
-			Serial.println("Hello, I'm back");
-
-			return;	// lets loop() doing another turn
-		} else {
-			Serial.println("wake up");
-
-			ttgo->startLvglTick();
-			ttgo->displayWakeup();
-			ttgo->rtc->syncToSystem();
-
-			gui->updateStepCounter();
-			gui->updateBatteryLevel();
-			gui->updateBatteryIcon( Gui::LV_ICON_UNKNOWN );
-
-			lv_disp_trig_activity(NULL);
-			ttgo->openBL();
-
-			return;	// lets loop() doing another turn
-		}
+		if( ttgo->bl->isOn() )
+			light_sleep();
+		else
+			wakeup();
 	}
 
 	CommandLine::loop();	// Any command to handle ?
 
-#if 0
 	if(lv_disp_get_inactive_time(NULL) < inactive_counter)
 		lv_task_handler();	// let Lvgl to handle it's own internals
 	else {	// No activities : going to sleep
 		Serial.println("No activity : Go to sleep");
+		light_sleep();
 	}
-#endif
-	lv_task_handler();	// let Lvgl to handle it's own internals
 }
 
