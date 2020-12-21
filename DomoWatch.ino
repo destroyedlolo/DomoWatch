@@ -47,9 +47,13 @@
 
 TTGOClass *ttgo;
 uint32_t inactive_counter = 30*1000;	// The watch is going to sleep if no GUI activities
-bool wakingup = true;
 bool mvtWakeup = true; // can wakeup from movement
 
+	/* We must call wakeup() at the end of light_sleep() take in account all case of falling asleep.
+	 * But, as an AXP interrupt is wised at wake up, this flag will avoid a dead loop making the watch
+	 * thinking we want to sleep again as the back light is already on.
+	 */
+bool wakingup = true;
 
 	/*******
 	* Signaling
@@ -227,6 +231,21 @@ void setup(){
 	ttgo->power->enableIRQ(AXP202_PEK_SHORTPRESS_IRQ | AXP202_VBUS_REMOVED_IRQ | AXP202_VBUS_CONNECT_IRQ | AXP202_CHARGING_IRQ, true);
 	ttgo->power->clearIRQ();
 
+	// Enable BMA423 interrupt 
+	// The default interrupt configuration,
+	// you need to set the acceleration parameters, please refer to the BMA423_Accel example
+	ttgo->bma->attachInterrupt();
+
+	//Connection interrupted to the specified pin
+	pinMode(BMA423_INT1, INPUT);
+	attachInterrupt(BMA423_INT1, [] {
+		BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+		xEventGroupSetBitsFromISR(irqs, WATCH_IRQ_BMA, &xHigherPriorityTaskWoken);
+
+		if(xHigherPriorityTaskWoken)
+			portYIELD_FROM_ISR ();
+	}, RISING);
+
 
 		/****
 		* Completed
@@ -260,10 +279,10 @@ void setup(){
 void loop(){
 	EventBits_t bits = xEventGroupWaitBits(	// Waiting for event
 		irqs, 
-		WATCH_IRQ_AXP,	// which even to wait for
-		pdTRUE,							// clear them when got
-		pdFALSE,						// no need to have all
-		5 / portTICK_RATE_MS			// 5 ms then let loop to let recurrent tasks
+		WATCH_IRQ_AXP | WATCH_IRQ_BMA,	// which even to wait for
+		pdTRUE,								// clear them when got
+		pdFALSE,							// no need to have all
+		5 / portTICK_RATE_MS				// 5 ms then let loop to let recurrent tasks
 	);
 
 	if( bits & WATCH_IRQ_AXP ){
@@ -286,6 +305,16 @@ void loop(){
 			if( !ttgo->bl->isOn() )
 				wakeup();
 		}
+	}
+
+	if( bits & WATCH_IRQ_BMA ){
+		bool  rlst;
+		do {
+			rlst =  ttgo->bma->readInterrupt();
+		} while(!rlst);
+
+		if(ttgo->bma->isStepCounter())
+			gui->updateStepCounter();
 	}
 
 	wakingup = false;
