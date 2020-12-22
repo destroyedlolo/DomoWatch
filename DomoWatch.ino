@@ -92,6 +92,18 @@ void wakeup(){
 	ttgo->bma->enableStepCountInterrupt();	// Restore step counter follow-up
 }
 
+void deep_sleep(){
+	ttgo->stopLvglTick();
+	ttgo->displayOff();
+	ttgo->bma->enableStepCountInterrupt(false);	// Step counter will not generate interrupt
+	ttgo->powerOff();
+
+	esp_sleep_enable_ext0_wakeup((gpio_num_t)AXP202_INT, LOW);	// IRQ to wakeup
+	
+	Serial.println("ENTER IN DEEP SLEEP MODE");
+	esp_deep_sleep_start();
+}
+
 void light_sleep(){
 	ttgo->closeBL();		// turn off back light
 	ttgo->stopLvglTick();	// stop Lvgl
@@ -119,6 +131,7 @@ void light_sleep(){
 	wakeup();
 	wakingup = true;
 }
+
 
 	/*********************
 	* Initialization
@@ -303,8 +316,9 @@ void loop(){
 		  !wakingup ){	// want to shutdown
 		    ttgo->power->clearIRQ();	// Free for other interrupt
 			if( longPEK )
-				Serial.println("Long PEK");
-			light_sleep();
+				deep_sleep();
+			else
+				light_sleep();
 			return;
 		} else {	// Probably sharing IRQ
 		    ttgo->power->clearIRQ();	// Free for other interrupt
