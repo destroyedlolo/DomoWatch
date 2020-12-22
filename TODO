@@ -2,3 +2,18 @@ Thing to do ... or not
 **********************
 
 If deep_sleep, probably the backlight has to be changed in RTC
+Flush uart in Deep_sleep mode, not in light_sleep
+
+AXP
+***
+
+Several press : managed by setlongPressTime( axp_loonPress_time_t )
+isPEKShortPressIRQ();
+isPEKLongtPressIRQ();
+
+Shutdown by : setShutdownTime( axp_poweroff_time_t )
+
+see also setTimeOutShutdown()
+
+There is also a timer
+

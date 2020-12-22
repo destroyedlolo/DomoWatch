@@ -43,9 +43,45 @@ The **main tile** only displays the current date and time with a **status bar** 
   - On it's bottom, the *setting tile* :
   - *Screen settings* : take in account it's value is not stored but in memory. In case of a reboot, previous value is lost.
 
+### Power management
+
+DomoWatch has 2 sleep mode to save battery power.
+
+### Light Sleep Mode
+
+In this mode, only energy hungry peripherals are stopped :
+  - the screen is off
+  - the CPU is frozen but the memory is kept as it was
+
+*Advantages* : very fast, the watch is waken up within a second
+*Battery lifetime* : in this mode, with an average usage and keeping network disabled, the battery expectancies is a little less than 2 days.
+
+*Enter in light sleep* : 
+  - short (< 1.5 seconds by default) press on the bezel button.
+  - let the screen inactive the configured period (30s by default)
+
+*Waking up* :
+  - press the bezel button
+  - put the watch screen in front of your face
+ 
+### Deep sleep
+
+In this mode, the everything is stopped but obviously the real time clock and the step counter.
+
+*Disadvantage* : the watch tooks 3 seconds to wake up.
+
+*Wakeup* :
+  - press the bezel button
+
+### shutdown
+
+The watch can be totally shutdown by holding the bezel button for 6 seconds.
+
+(useful in case the watch is freezing)
+
 ### Commands line
 
-Most of settings (date & time, networks, ...) can be set using the console command line. The special command '**?**' without argument display the list a known commands. With an argument, a short description of the given commande.
+Most of settings (date & time, networks, ...) can be set using the console command line. The special command '**?**' without argument display the list a known commands. With an argument, a short description of the given command.
 
 	?
 	Known commands : setDate rtc reboot
@@ -54,5 +90,5 @@ Most of settings (date & time, networks, ...) can be set using the console comma
 
 ---
 
-This code is inspirated from examples comming with TTGO_TWatch_Library made by Lewis He.
+This code is inspirited from examples coming with TTGO_TWatch_Library made by *Lewis He*.
 Some parts (icons) came from [sharandac/My-TTGO-Watch's project](https://github.com/sharandac/My-TTGO-Watch/)
