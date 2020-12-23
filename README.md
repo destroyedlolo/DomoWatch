@@ -40,8 +40,7 @@ The **main tile** only displays the current date and time with a **status bar** 
 			 -----------
 ```
   - On it's left, the *status tile* that is displaying some watch's figures (consumption, RAM, ...).
-  - On it's bottom, the *setting tile* :
-  - *Screen settings* : take in account it's value is not stored but in memory. In case of a reboot, previous value is lost.
+  - On it's bottom, the *Screen settings* : take in account it's value is not stored but in memory. In case of a reboot, previous value is lost.
 
 ### Power management
 
