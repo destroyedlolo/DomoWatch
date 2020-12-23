@@ -40,6 +40,11 @@
 #include "Gui.h"
 #include "CommandLine.h"
 
+/* Enable DEEPSLEEP while doing long click
+ * unfortunately, at wakeup, the touch screen doesn't work anymore.
+ * Consequentely, it's disabled for the moment.
+ */
+// #define WITH_DEEPSLEEP
 
 	/****
 	* Shared object
@@ -315,9 +320,11 @@ void loop(){
 		if( ((longPEK = ttgo->power->isPEKLongtPressIRQ()) || ttgo->power->isPEKShortPressIRQ()) && 
 		  !wakingup ){	// want to shutdown
 		    ttgo->power->clearIRQ();	// Free for other interrupt
+#if defined(WITH_DEEPSLEEP)
 			if( longPEK )
 				deep_sleep();
 			else
+#endif
 				light_sleep();
 			return;
 		} else {	// Probably sharing IRQ
