@@ -116,11 +116,12 @@ void light_sleep(){
 	ttgo->bma->enableStepCountInterrupt(false);	// Step counter will not generate interrupt
 
 	gpio_wakeup_enable( (gpio_num_t)AXP202_INT, GPIO_INTR_LOW_LEVEL );	// IRQ to wakeup
+	gpio_wakeup_enable( (gpio_num_t)BMA423_INT1, GPIO_INTR_HIGH_LEVEL );
 	if(mvtWakeup){
-		gpio_wakeup_enable( (gpio_num_t)BMA423_INT1, GPIO_INTR_HIGH_LEVEL );
+		ttgo->bma->enableFeature(BMA423_WAKEUP, true);
 		Serial.println("BMA allowed");
 	} else {
-		gpio_wakeup_disable( (gpio_num_t)BMA423_INT1 );
+		ttgo->bma->enableFeature(BMA423_WAKEUP, false);
 		Serial.println("BMA disabled");
 	}
 	esp_sleep_enable_gpio_wakeup();
@@ -132,7 +133,46 @@ void light_sleep(){
 	esp_light_sleep_start();	// dodo
 
 	setCpuFrequencyMhz(160);
-	Serial.println("Hello, I'm back");
+	Serial.print("Hello, I'm back due to ");
+	switch( esp_sleep_get_wakeup_cause() ){
+	case ESP_SLEEP_WAKEUP_UNDEFINED :
+		Serial.println("Undefined");
+		break;
+	case ESP_SLEEP_WAKEUP_EXT0 :
+		Serial.println("EXT0");
+		break;
+	case ESP_SLEEP_WAKEUP_EXT1 :
+		Serial.println("EXT1");
+		break;
+	case ESP_SLEEP_WAKEUP_TIMER :
+		Serial.println("TIMER");
+		break;
+	case ESP_SLEEP_WAKEUP_TOUCHPAD :
+		Serial.println("TOUCHPAD");
+		break;
+	case ESP_SLEEP_WAKEUP_ULP :
+		Serial.println("ULP");
+		break;
+	case ESP_SLEEP_WAKEUP_GPIO :
+		Serial.println("GPIO");
+		break;
+	case ESP_SLEEP_WAKEUP_UART :
+		Serial.println("UART");
+		break;
+/* Not defined in arduino IDE
+	case ESP_SLEEP_WAKEUP_WIFI :
+		Serial.println("WIFI");
+		break;
+	case ESP_SLEEP_WAKEUP_COCPU :
+		Serial.println("COCPU");
+		break;
+	case ESP_SLEEP_WAKEUP_COCPU_TRAP_TRIG :
+		Serial.println("COCPU crash");
+		break;
+*/
+	default :
+		Serial.println("????");
+	}
 	wakeup();
 	wakingup = true;
 }
