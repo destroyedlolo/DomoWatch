@@ -55,9 +55,10 @@ In this mode, only energy hungry peripherals are stopped :
 *Advantages* : very fast, the watch is waken up within a second
 *Battery lifetime* : in this mode, with an average usage and keeping network disabled, the battery expectancies is a little less than 2 days.
 
-*Enter in light sleep* : 
-  - short (< 1.5 seconds by default) press on the bezel button.
-  - let the screen inactive the configured period (30s by default)
+~~*Enter in light sleep* : ~~
+  - ~~short (< 1.5 seconds by default) press on the bezel button.~~
+  - ~~let the screen inactive the configured period (30s by default)~~
+Currently disabled as trashing touchscreen.
 
 *Waking up* :
   - press the bezel button
