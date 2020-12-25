@@ -115,13 +115,15 @@ void light_sleep(){
 	ttgo->displaySleep();	// turn off touchscreen
 	ttgo->bma->enableStepCountInterrupt(false);	// Step counter will not generate interrupt
 
-	gpio_wakeup_enable( (gpio_num_t)AXP202_INT, GPIO_INTR_LOW_LEVEL );	// IRQ to wakeup
-	gpio_wakeup_enable( (gpio_num_t)BMA423_INT1, GPIO_INTR_HIGH_LEVEL );
+	/* We are obliged to use different "ext?" as AXP interruption need a low level
+	 * whereas it's hight one for the BMA.
+	 */
+	esp_sleep_enable_ext0_wakeup((gpio_num_t)AXP202_INT, LOW);	// IRQ to wakeup
 	if(mvtWakeup){
-		ttgo->bma->enableFeature(BMA423_WAKEUP, true);
+		esp_sleep_enable_ext1_wakeup(GPIO_SEL_39, ESP_EXT1_WAKEUP_ANY_HIGH);
 		Serial.println("BMA allowed");
 	} else {
-		ttgo->bma->enableFeature(BMA423_WAKEUP, false);
+		esp_sleep_disable_wakeup_source(ESP_SLEEP_WAKEUP_EXT1);
 		Serial.println("BMA disabled");
 	}
 	esp_sleep_enable_gpio_wakeup();
