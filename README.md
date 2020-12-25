@@ -65,6 +65,8 @@ In this mode, only energy hungry peripherals are stopped :
  
 ### Deep sleep
 
+*Currently disabled as it is trashing the touchscreen*
+
 In this mode, the everything is stopped but obviously the real time clock and the step counter.
 
 *Disadvantage* : the watch tooks 3 seconds to wake up.
