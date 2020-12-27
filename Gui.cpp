@@ -5,7 +5,7 @@
 #include "Gui.h"
 #include "StatusBar.h"
 
-#define BACKGROUND bg2	// Which background to use
+#define BACKGROUND Annecy	// Which background to use
 
 	/*****
 	 * objects
