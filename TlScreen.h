@@ -20,7 +20,6 @@ class TlScreen : public Container {
 	Container	*saverCont;
 	Image		*saverIcon;
 	Slider		*saverSlider;
-	Label		*saverLabel;
 
 	Checkbox	*wakeupFromMouvement;
 

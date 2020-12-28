@@ -26,18 +26,10 @@ LV_IMG_DECLARE(brightness_32px);
 LV_IMG_DECLARE(time_32px);
 LV_FONT_DECLARE(Ubuntu_16px);
 
-/* As the label's lv_obj_t is part of another object which is not accessible for this
- * callback (or with accessor outside this file, the easiest way is to create this 
- * old style pointer.
- */
-lv_obj_t 	*saverLbl;
-
 static void saverModified( lv_obj_t *obj, lv_event_t event ){
 	if(event == LV_EVENT_VALUE_CHANGED){
-		char res[11];
-		snprintf(res,11, "%2u seconds", lv_slider_get_value(obj));
-		lv_label_set_text( saverLbl, res );
-
+		static char buff[5];
+		Slider::refreshKnob(obj, buff, 5, "%2u");
 		inactive_counter = lv_slider_get_value(obj) * 1000;
 
 		Serial.printf("Saver changed to %d\n", lv_slider_get_value(obj));
@@ -81,7 +73,7 @@ TlScreen::TlScreen( TileView *parent, TileView *cloned ) :
 
 		/* Saver */
 	this->saverCont = new Container( this );
-	this->saverCont->setSize( this->getWidth(), 60 );
+	this->saverCont->setSize( this->getWidth(), 40 );
 	this->saverCont->Align( LV_ALIGN_OUT_BOTTOM_MID, this->brightnessCont );
 	this->saverCont->setClickable( false );	// Pass click to the parent
 
@@ -90,7 +82,7 @@ TlScreen::TlScreen( TileView *parent, TileView *cloned ) :
 	this->saverIcon->setClickable( false );
 	this->saverIcon->Align( LV_ALIGN_IN_LEFT_MID );
 
-	this->saverSlider = new Slider( this->saverCont, NULL, 15,75 );
+	this->saverSlider = new Slider( this->saverCont, NULL, 10,75, true );
 	this->saverSlider->setSize( parent->getWidth() - this->saverIcon->getWidth() -30, 10 );
 	this->saverSlider->Align( LV_ALIGN_OUT_RIGHT_TOP, this->saverIcon->getMyself(), 20 );
 
@@ -98,16 +90,7 @@ TlScreen::TlScreen( TileView *parent, TileView *cloned ) :
 	this->saverSlider->applyStyle();
 	this->saverSlider->setValue( inactive_counter/1000 );	// Set initial value
 	this->saverSlider->attacheEventeHandler( saverModified );
-
-	this->saverLabel = new Label( this->saverCont );
-	this->saverLabel->setFont( &Ubuntu_16px );
-	this->saverLabel->applyStyle();
-	this->saverLabel->setText( (String( inactive_counter/1000 ) + " seconds").c_str() );
-	this->saverLabel->AutoRealign();
-	this->saverLabel->Align( LV_ALIGN_OUT_BOTTOM_MID, this->saverSlider->getMyself(), 20 );
-	this->saverLabel->setClickable( false );	// Pass click to the parent
-
-	saverLbl = this->saverLabel->getMyself();
+	saverModified( this->saverSlider->getMyself(), LV_EVENT_VALUE_CHANGED );
 
 		/* Accelerometer wakeup ? */
 	this->wakeupFromMouvement = new Checkbox( this );
