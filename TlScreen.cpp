@@ -11,6 +11,8 @@
 
 static void brightnessModified( lv_obj_t *obj, lv_event_t event ){
 	if(event == LV_EVENT_VALUE_CHANGED){
+		static char buff[5];
+		Slider::refreshKnob(obj, buff, 5, "%3u");
 		Serial.printf("BackLight changed to %d\n", lv_slider_get_value(obj));
 		ttgo->bl->adjust( lv_slider_get_value(obj) );
 	}
@@ -51,30 +53,21 @@ static void mvtWakeupChanged( lv_obj_t *obj, lv_event_t event ){
 TlScreen::TlScreen( TileView *parent, TileView *cloned ) : 
 	Container( parent, cloned )
 {
+		/* We need from the bottom : this tile is bellow the main one so we need
+		 * some free space on its top as dragging area
+		 */
 
-		/* Brightness */
-	this->brightnessCont = new Container( this );
-	this->brightnessCont->setSize( this->getWidth(), 40 );
-	this->brightnessCont->Align( LV_ALIGN_IN_TOP_MID );
-	this->brightnessCont->setClickable( false );	// Pass click to the parent
-
-	this->brightnessIcon = new Image( this->brightnessCont );
-	this->brightnessIcon->Set( &brightness_32px );
-	this->brightnessIcon->setClickable( false );
-	this->brightnessIcon->Align( LV_ALIGN_IN_TOP_LEFT );
-
-	this->brightnessSlider = new Slider( this->brightnessCont, NULL, 15,255 );
-	this->brightnessSlider->Align( LV_ALIGN_OUT_RIGHT_MID, this->brightnessIcon->getMyself(), 20 );
-	this->brightnessSlider->setSize( parent->getWidth() - this->brightnessIcon->getWidth() -30, 10 );
-	lv_style_set_bg_color( this->brightnessSlider->getStyle(), LV_OBJ_PART_MAIN, LV_COLOR_AQUA );
-	this->brightnessSlider->applyStyle();
-	this->brightnessSlider->setValue( ttgo->bl->getLevel() );
-	this->brightnessSlider->attacheEventeHandler( brightnessModified );
+		/* Accelerometer wakeup ? */
+	this->wakeupFromMouvement = new Checkbox( this );
+	this->wakeupFromMouvement->Align( LV_ALIGN_IN_BOTTOM_LEFT );
+	this->wakeupFromMouvement->setText( "Wakeup by movement");
+	this->wakeupFromMouvement->setChecked( mvtWakeup );
+	this->wakeupFromMouvement->attacheEventeHandler( mvtWakeupChanged );
 
 		/* Saver */
 	this->saverCont = new Container( this );
 	this->saverCont->setSize( this->getWidth(), 40 );
-	this->saverCont->Align( LV_ALIGN_OUT_BOTTOM_MID, this->brightnessCont );
+	this->saverCont->Align( LV_ALIGN_OUT_TOP_LEFT, this->wakeupFromMouvement );
 	this->saverCont->setClickable( false );	// Pass click to the parent
 
 	this->saverIcon = new Image( this->saverCont );
@@ -84,7 +77,7 @@ TlScreen::TlScreen( TileView *parent, TileView *cloned ) :
 
 	this->saverSlider = new Slider( this->saverCont, NULL, 10,75, true );
 	this->saverSlider->setSize( parent->getWidth() - this->saverIcon->getWidth() -30, 10 );
-	this->saverSlider->Align( LV_ALIGN_OUT_RIGHT_TOP, this->saverIcon->getMyself(), 20 );
+	this->saverSlider->Align( LV_ALIGN_OUT_RIGHT_MID, this->saverIcon->getMyself(), 20 );
 
 	lv_style_set_bg_color( this->saverSlider->getStyle(), LV_OBJ_PART_MAIN, LV_COLOR_AQUA );
 	this->saverSlider->applyStyle();
@@ -92,12 +85,26 @@ TlScreen::TlScreen( TileView *parent, TileView *cloned ) :
 	this->saverSlider->attacheEventeHandler( saverModified );
 	saverModified( this->saverSlider->getMyself(), LV_EVENT_VALUE_CHANGED );
 
-		/* Accelerometer wakeup ? */
-	this->wakeupFromMouvement = new Checkbox( this );
-	this->wakeupFromMouvement->Align( LV_ALIGN_OUT_BOTTOM_LEFT, this->saverCont );
-	this->wakeupFromMouvement->setText( "Wakeup by movement");
-	this->wakeupFromMouvement->setChecked( mvtWakeup );
-	this->wakeupFromMouvement->attacheEventeHandler( mvtWakeupChanged );
+		/* Brightness */
+	this->brightnessCont = new Container( this );
+	this->brightnessCont->setSize( this->getWidth(), 40 );
+	this->brightnessCont->Align( LV_ALIGN_OUT_TOP_LEFT, this->saverCont );
+	this->brightnessCont->setClickable( false );	// Pass click to the parent
+
+	this->brightnessIcon = new Image( this->brightnessCont );
+	this->brightnessIcon->Set( &brightness_32px );
+	this->brightnessIcon->setClickable( false );
+	this->brightnessIcon->Align( LV_ALIGN_IN_TOP_LEFT );
+
+	this->brightnessSlider = new Slider( this->brightnessCont, NULL, 15,255, true );
+	this->brightnessSlider->Align( LV_ALIGN_OUT_RIGHT_MID, this->brightnessIcon->getMyself(), 20 );
+	this->brightnessSlider->setSize( parent->getWidth() - this->brightnessIcon->getWidth() -30, 10 );
+	lv_style_set_bg_color( this->brightnessSlider->getStyle(), LV_OBJ_PART_MAIN, LV_COLOR_AQUA );
+	this->brightnessSlider->applyStyle();
+	this->brightnessSlider->setValue( ttgo->bl->getLevel() );
+	this->brightnessSlider->attacheEventeHandler( brightnessModified );
+	brightnessModified( this->brightnessSlider->getMyself(), LV_EVENT_VALUE_CHANGED );
+
 
 /*	Debug
 	this->brightnessCont->dumpObj("brightnessCont");
