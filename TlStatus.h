@@ -12,6 +12,7 @@
 
 class TlStatus : public Container {
 	Label		*_battery;
+	Label		*_boottime;
 	Label		*_version;
 
 	Label		*_ram;

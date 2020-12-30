@@ -257,6 +257,14 @@ void setup(){
 
 
 		/****
+		* restore the time
+		*****/
+
+	Serial.println("Reading RTC ...");
+	ttgo->rtc->check();			// Ensure the RTC is valid (if not use compilation time)
+	ttgo->rtc->syncToSystem();	// sync with ESP32
+
+		/****
 		* start the GUI
 		*****/
 
@@ -269,15 +277,6 @@ void setup(){
 	lv_disp_trig_activity(NULL); // Clear lvgl activity counter
 
 	ttgo->openBL(); // Everything done, turn on the backlight
-
-
-		/****
-		* restore the time
-		*****/
-
-	Serial.println("Reading RTC ...");
-	ttgo->rtc->check();			// Ensure the RTC is valid (if not use compilation time)
-	ttgo->rtc->syncToSystem();	// sync with ESP32
 
 
 		/****
