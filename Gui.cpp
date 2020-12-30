@@ -86,13 +86,13 @@ this->_tile_datetime->dumpObj("datetime");
 
 		// Network, on the top
 	this->_tile_network = new TlNetwork( this->_tileview, this->_tileview );
-	this->_tile_network->setTilePos( {0, 1} );	// place it on the right
+	this->_tile_network->setTilePos( {1, 0} );	// place it on the right
 	this->_tileview->AddTile( this->_tile_network );	// Add this tile
 this->_tile_network->dumpObj("net");
 
 		// status one, placed on the left
 	this->_tile_status = new TlStatus( this->_tileview, this->_tileview );
-	this->_tile_status->setTilePos( {1, 0} );
+	this->_tile_status->setTilePos( {0, 1} );
 	this->_tileview->AddTile( this->_tile_status );	// Add this tile
 this->_tile_status->dumpObj("status");
 

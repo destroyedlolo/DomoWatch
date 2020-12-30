@@ -62,7 +62,7 @@ void TlDateTime::updateTime( void ){
 
 	if(info.tm_yday != this->daynum){
 		this->daynum = info.tm_yday;
-		strftime( buf, sizeof(buf), "%a %d.%b %Y", &info );
+		strftime( buf, sizeof(buf), "%a %d %b %Y", &info );
 		this->datelabel->setText( buf );
 	}
 }
