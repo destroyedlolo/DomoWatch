@@ -14,7 +14,7 @@ static void brightnessModified( lv_obj_t *obj, lv_event_t event ){
 		static char buff[5];
 		Slider::refreshKnob(obj, buff, 5, "%3u");
 		Serial.printf("BackLight changed to %d\n", lv_slider_get_value(obj));
-		ttgo->bl->adjust( lv_slider_get_value(obj) );
+		ttgo->bl->adjust( bl_lev = lv_slider_get_value(obj) );
 	}
 }
 

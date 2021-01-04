@@ -52,7 +52,8 @@
 
 TTGOClass *ttgo;
 uint32_t inactive_counter = 30*1000;	// The watch is going to sleep if no GUI activities
-bool mvtWakeup = true; // can wakeup from movement
+bool mvtWakeup = true;	// can wakeup from movement
+uint8_t bl_lev;			// Backlight level
 
 	/* We must call wakeup() at the end of light_sleep() take in account all case of falling asleep.
 	 * But, as an AXP interrupt is wised at wake up, this flag will avoid a dead loop making the watch
@@ -93,6 +94,7 @@ void wakeup(){
 //	gui->updateBatteryIcon( Gui::LV_ICON_UNKNOWN );
 
 	lv_disp_trig_activity(NULL);
+	ttgo->bl->adjust( bl_lev );
 	ttgo->openBL();
 	ttgo->bma->enableStepCountInterrupt();	// Restore step counter follow-up
 }
@@ -110,10 +112,17 @@ void deep_sleep(){
 }
 
 void light_sleep(){
-	ttgo->closeBL();		// turn off back light
 	ttgo->stopLvglTick();	// stop Lvgl
-	ttgo->displaySleep();	// turn off touchscreen
 	ttgo->bma->enableStepCountInterrupt(false);	// Step counter will not generate interrupt
+
+	setCpuFrequencyMhz(20);
+	for(uint8_t i = bl_lev; i; i--){
+		if( bl_lev )
+			delay( 750 / bl_lev );
+		ttgo->bl->adjust( i );
+	}
+	ttgo->displaySleep();	// turn off touchscreen
+	ttgo->closeBL();		// turn off back light
 
 	/* We are obliged to use different "ext?" as AXP interruption need a low level
 	 * whereas it's hight one for the BMA.
@@ -129,7 +138,6 @@ void light_sleep(){
 	esp_sleep_enable_gpio_wakeup();
 
 	Serial.println("ENTER IN LIGHT SLEEP MODE");
-	setCpuFrequencyMhz(20);
 	delay(500);	// let time to flush uart
 
 	esp_light_sleep_start();	// dodo
@@ -277,7 +285,7 @@ void setup(){
 	lv_disp_trig_activity(NULL); // Clear lvgl activity counter
 
 	ttgo->openBL(); // Everything done, turn on the backlight
-
+	bl_lev = ttgo->bl->getLevel();
 
 		/****
 		* IRQ and events

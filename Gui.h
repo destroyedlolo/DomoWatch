@@ -81,5 +81,6 @@ extern TTGOClass *ttgo;
 extern class Gui *gui;
 
 extern bool mvtWakeup;
+extern uint8_t bl_lev;
 
 #endif
