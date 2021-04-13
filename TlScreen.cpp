@@ -22,10 +22,11 @@ LV_IMG_DECLARE(brightness_32px);
 
 
 	/******
-	 * Saver related
+	 * Savers related
 	 ******/
 
 LV_IMG_DECLARE(time_32px);
+LV_IMG_DECLARE(wifi_32px);
 LV_FONT_DECLARE(Ubuntu_16px);
 
 static void saverModified( lv_obj_t *obj, lv_event_t event ){
@@ -35,6 +36,16 @@ static void saverModified( lv_obj_t *obj, lv_event_t event ){
 		inactive_counter = lv_slider_get_value(obj) * 1000;
 
 		Serial.printf("Saver changed to %d\n", lv_slider_get_value(obj));
+	}
+}
+
+static void wifiModified( lv_obj_t *obj, lv_event_t event ){
+	if(event == LV_EVENT_VALUE_CHANGED){
+		static char buff[5];
+		Slider::refreshKnob(obj, buff, 5, "%2u");
+		inactive_wifi_counter = lv_slider_get_value(obj) * 1000;
+
+		Serial.printf("WiFi Saver changed to %d\n", lv_slider_get_value(obj));
 	}
 }
 
@@ -64,10 +75,31 @@ TlScreen::TlScreen( TileView *parent, TileView *cloned ) :
 	this->wakeupFromMouvement->setChecked( mvtWakeup );
 	this->wakeupFromMouvement->attacheEventeHandler( mvtWakeupChanged );
 
+		/* Saver when WiFi enabled */
+	this->wifiCont = new Container( this );
+	this->wifiCont->setSize( this->getWidth(), 40 );
+	this->wifiCont->Align( LV_ALIGN_OUT_TOP_LEFT, this->wakeupFromMouvement );
+	this->wifiCont->setClickable( false );	// Pass click to the parent
+
+	this->wifiIcon = new Image( this->wifiCont );
+	this->wifiIcon->Set( &wifi_32px );
+	this->wifiIcon->setClickable( false );
+	this->wifiIcon->Align( LV_ALIGN_IN_LEFT_MID );
+
+	this->wifiSlider = new Slider( this->wifiCont, NULL, 10,75, true );
+	this->wifiSlider->setSize( parent->getWidth() - this->wifiIcon->getWidth() -30, 10 );
+	this->wifiSlider->Align( LV_ALIGN_OUT_RIGHT_MID, this->wifiIcon->getMyself(), 20 );
+
+	lv_style_set_bg_color( this->wifiSlider->getStyle(), LV_OBJ_PART_MAIN, LV_COLOR_AQUA );
+	this->wifiSlider->applyStyle();
+	this->wifiSlider->setValue( inactive_wifi_counter/1000 );	// Set initial value
+	this->wifiSlider->attacheEventeHandler( wifiModified );
+	wifiModified( this->wifiSlider->getMyself(), LV_EVENT_VALUE_CHANGED );
+
 		/* Saver */
 	this->saverCont = new Container( this );
 	this->saverCont->setSize( this->getWidth(), 40 );
-	this->saverCont->Align( LV_ALIGN_OUT_TOP_LEFT, this->wakeupFromMouvement );
+	this->saverCont->Align( LV_ALIGN_OUT_TOP_LEFT, this->wifiCont );
 	this->saverCont->setClickable( false );	// Pass click to the parent
 
 	this->saverIcon = new Image( this->saverCont );

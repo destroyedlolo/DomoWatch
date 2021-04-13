@@ -94,7 +94,7 @@ StatusBar::StatusBar( lv_style_t *mainstyle, lv_obj_t *parent, const lv_obj_t *c
 	this->wifiButton->Align( LV_ALIGN_OUT_LEFT_MID, this->batIcon);
 	this->wifiButton->AutoRealign();
 
-	this->stepButton->attacheEventeHandler( wifiClicked );
+	this->wifiButton->attacheEventeHandler( wifiClicked );
 
 	this->wifiIcon = new Image( this->wifiButton );
 	this->wifiIcon->Set( &wifi_16px );

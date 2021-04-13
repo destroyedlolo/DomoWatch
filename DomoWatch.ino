@@ -52,6 +52,7 @@
 
 TTGOClass *ttgo;
 uint32_t inactive_counter = 30*1000;	// The watch is going to sleep if no GUI activities
+uint32_t inactive_wifi_counter = 60*1000;	// The watch is going to sleep if no GUI activities while wifi is enabled
 bool mvtWakeup = true;	// can wakeup from movement
 uint8_t bl_lev;			// Backlight level
 

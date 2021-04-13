@@ -74,6 +74,7 @@ public:
 	 ***/
 
 extern uint32_t inactive_counter;
+extern uint32_t inactive_wifi_counter;
 
 #define BARHEIGHT 30	// Status bar height
 
