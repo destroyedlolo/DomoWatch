@@ -7,7 +7,7 @@
 #include "MsgBox.h"
 
 	/****
-	 * Stepcounter callback
+	 * callbacks
 	 ***/
 
 static void stepClicked( lv_obj_t *, lv_event_t event ){
@@ -18,7 +18,14 @@ static void stepClicked( lv_obj_t *, lv_event_t event ){
 	}
 }
 
+static void wifiClicked( lv_obj_t *, lv_event_t event ){
+	if(event == LV_EVENT_CLICKED){
+		Serial.println("WIFI clicked");
+	}
+}
+
 LV_IMG_DECLARE(foot_16px);
+LV_IMG_DECLARE(wifi_16px);
 
 StatusBar::StatusBar( lv_style_t *mainstyle, lv_obj_t *parent, const lv_obj_t *cloned ) : 
 	Container( parent, cloned )
@@ -58,6 +65,7 @@ StatusBar::StatusBar( lv_style_t *mainstyle, lv_obj_t *parent, const lv_obj_t *c
 
 	this->stepButton->attacheEventeHandler( stepClicked );
 
+
 		/***
 		 * Battery related
 		 *
@@ -75,6 +83,22 @@ StatusBar::StatusBar( lv_style_t *mainstyle, lv_obj_t *parent, const lv_obj_t *c
 	this->batPercent->AutoRealign();
 
 	this->updateStepCounter();	// Ensure the counter is not "????" :)
+
+		/***
+		 * Wifi
+		 *
+		 * Set it clickable through a button to enable/disable WiFi networking
+		 ****/
+	this->wifiButton = new Button( this );
+	this->wifiButton->setFit( LV_FIT_TIGHT );
+	this->wifiButton->Align( LV_ALIGN_OUT_LEFT_MID, this->batIcon);
+	this->wifiButton->AutoRealign();
+
+	this->stepButton->attacheEventeHandler( wifiClicked );
+
+	this->wifiIcon = new Image( this->wifiButton );
+	this->wifiIcon->Set( &wifi_16px );
+	this->wifiIcon->setClickable( false );	// Pass click to the parent
 }
 
 void StatusBar::updateStepCounter( void ){
