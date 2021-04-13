@@ -92,4 +92,6 @@ Most of settings (date & time, networks, ...) can be set using the console comma
 ---
 
 This code is inspirited from examples coming with TTGO_TWatch_Library made by *Lewis He*.
-Some parts (icons) came from [sharandac/My-TTGO-Watch's project](https://github.com/sharandac/My-TTGO-Watch/)
+Icons came from 
+* [sharandac/My-TTGO-Watch's project](https://github.com/sharandac/My-TTGO-Watch/)
+* [http://www.icons101.com/](http://www.icons101.com/)
