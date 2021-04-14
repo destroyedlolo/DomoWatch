@@ -11,7 +11,7 @@
 	 * objects
 	 *****/
 	
-		Gui *gui;
+Gui *gui;
 
 	/**** 
 	 * Build the GUI
@@ -71,8 +71,7 @@ Gui::Gui( void ){
 		/***
 		 * And allowed movements
 		 ***/
-	static lv_point_t valid_pos[] = { {0,1}, {1,1}, {1,0}, {1,2} };	// define tiles' position
-	this->_tileview->setValidPositions( valid_pos, sizeof(valid_pos) / sizeof(valid_pos[1]) );	// apply it
+	this->BaseMovements();
 	
 		/***
 		 * Define tiles
@@ -128,4 +127,9 @@ void Gui::initAutomation( void ){
 	this->_statusbar->initAutomation();
 	this->_tile_datetime->initAutomation();
 	this->_tile_status->initAutomation();
+}
+
+void Gui::BaseMovements( void ){
+	static lv_point_t valid_pos[] = { {0,1}, {1,1}, {1,2} };	// define tiles' position
+	this->_tileview->setValidPositions( valid_pos, sizeof(valid_pos) / sizeof(valid_pos[1]) );	// apply it
 }

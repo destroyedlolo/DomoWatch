@@ -62,10 +62,17 @@ public:
 		 *
 		 * Documentation are in StatusBar.h
 		 */
-
 	void updateStepCounter( void );
 	void updateBatteryIcon( lv_icon_battery_t index );
 	void updateBatteryLevel( void );
+
+		/* Base interface movements
+		 *
+		 * Modules can add other tiles and enable additional movements.
+		 * This function reset to movements only available with the basic
+		 * interface.
+		 */
+	void BaseMovements( void );
 };
 
 
