@@ -66,7 +66,7 @@ Gui::Gui( void ){
 		 ***/
 	this->_tileview = new TileView( this->_workarea );
 	this->_tileview->setEdgeFlash( true );
-this->_tileview->dumpObj("tile");
+// this->_tileview->dumpObj("tile");
 
 		/***
 		 * And allowed movements
@@ -82,25 +82,25 @@ this->_tileview->dumpObj("tile");
 	this->_tile_datetime = new TlDateTime( this->_tileview, this->_tileview );
 	this->_tile_datetime->setTilePos( {1, 1} );	// place it on the right
 	this->_tileview->AddTile( this->_tile_datetime );	// Add this tile
-this->_tile_datetime->dumpObj("datetime");
+// this->_tile_datetime->dumpObj("datetime");
 
 		// Network, on the top
 	this->_tile_network = new TlNetwork( this->_tileview, this->_tileview );
 	this->_tile_network->setTilePos( {1, 0} );	// place it on the right
 	this->_tileview->AddTile( this->_tile_network );	// Add this tile
-this->_tile_network->dumpObj("net");
+// this->_tile_network->dumpObj("net");
 
 		// status one, placed on the left
 	this->_tile_status = new TlStatus( this->_tileview, this->_tileview );
 	this->_tile_status->setTilePos( {0, 1} );
 	this->_tileview->AddTile( this->_tile_status );	// Add this tile
-this->_tile_status->dumpObj("status");
+// this->_tile_status->dumpObj("status");
 
 		// settings, bottom
 	this->_tile_screen = new TlScreen( this->_tileview, this->_tileview );
 	this->_tile_screen->setTilePos( {1, 2} );
 	this->_tileview->AddTile( this->_tile_screen );	// Add this tile
-this->_tile_screen->dumpObj("screen");
+// this->_tile_screen->dumpObj("screen");
 
 		// date and time is the default tile
 	this->_tileview->setActiveTile( 1,1, LV_ANIM_OFF );
