@@ -20,6 +20,10 @@ class StatusBar : public Container {
 	Image		*stepIcon;
 	Label 		*stepCounter;
 
+	/* Wifi */
+	Image		*wifiIcon;
+	Button		*wifiButton;
+
 	/* Battery */
 	Label 		*batPercent;
 	Image		*batIcon;

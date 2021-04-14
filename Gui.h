@@ -14,7 +14,7 @@
 #include "TlDateTime.h"
 #include "TlStatus.h"
 #include "TlScreen.h"
-// #include "TlNetwork.h"
+#include "TlNetwork.h"
 
 class StatusBar;
 
@@ -27,6 +27,7 @@ class Gui :
 	TileView	*_tileview;
 
 	/* Tiles */
+	TlNetwork	*_tile_network;
 	TlDateTime	*_tile_datetime;
 	TlStatus	*_tile_status;
 	TlScreen	*_tile_screen;
@@ -61,10 +62,17 @@ public:
 		 *
 		 * Documentation are in StatusBar.h
 		 */
-
 	void updateStepCounter( void );
 	void updateBatteryIcon( lv_icon_battery_t index );
 	void updateBatteryLevel( void );
+
+		/* Base interface movements
+		 *
+		 * Modules can add other tiles and enable additional movements.
+		 * This function reset to movements only available with the basic
+		 * interface.
+		 */
+	void BaseMovements( void );
 };
 
 
@@ -73,6 +81,7 @@ public:
 	 ***/
 
 extern uint32_t inactive_counter;
+extern uint32_t inactive_wifi_counter;
 
 #define BARHEIGHT 30	// Status bar height
 
@@ -80,5 +89,6 @@ extern TTGOClass *ttgo;
 extern class Gui *gui;
 
 extern bool mvtWakeup;
+extern uint8_t bl_lev;
 
 #endif

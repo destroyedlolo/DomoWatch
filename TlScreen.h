@@ -20,8 +20,11 @@ class TlScreen : public Container {
 	Container	*saverCont;
 	Image		*saverIcon;
 	Slider		*saverSlider;
-	Label		*saverLabel;
 
+	Container	*wifiCont;
+	Image		*wifiIcon;
+	Slider		*wifiSlider;
+	
 	Checkbox	*wakeupFromMouvement;
 
 public:

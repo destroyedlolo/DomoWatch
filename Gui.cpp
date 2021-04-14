@@ -5,13 +5,13 @@
 #include "Gui.h"
 #include "StatusBar.h"
 
-#define BACKGROUND bg2	// Which background to use
+#define BACKGROUND Annecy	// Which background to use
 
 	/*****
 	 * objects
 	 *****/
 	
-		Gui *gui;
+Gui *gui;
 
 	/**** 
 	 * Build the GUI
@@ -54,7 +54,7 @@ Gui::Gui( void ){
 		 * room for the status bar.
 		 ***/
 	this->_workarea = new Container( lv_scr_act() );
-	this->_workarea->setSize( LV_HOR_RES, LV_VER_RES - BARHEIGHT );	// Keep some space for the statusbar
+	this->_workarea->setSize( LV_HOR_RES, LV_VER_RES - BARHEIGHT);	// Keep some space for the statusbar
 	this->_workarea->copyStyle( this->getStyle() );
 //	lv_style_set_bg_opa( this->_workarea->getStyle(), LV_OBJ_PART_MAIN, LV_OPA_10 );
 	this->_workarea->Align( LV_ALIGN_OUT_BOTTOM_MID, this->_statusbar);
@@ -66,33 +66,43 @@ Gui::Gui( void ){
 		 ***/
 	this->_tileview = new TileView( this->_workarea );
 	this->_tileview->setEdgeFlash( true );
+// this->_tileview->dumpObj("tile");
 
 		/***
 		 * And allowed movements
 		 ***/
-	static lv_point_t valid_pos[] = { {0,0}, {1,0}, {1,1} };	// define tiles' position
-	this->_tileview->setValidPositions( valid_pos, sizeof(valid_pos) / sizeof(valid_pos[1]) );	// apply it
+	this->BaseMovements();
 	
 		/***
 		 * Define tiles
 		 ***/
-		 // main tile placed at 1,0
+
+		 // main tile placed centered
 	this->_tile_datetime = new TlDateTime( this->_tileview, this->_tileview );
-	this->_tile_datetime->setTilePos( {1, 0} );	// place it on the right
+	this->_tile_datetime->setTilePos( {1, 1} );	// place it on the right
 	this->_tileview->AddTile( this->_tile_datetime );	// Add this tile
+// this->_tile_datetime->dumpObj("datetime");
+
+		// Network, on the top
+	this->_tile_network = new TlNetwork( this->_tileview, this->_tileview );
+	this->_tile_network->setTilePos( {1, 0} );	// place it on the right
+	this->_tileview->AddTile( this->_tile_network );	// Add this tile
+// this->_tile_network->dumpObj("net");
 
 		// status one, placed on the left
 	this->_tile_status = new TlStatus( this->_tileview, this->_tileview );
-	this->_tile_status->setTilePos( {0, 0} );
+	this->_tile_status->setTilePos( {0, 1} );
 	this->_tileview->AddTile( this->_tile_status );	// Add this tile
+// this->_tile_status->dumpObj("status");
 
-		// settings
+		// settings, bottom
 	this->_tile_screen = new TlScreen( this->_tileview, this->_tileview );
-	this->_tile_screen->setTilePos( {1, 1} );
+	this->_tile_screen->setTilePos( {1, 2} );
 	this->_tileview->AddTile( this->_tile_screen );	// Add this tile
+// this->_tile_screen->dumpObj("screen");
 
 		// date and time is the default tile
-	this->_tileview->setActiveTile( 1,0, LV_ANIM_OFF );
+	this->_tileview->setActiveTile( 1,1, LV_ANIM_OFF );
 
 		/* The GUI is initialised,
 		 * ready to launch automation
@@ -117,4 +127,9 @@ void Gui::initAutomation( void ){
 	this->_statusbar->initAutomation();
 	this->_tile_datetime->initAutomation();
 	this->_tile_status->initAutomation();
+}
+
+void Gui::BaseMovements( void ){
+	static lv_point_t valid_pos[] = { {0,1}, {1,1}, {1,2} };	// define tiles' position
+	this->_tileview->setValidPositions( valid_pos, sizeof(valid_pos) / sizeof(valid_pos[1]) );	// apply it
 }
