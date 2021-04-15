@@ -5,6 +5,7 @@
 
 #include "StatusBar.h"
 #include "MsgBox.h"
+#include "Network.h"
 
 	/****
 	 * callbacks
@@ -141,6 +142,22 @@ void StatusBar::updateBatteryIcon( Gui::lv_icon_battery_t index ){
 
 	static const char *icons[] = {LV_SYMBOL_BATTERY_EMPTY, LV_SYMBOL_BATTERY_1, LV_SYMBOL_BATTERY_2, LV_SYMBOL_BATTERY_3, LV_SYMBOL_BATTERY_FULL, LV_SYMBOL_CHARGE};
 	this->batIcon->Set( icons[index] );	// And the icon
+}
+
+void StatusBar::updateNetwork( void ){
+	switch( network.getStatus() ){
+	case Network::net_status_t::WIFI_CONNECTING :
+		this->wifiIcon->Recolor(LV_COLOR_ORANGE);
+		break;
+	case Network::Network::net_status_t::WIFI_CONNECTED :
+		this->wifiIcon->Recolor(LV_COLOR_GREEN);
+		break;
+	case Network::net_status_t::WIFI_BUSY :
+		this->wifiIcon->Recolor(LV_COLOR_NAVY);
+		break;
+	default :
+		this->wifiIcon->Recolor(LV_COLOR_WHITE);
+	}
 }
 
 static void cbUpdBat( lv_task_t *tsk ){

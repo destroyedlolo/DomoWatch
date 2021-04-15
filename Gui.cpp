@@ -110,7 +110,6 @@ Gui::Gui( void ){
 	this->initAutomation();	// Launch automation
 }
 
-
 void Gui::updateStepCounter( void ){
 	this->_statusbar->updateStepCounter();
 }
@@ -121,6 +120,10 @@ void Gui::updateBatteryIcon( lv_icon_battery_t index ){
 
 void Gui::updateBatteryLevel( void ){
 	this->_statusbar->updateBatteryLevel();
+}
+
+void Gui::updateNetwork( void ){
+	this->_statusbar->updateNetwork();
 }
 
 void Gui::initAutomation( void ){

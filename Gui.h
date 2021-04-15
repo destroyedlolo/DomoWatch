@@ -66,6 +66,8 @@ public:
 	void updateBatteryIcon( lv_icon_battery_t index );
 	void updateBatteryLevel( void );
 
+	void updateNetwork( void );
+
 		/* Base interface movements
 		 *
 		 * Modules can add other tiles and enable additional movements.

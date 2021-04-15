@@ -50,6 +50,10 @@ public:
 	 */
 	void updateBatteryIcon( Gui::lv_icon_battery_t index );
 
+	/* Update wifi icon as per net_status
+	 */
+	void updateNetwork( void );
+
 	/* Initialise automation
 	 */
 	void initAutomation( void );
