@@ -25,20 +25,20 @@
 // Please select the model you want to use in config.h
 #include "config.h"
 
+#include "Version.h"
+#include "Gui.h"
+#include "CommandLine.h"
+#include "InterTskCom.h"
+
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
 #include <freertos/timers.h>
-#include <freertos/event_groups.h>
 
 #include <esp_task_wdt.h>	// Watchdog
 #include <driver/uart.h>		// uart_set_wakeup_threshold ...
 
 #include <soc/rtc.h>	// RTC interface
 #include <rom/rtc.h>	// RTC wakeup code
-
-#include "Version.h"
-#include "Gui.h"
-#include "CommandLine.h"
 
 /* Enable DEEPSLEEP while doing long click
  * unfortunately, at wakeup, the touch screen doesn't work anymore.
@@ -53,30 +53,17 @@
 TTGOClass *ttgo;
 uint32_t inactive_counter = 30*1000;	// The watch is going to sleep if no GUI activities
 uint32_t inactive_wifi_counter = 60*1000;	// The watch is going to sleep if no GUI activities while wifi is enabled
+EventGroupHandle_t itc_signals = NULL;	// Inter tasks signals
+
 bool mvtWakeup = true;	// can wakeup from movement
 uint8_t bl_lev;			// Backlight level
 
-	/* We must call wakeup() at the end of light_sleep() take in account all case of falling asleep.
-	 * But, as an AXP interrupt is wised at wake up, this flag will avoid a dead loop making the watch
-	 * thinking we want to sleep again as the back light is already on.
+	/* We must call wakeup() at the end of light_sleep() take in account all case
+	 * of falling asleep. But, as an AXP interrupt is raised at wake up, this flag
+	 * will avoid a dead loop making the watch thinking we want to sleep again as
+	 * the back light is already on.
 	 */
 bool wakingup = true;
-
-	/*******
-	* Signaling
-	 *******/
-
-	/* IRQ own codes are running in dedicated environment so
-	 * are having reduced API and must run as fast as possible.
-	 * Consequently, they are only positioning some flags and 
-	 * actions are done in handler that are running  as normal
-	 * tasks.
-	 */
-
-#define WATCH_IRQ_AXP	_BV(0)	// IRQ from the power management
-#define WATCH_IRQ_BMA	_BV(1)	// IRQ from movements
-
-EventGroupHandle_t irqs = NULL;
 
 
 	/*********************
@@ -293,13 +280,13 @@ void setup(){
 		*****/
 
 	Serial.println("Setting up interrupts ...");
-	irqs = xEventGroupCreate();
+	itc_signals = xEventGroupCreate();
 
 	// power on interrupt
 	pinMode(AXP202_INT, INPUT);
 	attachInterrupt(AXP202_INT, [] {
 		BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-		xEventGroupSetBitsFromISR(irqs, WATCH_IRQ_AXP, &xHigherPriorityTaskWoken);
+		xEventGroupSetBitsFromISR(itc_signals, WATCH_IRQ_AXP, &xHigherPriorityTaskWoken);
 
 		if(xHigherPriorityTaskWoken)
 			portYIELD_FROM_ISR ();
@@ -317,7 +304,7 @@ void setup(){
 	pinMode(BMA423_INT1, INPUT);
 	attachInterrupt(BMA423_INT1, [] {
 		BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-		xEventGroupSetBitsFromISR(irqs, WATCH_IRQ_BMA, &xHigherPriorityTaskWoken);
+		xEventGroupSetBitsFromISR(itc_signals, WATCH_IRQ_BMA, &xHigherPriorityTaskWoken);
 
 		if(xHigherPriorityTaskWoken)
 			portYIELD_FROM_ISR ();
@@ -355,7 +342,7 @@ void setup(){
 	********************/
 void loop(){
 	EventBits_t bits = xEventGroupWaitBits(	// Waiting for event
-		irqs, 
+		itc_signals, 
 		WATCH_IRQ_AXP | WATCH_IRQ_BMA,	// which even to wait for
 		pdTRUE,								// clear them when got
 		pdFALSE,							// no need to have all

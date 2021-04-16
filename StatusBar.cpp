@@ -149,6 +149,9 @@ void StatusBar::updateNetwork( void ){
 	case Network::net_status_t::WIFI_CONNECTING :
 		this->wifiIcon->Recolor(LV_COLOR_ORANGE);
 		break;
+	case Network::Network::net_status_t::WIFI_FAILED :
+		this->wifiIcon->Recolor(LV_COLOR_RED);
+		break;
 	case Network::Network::net_status_t::WIFI_CONNECTED :
 		this->wifiIcon->Recolor(LV_COLOR_GREEN);
 		break;
