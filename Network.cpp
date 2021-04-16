@@ -33,9 +33,23 @@
 
 #include "Network.h"
 
+Network::Network() : status( WIFI_NOT_CONNECTED ){
+	assert( this->status_mutex = xSemaphoreCreateMutex() );	// Initialize mutex object
+}
+
 void Network::setStatus( enum net_status_t v ){
+	xSemaphoreTake( this->status_mutex, portMAX_DELAY );
 	this->status = v;
 	gui->updateNetwork();
+	xSemaphoreGive( this->status_mutex );
+}
+
+enum Network::net_status_t Network::getStatus( void ){
+	enum net_status_t res;
+	xSemaphoreTake( this->status_mutex, portMAX_DELAY );
+	res = this->status;
+	xSemaphoreGive( this->status_mutex );
+	return res;
 }
 
 enum Network::net_status_t Network::getRealStatus( void ){
@@ -50,6 +64,16 @@ enum Network::net_status_t Network::getRealStatus( void ){
 
 		return this->status;
 	}
+}
+
+/* Tasks: https://www.freertos.org/implementing-a-FreeRTOS-task.html
+ *
+ * mutex : https://www.freertos.org/Real-time-embedded-RTOS-mutexes.html
+ * 	- take : acquire the mutex
+ * 	- give : release the mutex
+ * 
+ */
+void Network::connect( void ){
 }
 
 Network network;
