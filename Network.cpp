@@ -54,15 +54,15 @@ enum Network::net_status_t Network::getStatus( void ){
 
 enum Network::net_status_t Network::getRealStatus( void ){
 	if(WiFi.status() != WL_CONNECTED){
-		if( this->status != net_status_t::WIFI_NOT_CONNECTED )
+		if( this->getStatus() != net_status_t::WIFI_NOT_CONNECTED )
 			this->setStatus( net_status_t::WIFI_NOT_CONNECTED );
 
 		return net_status_t::WIFI_NOT_CONNECTED;
 	} else {
-		if( this->status == net_status_t::WIFI_NOT_CONNECTED )
+		if( this->getStatus() == net_status_t::WIFI_NOT_CONNECTED )
 			this->setStatus( net_status_t::WIFI_CONNECTED );
 
-		return this->status;
+		return this->getStatus();
 	}
 }
 
