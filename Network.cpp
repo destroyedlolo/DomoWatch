@@ -73,9 +73,23 @@ enum Network::net_status_t Network::getRealStatus( void ){
  * 	- give : release the mutex
  * 
  */
+
+void connectTask( void * ){
+	vTaskDelay( 1000 );
+	network.setStatus( Network::net_status_t::WIFI_CONNECTED );
+	Serial.println("Network is connected");
+	vTaskDelete( NULL );	// existing the task
+}
+
 void Network::connect( void ){
+	this->setStatus( net_status_t::WIFI_CONNECTING );
 	Serial.println("Network is connecting");
-	this->setStatus( net_status_t::WIFI_CONNECTED );
+	xTaskCreate( connectTask, "connectTask",
+		8000,	// stack
+		NULL,	// no parameter
+		2,		// priority
+		NULL	// no task handle
+	);
 }
 
 void Network::disconnect( void ){
