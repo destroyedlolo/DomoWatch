@@ -40,8 +40,8 @@ Network::Network() : status( WIFI_NOT_CONNECTED ){
 void Network::setStatus( enum net_status_t v ){
 	xSemaphoreTake( this->status_mutex, portMAX_DELAY );
 	this->status = v;
-	gui->updateNetwork();
 	xSemaphoreGive( this->status_mutex );
+	gui->updateNetwork();
 }
 
 enum Network::net_status_t Network::getStatus( void ){
@@ -74,6 +74,13 @@ enum Network::net_status_t Network::getRealStatus( void ){
  * 
  */
 void Network::connect( void ){
+	Serial.println("Network is connecting");
+	this->setStatus( net_status_t::WIFI_CONNECTED );
+}
+
+void Network::disconnect( void ){
+	this->setStatus( net_status_t::WIFI_NOT_CONNECTED );
+	Serial.println("Network is disconnected");
 }
 
 Network network;
