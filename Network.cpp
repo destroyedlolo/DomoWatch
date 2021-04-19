@@ -1,5 +1,24 @@
 /************************************************
 *	Networking
+*
+*	References used here :
+*
+* 	mutex : 
+*	-------
+*
+* 	https://www.freertos.org/Real-time-embedded-RTOS-mutexes.html
+* 		- take : acquire the mutex
+* 		- give : release the mutex
+*
+*
+*	WiFi events :
+*	-------------
+*
+* From ESP32, .../libraries/WiFi/examples/WiFiClientEvents/WiFiClientEvents.ino
+*
+* NOTE : if not disabled, the WiFi may (or not) reconnect automatically at wakeup.
+* Otherwise, the WiFi is disabled by the code bellow.
+*
 *************************************************/
 
 #include "Gui.h"
@@ -31,10 +50,127 @@
 #	define WIFI_PASSWORD "YourPassword"
 #endif
 
+#define NETWORK_TRIES	30	// Number of second to try for network connection
+
 #include "Network.h"
+
+Network network;
+
+
+	/* Receiving random network notification
+	 * for debugging purposes.
+	 */
+
+static void debugWiFiEvent(WiFiEvent_t event){
+	Serial.printf("[WiFi-event] event: %d\n", event);
+
+    switch (event) {
+        case SYSTEM_EVENT_WIFI_READY: 
+            Serial.println("WiFi interface ready");
+            break;
+        case SYSTEM_EVENT_SCAN_DONE:
+            Serial.println("Completed scan for access points");
+            break;
+        case SYSTEM_EVENT_STA_START:
+            Serial.println("WiFi client started");
+            break;
+        case SYSTEM_EVENT_STA_STOP:
+            Serial.println("WiFi clients stopped");
+            break;
+        case SYSTEM_EVENT_STA_CONNECTED:
+            Serial.println("Connected to access point");
+            break;
+        case SYSTEM_EVENT_STA_DISCONNECTED:
+            Serial.println("Disconnected from WiFi access point");
+            break;
+        case SYSTEM_EVENT_STA_AUTHMODE_CHANGE:
+            Serial.println("Authentication mode of access point has changed");
+            break;
+        case SYSTEM_EVENT_STA_GOT_IP:
+            Serial.print("Obtained IP address: ");
+            Serial.println(WiFi.localIP());
+            break;
+        case SYSTEM_EVENT_STA_LOST_IP:
+            Serial.println("Lost IP address and IP address is reset to 0");
+            break;
+        case SYSTEM_EVENT_STA_WPS_ER_SUCCESS:
+            Serial.println("WiFi Protected Setup (WPS): succeeded in enrollee mode");
+            break;
+        case SYSTEM_EVENT_STA_WPS_ER_FAILED:
+            Serial.println("WiFi Protected Setup (WPS): failed in enrollee mode");
+            break;
+        case SYSTEM_EVENT_STA_WPS_ER_TIMEOUT:
+            Serial.println("WiFi Protected Setup (WPS): timeout in enrollee mode");
+            break;
+        case SYSTEM_EVENT_STA_WPS_ER_PIN:
+            Serial.println("WiFi Protected Setup (WPS): pin code in enrollee mode");
+            break;
+        case SYSTEM_EVENT_AP_START:
+            Serial.println("WiFi access point started");
+            break;
+        case SYSTEM_EVENT_AP_STOP:
+            Serial.println("WiFi access point  stopped");
+            break;
+        case SYSTEM_EVENT_AP_STACONNECTED:
+            Serial.println("Client connected");
+            break;
+        case SYSTEM_EVENT_AP_STADISCONNECTED:
+            Serial.println("Client disconnected");
+            break;
+        case SYSTEM_EVENT_AP_STAIPASSIGNED:
+            Serial.println("Assigned IP address to client");
+            break;
+        case SYSTEM_EVENT_AP_PROBEREQRECVED:
+            Serial.println("Received probe request");
+            break;
+        case SYSTEM_EVENT_GOT_IP6:
+            Serial.println("IPv6 is preferred");
+            break;
+        case SYSTEM_EVENT_ETH_START:
+            Serial.println("Ethernet started");
+            break;
+        case SYSTEM_EVENT_ETH_STOP:
+            Serial.println("Ethernet stopped");
+            break;
+        case SYSTEM_EVENT_ETH_CONNECTED:
+            Serial.println("Ethernet connected");
+            break;
+        case SYSTEM_EVENT_ETH_DISCONNECTED:
+            Serial.println("Ethernet disconnected");
+            break;
+        case SYSTEM_EVENT_ETH_GOT_IP:
+            Serial.println("Obtained IP address");
+            break;
+        default:
+			break;
+    }
+}
+
+void getConnecting( WiFiEvent_t event, WiFiEventInfo_t info ){
+	network.setStatus( Network::net_status_t::WIFI_CONNECTING );
+}
+
+void getConnected( WiFiEvent_t event, WiFiEventInfo_t info ){
+	network.setStatus( Network::net_status_t::WIFI_CONNECTED );
+}
+
+void getStop( WiFiEvent_t event, WiFiEventInfo_t info ){
+	network.setStatus( Network::net_status_t::WIFI_NOT_CONNECTED );
+}
+
+void getDisconnected( WiFiEvent_t event, WiFiEventInfo_t info ){
+	network.setStatus( Network::net_status_t::WIFI_FAILED );
+	WiFi.mode(WIFI_OFF);
+}
 
 Network::Network() : status( WIFI_NOT_CONNECTED ){
 	assert( this->status_mutex = xSemaphoreCreateMutex() );	// Initialize mutex object
+
+	WiFi.onEvent( debugWiFiEvent );
+	WiFi.onEvent( getConnecting, WiFiEvent_t::SYSTEM_EVENT_WIFI_READY );
+	WiFi.onEvent( getConnected, WiFiEvent_t::SYSTEM_EVENT_STA_GOT_IP );
+	WiFi.onEvent( getStop, WiFiEvent_t::SYSTEM_EVENT_STA_STOP );
+	WiFi.onEvent( getDisconnected, WiFiEvent_t::SYSTEM_EVENT_STA_DISCONNECTED );
 }
 
 void Network::setStatus( enum net_status_t v ){
@@ -66,15 +202,28 @@ enum Network::net_status_t Network::getRealStatus( void ){
 	}
 }
 
-/* Tasks: https://www.freertos.org/implementing-a-FreeRTOS-task.html
+void Network::connect( void ){
+	Serial.println("Network is connecting");
+	WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+}
+
+void Network::disconnect( void ){
+//	WiFi.disconnect(true);
+	WiFi.mode(WIFI_OFF);
+	Serial.println("Network is disconnecting");
+}
+
+
+/* Obsolete code : try to use background tasks.
+ * For Wifi event if far better for now
  *
- * mutex : https://www.freertos.org/Real-time-embedded-RTOS-mutexes.html
- * 	- take : acquire the mutex
- * 	- give : release the mutex
+ * Tasks: https://www.freertos.org/implementing-a-FreeRTOS-task.html
  * 
  */
 
+#if 0	// Trying with background tasks
 void connectTask( void * ){
+	
 	vTaskDelay( 1000 );
 	network.setStatus( Network::net_status_t::WIFI_CONNECTED );
 	Serial.println("Network is connected");
@@ -91,11 +240,5 @@ void Network::connect( void ){
 		NULL	// no task handle
 	);
 }
-
-void Network::disconnect( void ){
-	this->setStatus( net_status_t::WIFI_NOT_CONNECTED );
-	Serial.println("Network is disconnected");
-}
-
-Network network;
+#endif
 
