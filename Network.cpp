@@ -22,6 +22,7 @@
 *************************************************/
 
 #include "Gui.h"
+#include "InterTskCom.h"
 
 #include <WiFi.h>
 
@@ -174,10 +175,15 @@ Network::Network() : status( WIFI_NOT_CONNECTED ){
 }
 
 void Network::setStatus( enum net_status_t v ){
+	enum net_status_t ans = this->status;	// Initial value
+
 	xSemaphoreTake( this->status_mutex, portMAX_DELAY );
 	this->status = v;
 	xSemaphoreGive( this->status_mutex );
 	gui->updateNetwork();
+
+	if( this->isNetworkActive( ans ) != this->isNetworkActive() )
+		xEventGroupSetBits( itc_signals, WATCH_WIFI_CHANGED );
 }
 
 enum Network::net_status_t Network::getStatus( void ){
@@ -200,6 +206,13 @@ enum Network::net_status_t Network::getRealStatus( void ){
 
 		return this->getStatus();
 	}
+}
+
+bool Network::isNetworkActive( enum net_status_t v ){
+	if( v == (enum net_status_t)-1 )
+		v = this->status;	// No need to mutex as we won't block if a value is provided as argument
+
+	return( v == net_status_t::WIFI_BUSY || v == net_status_t::WIFI_CONNECTED );
 }
 
 void Network::connect( void ){

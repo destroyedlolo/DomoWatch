@@ -360,7 +360,7 @@ void setup(){
 void loop(){
 	EventBits_t bits = xEventGroupWaitBits(	// Waiting for event
 		itc_signals, 
-		WATCH_IRQ_AXP | WATCH_IRQ_BMA,	// which even to wait for
+		WATCH_IRQ_AXP | WATCH_IRQ_BMA | WATCH_WIFI_CHANGED,	// which even to wait for
 		pdTRUE,								// clear them when got
 		pdFALSE,							// no need to have all
 		5 / portTICK_RATE_MS				// 5 ms then let loop to let recurrent tasks
@@ -399,6 +399,10 @@ void loop(){
 
 		if(ttgo->bma->isStepCounter())
 			gui->updateStepCounter();
+	}
+
+	if( bits & WATCH_WIFI_CHANGED ){
+Serial.println("Wifi changed");
 	}
 
 	wakingup = false;
