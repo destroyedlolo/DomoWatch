@@ -24,7 +24,7 @@
 
 	/* subtasks signaling */
 
-#define WATCH_WIFI_STATUS	_BV(2)	// WIFI status need to be refreshed
+#define WATCH_WIFI_CHANGED	_BV(2)	// Need to refresh the GUI as the WiFi status changed
 
 extern EventGroupHandle_t itc_signals;	// defined in .ino
 

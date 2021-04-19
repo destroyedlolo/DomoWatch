@@ -29,6 +29,7 @@
 #include "Gui.h"
 #include "CommandLine.h"
 #include "InterTskCom.h"
+#include "Network.h"
 
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
@@ -54,6 +55,22 @@ TTGOClass *ttgo;
 uint32_t inactive_counter = 30*1000;	// The watch is going to sleep if no GUI activities
 uint32_t inactive_wifi_counter = 60*1000;	// The watch is going to sleep if no GUI activities while wifi is enabled
 EventGroupHandle_t itc_signals = NULL;	// Inter tasks signals
+
+	/* Determine the inactive counter as per network's status */
+static uint32_t keepawake( void ){
+	switch( network.getStatus() ){
+	case Network::net_status_t::WIFI_NOT_CONNECTED :	// No network, shorter delay
+	case Network::net_status_t::WIFI_FAILED :
+		return inactive_counter;
+	case Network::net_status_t::WIFI_CONNECTING :		// With network, longer
+	case Network::net_status_t::WIFI_CONNECTED :
+		return inactive_wifi_counter;
+	case Network::net_status_t::WIFI_BUSY :				// Something on way
+		return (uint32_t)-1;	// Stay as long as possible
+	}
+
+	return (uint32_t)-1;	// Not used, only to avoid compilation issue
+}
 
 bool mvtWakeup = true;	// can wakeup from movement
 uint8_t bl_lev;			// Backlight level
@@ -387,7 +404,7 @@ void loop(){
 	wakingup = false;
 	CommandLine::loop();	// Any command to handle ?
 
-	if(lv_disp_get_inactive_time(NULL) < inactive_counter)
+	if(lv_disp_get_inactive_time(NULL) < keepawake())
 		lv_task_handler();	// let Lvgl to handle it's own internals
 	else {	// No activities : going to sleep
 		Serial.println("No activity : Go to sleep");
