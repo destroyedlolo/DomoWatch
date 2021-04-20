@@ -74,13 +74,8 @@ public:
 		 *
 		 * Modules can add other tiles and enable additional movements.
 		 * This function updates allowed movements as per activated extensions
-		 * interface.src/drive/nfc/Adafruit_PN532.cpp:#ifndef
 		 */
 
-	enum gui_extension_bits {
-		GUI_NET_EXTENTION = 0
-	};
-	uint32_t gui_extension;
 	void updateMovements( void );
 
 };

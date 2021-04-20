@@ -187,7 +187,7 @@ void Network::setStatus( enum net_status_t v ){
 	xSemaphoreGive( this->status_mutex );
 	gui->updateNetwork();
 
-	if( this->isNetworkActive( ans ) != this->isNetworkActive() )
+	if( this->isActive( ans ) != this->isActive() )
 		xEventGroupSetBits( itc_signals, WATCH_WIFI_CHANGED );
 }
 
@@ -213,7 +213,7 @@ enum Network::net_status_t Network::getRealStatus( void ){
 	}
 }
 
-bool Network::isNetworkActive( enum net_status_t v ){
+bool Network::isActive( enum net_status_t v ){
 	if( v == (enum net_status_t)-1 )
 		v = this->status;	// No need to mutex as we won't block if a value is provided as argument
 

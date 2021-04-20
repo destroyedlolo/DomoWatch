@@ -38,7 +38,7 @@ public:
 		 * Thie network is active ONLY if it's connected
 		 * or busy.
 		 */
-	bool isNetworkActive( enum net_status_t v = (enum net_status_t)-1 );
+	bool isActive( enum net_status_t v = (enum net_status_t)-1 );
 
 		/* (dis)connect to the WiFi
 		 * the GUI is updated

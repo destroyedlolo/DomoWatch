@@ -4,6 +4,7 @@
 
 #include "Gui.h"
 #include "StatusBar.h"
+#include "Network.h"
 
 #define BACKGROUND Annecy	// Which background to use
 
@@ -17,7 +18,7 @@ Gui *gui;
 	 * Build the GUI
 	 *****/
 
-Gui::Gui( void ) : gui_extension(0) {
+Gui::Gui( void ){
 
 		/***
 		 * Build main style
@@ -137,7 +138,7 @@ void Gui::initAutomation( void ){
 void Gui::updateMovements( void ){
 	int sz = 0;
 
-		// define tiles valide positions
+		// define tiles valid positions
 	const lv_point_t basic_pos[] = { {0,1}, {1,1}, {1,2} };	// basic interface
 	const lv_point_t net_add_pos[] = { {1,0} };	// Network addadum
 
@@ -146,7 +147,29 @@ void Gui::updateMovements( void ){
 	for(int i=0; i<TABSIZE(basic_pos); i++)
 		valid_pos[sz++] = basic_pos[i];
 
-Serial.printf("sz : %d\n", sz);
+	if( network.isActive() ){
+		for(int i=0; i<TABSIZE(net_add_pos); i++)
+			valid_pos[sz++] = net_add_pos[i];
+	}
 
-	this->_tileview->setValidPositions( valid_pos, sz);	// apply it
+		// get the actual position
+	lv_coord_t x,y;
+	this->_tileview->getActiveTile( x,y );
+
+		// and check if it part of the valid ones
+	bool valid = false;
+	for(int i=0; i<sz; i++){
+		if( valid_pos[i].x == x && valid_pos[i].y == y ){
+			valid = true;
+			break;
+		}
+	}
+
+	if(!valid)	// if not, Back to home
+		this->_tileview->setActiveTile( 1,1, 1 );
+
+		// Notez bien : it has to be done AFTER moving to home if needed
+		// otherwise, LVGL is lost and setActiveTile() is not doing the
+		// expected result
+	this->_tileview->setValidPositions( valid_pos, sz);	// Finally apply the new one
 }

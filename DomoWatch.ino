@@ -402,7 +402,8 @@ void loop(){
 	}
 
 	if( bits & WATCH_WIFI_CHANGED ){
-Serial.println("Wifi changed");
+		Serial.println("Wifi changed");
+		gui->updateMovements();
 	}
 
 	wakingup = false;
