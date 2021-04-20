@@ -157,6 +157,11 @@ void getConnected( WiFiEvent_t event, WiFiEventInfo_t info ){
 
 void getStop( WiFiEvent_t event, WiFiEventInfo_t info ){
 	network.setStatus( Network::net_status_t::WIFI_NOT_CONNECTED );
+
+	// Remove old configuration
+	// seems mandatory otherwise the connection seems random if
+	// the watch position changed
+	WiFi.disconnect(true);
 }
 
 void getDisconnected( WiFiEvent_t event, WiFiEventInfo_t info ){
@@ -168,10 +173,10 @@ Network::Network() : status( WIFI_NOT_CONNECTED ){
 	assert( this->status_mutex = xSemaphoreCreateMutex() );	// Initialize mutex object
 
 	WiFi.onEvent( debugWiFiEvent );
-	WiFi.onEvent( getConnecting, WiFiEvent_t::SYSTEM_EVENT_WIFI_READY );
-	WiFi.onEvent( getConnected, WiFiEvent_t::SYSTEM_EVENT_STA_GOT_IP );
-	WiFi.onEvent( getStop, WiFiEvent_t::SYSTEM_EVENT_STA_STOP );
-	WiFi.onEvent( getDisconnected, WiFiEvent_t::SYSTEM_EVENT_STA_DISCONNECTED );
+	WiFi.onEvent( getConnecting, WiFiEvent_t::SYSTEM_EVENT_WIFI_READY );	// hardware ready to connect
+	WiFi.onEvent( getConnected, WiFiEvent_t::SYSTEM_EVENT_STA_GOT_IP );		// WiFi fully connected
+	WiFi.onEvent( getDisconnected, WiFiEvent_t::SYSTEM_EVENT_STA_DISCONNECTED );	// get disconnected
+	WiFi.onEvent( getStop, WiFiEvent_t::SYSTEM_EVENT_STA_STOP );			// WiFi switch off
 }
 
 void Network::setStatus( enum net_status_t v ){
