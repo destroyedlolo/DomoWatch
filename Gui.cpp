@@ -4,6 +4,7 @@
 
 #include "Gui.h"
 #include "StatusBar.h"
+#include "Network.h"
 
 #define BACKGROUND Annecy	// Which background to use
 
@@ -71,7 +72,7 @@ Gui::Gui( void ){
 		/***
 		 * And allowed movements
 		 ***/
-	this->BaseMovements();
+	this->updateMovements();
 	
 		/***
 		 * Define tiles
@@ -110,7 +111,6 @@ Gui::Gui( void ){
 	this->initAutomation();	// Launch automation
 }
 
-
 void Gui::updateStepCounter( void ){
 	this->_statusbar->updateStepCounter();
 }
@@ -123,13 +123,53 @@ void Gui::updateBatteryLevel( void ){
 	this->_statusbar->updateBatteryLevel();
 }
 
+void Gui::updateNetwork( void ){
+	this->_statusbar->updateNetwork();
+}
+
 void Gui::initAutomation( void ){
 	this->_statusbar->initAutomation();
 	this->_tile_datetime->initAutomation();
 	this->_tile_status->initAutomation();
 }
 
-void Gui::BaseMovements( void ){
-	static lv_point_t valid_pos[] = { {0,1}, {1,1}, {1,2} };	// define tiles' position
-	this->_tileview->setValidPositions( valid_pos, sizeof(valid_pos) / sizeof(valid_pos[1]) );	// apply it
+#define TABSIZE(t) ( sizeof(t) / sizeof(t[1]) )
+
+void Gui::updateMovements( void ){
+	int sz = 0;
+
+		// define tiles valid positions
+	const lv_point_t basic_pos[] = { {0,1}, {1,1}, {1,2} };	// basic interface
+	const lv_point_t net_add_pos[] = { {1,0} };	// Network addadum
+
+	static lv_point_t valid_pos[ TABSIZE(basic_pos) + TABSIZE(net_add_pos) ];
+
+	for(int i=0; i<TABSIZE(basic_pos); i++)
+		valid_pos[sz++] = basic_pos[i];
+
+	if( network.isActive() ){
+		for(int i=0; i<TABSIZE(net_add_pos); i++)
+			valid_pos[sz++] = net_add_pos[i];
+	}
+
+		// get the actual position
+	lv_coord_t x,y;
+	this->_tileview->getActiveTile( x,y );
+
+		// and check if it part of the valid ones
+	bool valid = false;
+	for(int i=0; i<sz; i++){
+		if( valid_pos[i].x == x && valid_pos[i].y == y ){
+			valid = true;
+			break;
+		}
+	}
+
+	if(!valid)	// if not, Back to home
+		this->_tileview->setActiveTile( 1,1, 1 );
+
+		// Notez bien : it has to be done AFTER moving to home if needed
+		// otherwise, LVGL is lost and setActiveTile() is not doing the
+		// expected result
+	this->_tileview->setValidPositions( valid_pos, sz);	// Finally apply the new one
 }

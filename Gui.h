@@ -34,6 +34,7 @@ class Gui :
 
 public:
 
+
 		/* Battery icons */
 	enum lv_icon_battery_t {
 			/* Icons ID */
@@ -58,7 +59,7 @@ public:
 	 */
 	void initAutomation( void );
 
-		/* interfaces
+		/* Update icons.
 		 *
 		 * Documentation are in StatusBar.h
 		 */
@@ -66,13 +67,17 @@ public:
 	void updateBatteryIcon( lv_icon_battery_t index );
 	void updateBatteryLevel( void );
 
-		/* Base interface movements
+	void updateNetwork( void );
+
+
+		/* GUI movement
 		 *
 		 * Modules can add other tiles and enable additional movements.
-		 * This function reset to movements only available with the basic
-		 * interface.
+		 * This function updates allowed movements as per activated extensions
 		 */
-	void BaseMovements( void );
+
+	void updateMovements( void );
+
 };
 
 

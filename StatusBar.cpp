@@ -5,6 +5,7 @@
 
 #include "StatusBar.h"
 #include "MsgBox.h"
+#include "Network.h"
 
 	/****
 	 * callbacks
@@ -21,6 +22,15 @@ static void stepClicked( lv_obj_t *, lv_event_t event ){
 static void wifiClicked( lv_obj_t *, lv_event_t event ){
 	if(event == LV_EVENT_CLICKED){
 		Serial.println("WIFI clicked");
+		if( network.getStatus() == Network::net_status_t::WIFI_CONNECTED ){
+			/* Nothing on way : we can disconnect */
+			network.disconnect();
+		} else if( network.getStatus() == Network::net_status_t::WIFI_NOT_CONNECTED ||
+						network.getStatus() == Network::net_status_t::WIFI_FAILED ){
+			/* Nothing on way : we can disconnect */
+			network.connect();
+		} else
+			Serial.println("Network is processing");
 	}
 }
 
@@ -98,6 +108,7 @@ StatusBar::StatusBar( lv_style_t *mainstyle, lv_obj_t *parent, const lv_obj_t *c
 
 	this->wifiIcon = new Image( this->wifiButton );
 	this->wifiIcon->Set( &wifi_16px );
+	this->wifiIcon->setIntensity();
 	this->wifiIcon->setClickable( false );	// Pass click to the parent
 }
 
@@ -141,6 +152,25 @@ void StatusBar::updateBatteryIcon( Gui::lv_icon_battery_t index ){
 
 	static const char *icons[] = {LV_SYMBOL_BATTERY_EMPTY, LV_SYMBOL_BATTERY_1, LV_SYMBOL_BATTERY_2, LV_SYMBOL_BATTERY_3, LV_SYMBOL_BATTERY_FULL, LV_SYMBOL_CHARGE};
 	this->batIcon->Set( icons[index] );	// And the icon
+}
+
+void StatusBar::updateNetwork( void ){
+	switch( network.getStatus() ){
+	case Network::net_status_t::WIFI_CONNECTING :
+		this->wifiIcon->Recolor(LV_COLOR_ORANGE);
+		break;
+	case Network::Network::net_status_t::WIFI_FAILED :
+		this->wifiIcon->Recolor(LV_COLOR_RED);
+		break;
+	case Network::Network::net_status_t::WIFI_CONNECTED :
+		this->wifiIcon->Recolor(LV_COLOR_LIME);
+		break;
+	case Network::net_status_t::WIFI_BUSY :
+		this->wifiIcon->Recolor(LV_COLOR_NAVY);
+		break;
+	default :
+		this->wifiIcon->Recolor(LV_COLOR_WHITE);
+	}
 }
 
 static void cbUpdBat( lv_task_t *tsk ){
