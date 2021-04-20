@@ -53,11 +53,18 @@ In this mode, only energy hungry peripherals are stopped :
   - the CPU is frozen but the memory is kept as it was
 
 *Advantages* : very fast, the watch is waken up within a second
-*Battery lifetime* : in this mode, with an average usage and keeping network disabled, the battery expectancies is a little less than 2 days.
+
+*Battery lifetime* : in this mode, with an average usage and keeping network disabled, the battery expectancies is a bit less than 2 days.
 
 *Enter in light sleep* : 
   - short (< 1.5 seconds by default) press on the bezel button.
-  - let the screen inactive the configured period (30s by default)
+  - let the screen inactive the configured period.
+ 
+ The inactive period can have 2 values, and both can be set in the screen settings
+  - a *shorter* one is used when the network is off (30s by default)
+  - a *longer* one is used when the network is activated (60s by default)
+
+In case a network transaction is on way (like time synchronisation), a 3rd *unlimited* period is used to let the transaction to complete.
 
 *Waking up* :
   - press the bezel button
