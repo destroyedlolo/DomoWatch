@@ -17,7 +17,7 @@ Gui *gui;
 	 * Build the GUI
 	 *****/
 
-Gui::Gui( void ){
+Gui::Gui( void ) : gui_extension(0) {
 
 		/***
 		 * Build main style
@@ -71,7 +71,7 @@ Gui::Gui( void ){
 		/***
 		 * And allowed movements
 		 ***/
-	this->BaseMovements();
+	this->updateMovements();
 	
 		/***
 		 * Define tiles
@@ -132,7 +132,21 @@ void Gui::initAutomation( void ){
 	this->_tile_status->initAutomation();
 }
 
-void Gui::BaseMovements( void ){
-	static lv_point_t valid_pos[] = { {0,1}, {1,1}, {1,2} };	// define tiles' position
-	this->_tileview->setValidPositions( valid_pos, sizeof(valid_pos) / sizeof(valid_pos[1]) );	// apply it
+#define TABSIZE(t) ( sizeof(t) / sizeof(t[1]) )
+
+void Gui::updateMovements( void ){
+	int sz = 0;
+
+		// define tiles valide positions
+	const lv_point_t basic_pos[] = { {0,1}, {1,1}, {1,2} };	// basic interface
+	const lv_point_t net_add_pos[] = { {1,0} };	// Network addadum
+
+	static lv_point_t valid_pos[ TABSIZE(basic_pos) + TABSIZE(net_add_pos) ];
+
+	for(int i=0; i<TABSIZE(basic_pos); i++)
+		valid_pos[sz++] = basic_pos[i];
+
+Serial.printf("sz : %d\n", sz);
+
+	this->_tileview->setValidPositions( valid_pos, sz);	// apply it
 }

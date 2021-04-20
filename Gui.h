@@ -34,6 +34,7 @@ class Gui :
 
 public:
 
+
 		/* Battery icons */
 	enum lv_icon_battery_t {
 			/* Icons ID */
@@ -58,7 +59,7 @@ public:
 	 */
 	void initAutomation( void );
 
-		/* interfaces
+		/* Update icons.
 		 *
 		 * Documentation are in StatusBar.h
 		 */
@@ -68,13 +69,20 @@ public:
 
 	void updateNetwork( void );
 
-		/* Base interface movements
+
+		/* GUI movement
 		 *
 		 * Modules can add other tiles and enable additional movements.
-		 * This function reset to movements only available with the basic
-		 * interface.
+		 * This function updates allowed movements as per activated extensions
+		 * interface.src/drive/nfc/Adafruit_PN532.cpp:#ifndef
 		 */
-	void BaseMovements( void );
+
+	enum gui_extension_bits {
+		GUI_NET_EXTENTION = 0
+	};
+	uint32_t gui_extension;
+	void updateMovements( void );
+
 };
 
 
