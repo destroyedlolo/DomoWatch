@@ -15,8 +15,13 @@ public:
 	};
 
 private:
+		/* Network status */
 	enum net_status_t status;
 	SemaphoreHandle_t status_mutex;
+
+		/* Slave tasks */
+	uint32_t STCounter;
+	SemaphoreHandle_t STC_mutex;
 
 public:
 	Network();
@@ -39,6 +44,14 @@ public:
 		 * or busy.
 		 */
 	bool isActive( enum net_status_t v = (enum net_status_t)-1 );
+
+		/* Slave tasks counter
+		 *
+		 * Notez-bien : these function may lock status
+		 */
+	void increaseSTC( void );
+	void decreaseSTC( void );
+	bool isSlaveTaskRunning( void );
 
 		/* (dis)connect to the WiFi
 		 * the GUI is updated

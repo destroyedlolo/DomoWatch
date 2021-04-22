@@ -169,8 +169,10 @@ void getDisconnected( WiFiEvent_t event, WiFiEventInfo_t info ){
 	WiFi.mode(WIFI_OFF);
 }
 
-Network::Network() : status( WIFI_NOT_CONNECTED ){
-	assert( this->status_mutex = xSemaphoreCreateMutex() );	// Initialize mutex object
+Network::Network() : status( WIFI_NOT_CONNECTED ), STCounter(0){
+		// Initialize mutex object
+	assert( this->status_mutex = xSemaphoreCreateMutex() );
+	assert( this->STC_mutex = xSemaphoreCreateMutex() );
 
 	WiFi.onEvent( debugWiFiEvent );
 	WiFi.onEvent( getConnecting, WiFiEvent_t::SYSTEM_EVENT_WIFI_READY );	// hardware ready to connect
@@ -231,6 +233,27 @@ void Network::disconnect( void ){
 	Serial.println("Network is disconnecting");
 }
 
+void Network::increaseSTC( void ){
+	xSemaphoreTake( this->STC_mutex, portMAX_DELAY );
+	if( ++(this->STCounter) == 1 )	// First task launched
+		xEventGroupSetBits( itc_signals, WATCH_WIFI_CHANGED );	// Request GUI update
+	xSemaphoreGive( this->STC_mutex );
+}
+
+void Network::decreaseSTC( void ){
+	xSemaphoreTake( this->STC_mutex, portMAX_DELAY );
+	if( !(--this->STCounter) )	// Last task finished
+		xEventGroupSetBits( itc_signals, WATCH_WIFI_CHANGED );	// Request GUI update
+	xSemaphoreGive( this->STC_mutex );
+}
+
+bool Network::isSlaveTaskRunning( void ){
+	xSemaphoreTake( this->STC_mutex, portMAX_DELAY );
+	bool res = (this->STCounter != 0);
+	xSemaphoreGive( this->STC_mutex );
+
+	return res;
+}
 
 /* Obsolete code : try to use background tasks.
  * For Wifi event if far better for now

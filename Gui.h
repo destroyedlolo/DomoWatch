@@ -75,9 +75,8 @@ public:
 		 * Modules can add other tiles and enable additional movements.
 		 * This function updates allowed movements as per activated extensions
 		 */
-
 	void updateMovements( void );
-
+	void backToHome( void );
 };
 
 
