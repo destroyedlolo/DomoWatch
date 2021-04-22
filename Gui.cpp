@@ -166,10 +166,14 @@ void Gui::updateMovements( void ){
 	}
 
 	if(!valid)	// if not, Back to home
-		this->_tileview->setActiveTile( 1,1, 1 );
+		this->backToHome();
 
 		// Notez bien : it has to be done AFTER moving to home if needed
 		// otherwise, LVGL is lost and setActiveTile() is not doing the
 		// expected result
 	this->_tileview->setValidPositions( valid_pos, sz);	// Finally apply the new one
+}
+
+void Gui::backToHome( void ){
+	this->_tileview->setActiveTile( 1,1, 1 );
 }

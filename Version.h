@@ -10,8 +10,9 @@
 *	13/12/2020 - LF : LVGL related classes are externalized to emToile
 *		- 007 : James Bond version, tribute to late Sean Connery - 
 *	14/04/2021 - LF : 0.09 - work on WiFi
+*	21/04/2021 - LF : 0.10 - Add time synchronisation
 */
 
 #ifndef VERSION_H
-#define VERSION_H "0.0906"
+#define VERSION_H "0.1001"
 #endif

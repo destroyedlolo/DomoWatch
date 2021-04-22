@@ -7,8 +7,14 @@
 
 #include "TileView.h"
 #include "Container.h"
+#include "Image.h"
+#include "Button.h"
 
 class TlNetwork : public Container {
+	/* time synchronisation */
+	Button		*syncButton;
+	Image		*syncIcon;
+
 public:
 	/* Screen's tile constructor
 	 * -> parent, cloned : see Container
