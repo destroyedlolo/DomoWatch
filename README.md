@@ -24,14 +24,33 @@ This project can be build using **Arduino IDE** and needs :
 
 ## User guide
 
+### Configuration
+
+It looks to me very tedious to modify some configuration using a so tiny screen. Consequently some parameters can only be set using the serial console or, worst, simply hard coded in the source.
+
+#### Networking
+
+**Wifi SSID** and corresponding **Password** are hardcoded in *Network.cpp*.
+Don't forget to comment out
+```
+   #include <Maison.h>
+```
+which is for my very own usage.
+
 ### GUI
 
 The **main tile** only displays the current date and time with a **status bar** containing *battery level* and a *step counter*. Clicking on it to reset.
 
 ```
-	 --------       -------------
-	| Status | <-> | Time & Date |
-	 --------       -------------
+			 ~~~~~~~~~~~~
+			l Net stuff  l
+			 ~~~~~~~~~~~~
+			     /l\
+			      l
+			     \l/
+	 --------	 -------------
+	| Status | <->	| Time & Date |
+	 -------- 	 -------------
 			    /|\
 			     |
 			    \|/
@@ -39,8 +58,9 @@ The **main tile** only displays the current date and time with a **status bar** 
 			| Scrn set  |
 			 -----------
 ```
-  - On it's left, the *status tile* that is displaying some watch's figures (consumption, RAM, ...).
-  - On it's bottom, the *Screen settings* : take in account it's value is not stored but in memory. In case of a reboot, previous value is lost.
+  - On its left, the *status tile* that is displaying some watch's figures (consumption, RAM, ...).
+  - On its bottom, the *Screen settings* : take in account it's value is not stored but in memory. In case of a reboot, previous value is lost.
+  - On its top, the network related tile. It is only available when the WiFi is connected
 
 ### Power management
 
