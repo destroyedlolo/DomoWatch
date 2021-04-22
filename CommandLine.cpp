@@ -23,8 +23,6 @@ void cmd_setdate( const String &arg ){
 	tm.tm_min = atoi( arg.substring(11,13).c_str() );
 	tm.tm_sec = atoi( arg.substring(13).c_str() );
 
-	tm.tm_isdst = 0;
-
 	struct timeval val;
 	val.tv_sec = mktime(&tm);
     val.tv_usec = 0;

@@ -15,20 +15,18 @@ LV_IMG_DECLARE(timezone_64px);
 
 /* Request time synchronisation.
  *
- * Ideally it should run as a background task ... but
- * LVGL is not thread compliant so, as this action
- * is quite short, I decided to keep it in the main thread
- * (for the moment :) )
+ * It seems, NTP query is done in a background tasks.
+ * The added value, it doesn't block the GUI while querying.
+ * The bad side is I can't set the RTC immediately : it will be done
+ * at shutdonw.
  */
 static void syncTime( lv_obj_t *, lv_event_t event ){
 	if(event == LV_EVENT_CLICKED){
 		Serial.println("Time synchronisation requested");
 
 		configTzTime("CET-1CEST-2,M3.5.0/02:00:00,M10.5.0/03:00:00", "pool.ntp.org");
-
-		setenv("TZ", "", 1);
 		ttgo->rtc->syncToRtc();
-		
+
 		gui->backToHome();	// Return to time tile
 	}
 }

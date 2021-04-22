@@ -105,6 +105,8 @@ void wakeup(){
 }
 
 void deep_sleep(){
+	ttgo->rtc->syncToRtc();	// In case the time as changed
+
 	ttgo->stopLvglTick();
 	ttgo->displayOff();
 	ttgo->bma->enableStepCountInterrupt(false);	// Step counter will not generate interrupt
@@ -117,6 +119,8 @@ void deep_sleep(){
 }
 
 void light_sleep(){
+	ttgo->rtc->syncToRtc();	// In case the time as changed
+
 	ttgo->stopLvglTick();	// stop Lvgl
 	ttgo->bma->enableStepCountInterrupt(false);	// Step counter will not generate interrupt
 
@@ -274,6 +278,9 @@ void setup(){
 		*****/
 
 	Serial.println("Reading RTC ...");
+	setenv("TZ", "CET-1CEST-2,M3.5.0/02:00:00,M10.5.0/03:00:00", 1);
+	tzset();
+
 	ttgo->rtc->check();			// Ensure the RTC is valid (if not use compilation time)
 	ttgo->rtc->syncToSystem();	// sync with ESP32
 
