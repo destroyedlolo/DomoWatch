@@ -37,6 +37,13 @@ Don't forget to comment out
 ```
 which is for my very own usage.
 
+##### To connect
+click on the WiFi icon on the status bar :
+- **White** : not connected (including after disconnect)
+- **Red** : an error occurred (please disconnect and then reconnect)
+- **Orange** : Connection in progress
+- **Green** : Connected (click on the icon again to disconnect)
+
 ### GUI
 
 The **main tile** only displays the current date and time with a **status bar** containing *battery level* and a *step counter*. Clicking on it to reset.
