@@ -25,7 +25,6 @@ static void syncTime( lv_obj_t *, lv_event_t event ){
 		Serial.println("Time synchronisation requested");
 
 		configTzTime("CET-1CEST-2,M3.5.0/02:00:00,M10.5.0/03:00:00", "pool.ntp.org");
-		ttgo->rtc->syncToRtc();
 
 		gui->backToHome();	// Return to time tile
 	}
