@@ -15,6 +15,11 @@ class TlNetwork : public Container {
 	Button		*syncButton;
 	Image		*syncIcon;
 
+	/* MQTT */
+	Button		*MQTTButton;
+	Image		*MQTTIcon;
+
+
 public:
 	/* Screen's tile constructor
 	 * -> parent, cloned : see Container

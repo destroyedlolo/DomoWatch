@@ -7,6 +7,7 @@
 #include "TlNetwork.h"
 
 LV_IMG_DECLARE(timezone_64px);
+LV_IMG_DECLARE(MQTT_64px);
 
 	/****
 	 * callbacks
@@ -33,18 +34,42 @@ static void syncTime( lv_obj_t *, lv_event_t event ){
 TlNetwork::TlNetwork( TileView *parent, TileView *cloned ) : 
 	Container( parent, cloned )
 {
-		/* button above the icon to handle action */
+		/*
+		 * NTP
+		 */
+
 	this->syncButton = new Button( this );
-	this->syncButton->setLayout( LV_LAYOUT_ROW_MID );	// child are horizontally aligned
-//	this->syncButton->setSize( this->getWidth() / 2, this->getHeight() );
+	this->syncButton->Align( LV_ALIGN_IN_TOP_LEFT );	// it is itself aligned on the left
 	this->syncButton->setFit( LV_FIT_TIGHT );	// Its size is the one of it's child
-	this->syncButton->Align( LV_ALIGN_IN_LEFT_MID );	// it is itself aligned on the left
-	lv_style_set_bg_opa( this->syncButton->getStyle(), LV_OBJ_PART_MAIN, LV_OPA_0 );
-	this->syncButton->applyStyle();
+	this->syncButton->AutoRealign();	// otherwise the icon is shifted
+	this->syncButton->setPadding(0);
 
 	this->syncIcon = new Image( this->syncButton );
 	this->syncIcon->Set( &timezone_64px );
 	this->syncIcon->setClickable( false );	// Pass click to the parent
 
 	this->syncButton->attacheEventeHandler( syncTime );
+
+
+		/*
+		 * MQTT
+		 */
+
+	this->MQTTButton = new Button( this );
+	this->MQTTButton->Align( LV_ALIGN_OUT_RIGHT_MID, this->syncButton, 20 );	
+	this->MQTTButton->setFit( LV_FIT_TIGHT );	// Its size is the one of it's child
+	this->MQTTButton->AutoRealign();	// otherwise the icon is shifted
+	this->MQTTButton->setPadding(0);
+
+	this->MQTTIcon = new Image( this->MQTTButton );
+	this->MQTTIcon->Set( &MQTT_64px );
+	this->MQTTIcon->setClickable( false );	// Pass click to the parent
+	this->MQTTIcon->setPosXY(0,0);
+
+this->syncIcon->dumpObj();
+this->syncButton->dumpObj();
+this->MQTTIcon->dumpObj();
+this->MQTTButton->dumpObj();
+
+//	this->MQTTButton->attacheEventeHandler( startMQTT );
 }
