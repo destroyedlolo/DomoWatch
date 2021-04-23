@@ -15,7 +15,12 @@ In addition, the code has been made in **POO way** and being **very modular** (a
 
 This project can be build using **Arduino IDE** and needs :
 - [Xinyuan-LilyGO /TTGO_TWatch_Library](https://github.com/Xinyuan-LilyGO/TTGO_TWatch_Library) and dependancies to be installed
-- [emToile](https://github.com/destroyedlolo/emToile) 
+- [emToile](https://github.com/destroyedlolo/emToile)
+
+For MQTT
+
+- [async-mqtt-client](https://github.com/marvinroger/async-mqtt-client)
+- [AsyncTCP](https://github.com/me-no-dev/AsyncTCP) - Needed by async-mqtt-client.
 
 ## Code convention
 
