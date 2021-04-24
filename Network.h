@@ -4,6 +4,8 @@
 #ifndef NETWORK_H
 #define NETWORK_H
 
+#include <AsyncMqttClient.h>
+
 class Network {
 public:
 	enum net_status_t {
@@ -23,6 +25,8 @@ private:
 	uint32_t STCounter;
 	SemaphoreHandle_t STC_mutex;
 
+	AsyncMqttClient mqttClient;
+
 public:
 	Network();
 
@@ -41,7 +45,6 @@ public:
 		 * point of view) or not
 		 *
 		 * Thie network is active ONLY if it's connected
-		 * or busy.
 		 */
 	bool isActive( enum net_status_t v = (enum net_status_t)-1 );
 
@@ -58,6 +61,13 @@ public:
 		 */
 	void connect( void );
 	void disconnect( void );
+
+		/* MQTT related
+		 * the GUI is updated
+		 */
+	void MQTTconnect( void );
+	void MQTTdisconnect( void );
+	void MQTTconnected( void );
 };
 
 extern Network network;

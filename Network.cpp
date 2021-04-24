@@ -49,14 +49,14 @@
 #ifndef WIFI_SSID
 #	define WIFI_SSID "YourSSID"
 #	define WIFI_PASSWORD "YourPassword"
-#endif
 
-#define NETWORK_TRIES	30	// Number of second to try for network connection
+#	define BROKER_HOST "Broker_Host_OrIP"
+#	define BROKER_PORT 1883
+#endif
 
 #include "Network.h"
 
 Network network;
-
 
 	/* Receiving random network notification
 	 * for debugging purposes.
@@ -147,15 +147,15 @@ static void debugWiFiEvent(WiFiEvent_t event){
     }
 }
 
-void getConnecting( WiFiEvent_t event, WiFiEventInfo_t info ){
+static void getConnecting( WiFiEvent_t event, WiFiEventInfo_t info ){
 	network.setStatus( Network::net_status_t::WIFI_CONNECTING );
 }
 
-void getConnected( WiFiEvent_t event, WiFiEventInfo_t info ){
+static void getConnected( WiFiEvent_t event, WiFiEventInfo_t info ){
 	network.setStatus( Network::net_status_t::WIFI_CONNECTED );
 }
 
-void getStop( WiFiEvent_t event, WiFiEventInfo_t info ){
+static void getStop( WiFiEvent_t event, WiFiEventInfo_t info ){
 	network.setStatus( Network::net_status_t::WIFI_NOT_CONNECTED );
 
 	// Remove old configuration
@@ -164,9 +164,18 @@ void getStop( WiFiEvent_t event, WiFiEventInfo_t info ){
 	WiFi.disconnect(true);
 }
 
-void getDisconnected( WiFiEvent_t event, WiFiEventInfo_t info ){
+static void getDisconnected( WiFiEvent_t event, WiFiEventInfo_t info ){
 	network.setStatus( Network::net_status_t::WIFI_FAILED );
 	WiFi.mode(WIFI_OFF);
+}
+
+static void getMQTTConnected( bool ){
+}
+
+static void getMQTTDisconnected( AsyncMqttClientDisconnectReason ){
+}
+
+static void getMQTTMessage( char* topic, char* payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total ){
 }
 
 Network::Network() : status( WIFI_NOT_CONNECTED ), STCounter(0){
@@ -179,6 +188,11 @@ Network::Network() : status( WIFI_NOT_CONNECTED ), STCounter(0){
 	WiFi.onEvent( getConnected, WiFiEvent_t::SYSTEM_EVENT_STA_GOT_IP );		// WiFi fully connected
 	WiFi.onEvent( getDisconnected, WiFiEvent_t::SYSTEM_EVENT_STA_DISCONNECTED );	// get disconnected
 	WiFi.onEvent( getStop, WiFiEvent_t::SYSTEM_EVENT_STA_STOP );			// WiFi switch off
+
+	this->mqttClient.onConnect(getMQTTConnected);
+	this->mqttClient.onDisconnect(getMQTTDisconnected);
+	this->mqttClient.onMessage(getMQTTMessage);
+	this->mqttClient.setServer(BROKER_HOST, BROKER_PORT);
 }
 
 void Network::setStatus( enum net_status_t v ){
@@ -231,6 +245,10 @@ void Network::disconnect( void ){
 //	WiFi.disconnect(true);
 	WiFi.mode(WIFI_OFF);
 	Serial.println("Network is disconnecting");
+}
+
+void Network::MQTTconnect( void ){
+	this->mqttClient.connect();
 }
 
 void Network::increaseSTC( void ){

@@ -22,12 +22,12 @@ static void stepClicked( lv_obj_t *, lv_event_t event ){
 static void wifiClicked( lv_obj_t *, lv_event_t event ){
 	if(event == LV_EVENT_CLICKED){
 		Serial.println("WIFI clicked");
-		if( network.getStatus() == Network::net_status_t::WIFI_CONNECTED ){
+		if( network.isActive() ){
 			/* Nothing on way : we can disconnect */
 			network.disconnect();
 		} else if( network.getStatus() == Network::net_status_t::WIFI_NOT_CONNECTED ||
 						network.getStatus() == Network::net_status_t::WIFI_FAILED ){
-			/* Nothing on way : we can disconnect */
+			/* Not connected : we can connect */
 			network.connect();
 		} else
 			Serial.println("Network is processing");
