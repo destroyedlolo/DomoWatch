@@ -219,7 +219,7 @@ bool Network::isActive( enum net_status_t v ){
 	if( v == (enum net_status_t)-1 )
 		v = this->status;	// No need to mutex as we won't block if a value is provided as argument
 
-	return( v == net_status_t::WIFI_BUSY || v == net_status_t::WIFI_CONNECTED );
+	return( v == net_status_t::WIFI_MQTT || v == net_status_t::WIFI_CONNECTED );
 }
 
 void Network::connect( void ){

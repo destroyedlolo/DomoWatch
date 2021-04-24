@@ -10,7 +10,7 @@ public:
 		WIFI_NOT_CONNECTED = 0,
 		WIFI_FAILED,	// Failed attempt to connect or to communicate
 		WIFI_CONNECTING,
-		WIFI_BUSY,		// Something is on way
+		WIFI_MQTT,		// MQTT connected as well to the broker
 		WIFI_CONNECTED
 	};
 
@@ -53,7 +53,7 @@ public:
 	void decreaseSTC( void );
 	bool isSlaveTaskRunning( void );
 
-		/* (dis)connect to the WiFi
+		/* WiFi related
 		 * the GUI is updated
 		 */
 	void connect( void );

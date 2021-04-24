@@ -64,9 +64,12 @@ static uint32_t keepawake( void ){
 		return inactive_counter;
 	case Network::net_status_t::WIFI_CONNECTING :		// With network, longer
 	case Network::net_status_t::WIFI_CONNECTED :
+	case Network::net_status_t::WIFI_MQTT :
 		return inactive_wifi_counter;
+/*
 	case Network::net_status_t::WIFI_BUSY :				// Something on way
 		return (uint32_t)-1;	// Stay as long as possible
+*/
 	}
 
 	return (uint32_t)-1;	// Not used, only to avoid compilation issue
