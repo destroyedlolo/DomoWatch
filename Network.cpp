@@ -200,8 +200,12 @@ static void getMQTTDisconnected( AsyncMqttClientDisconnectReason r ){
 }
 
 static void getMQTTMessage( char* topic, char* payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total ){
-	Serial.printf("Received t:'%s' m:'%s'\n", topic, payload);
-	gui->msgreceived( topic, payload );
+	char t[len+1];
+	strncpy(t, payload, len);
+	t[len] = 0;
+
+	Serial.printf("Received t:'%s' m:'%s'\n", topic, t);
+	gui->msgreceived( topic, t );
 }
 
 Network::Network() : status( WIFI_NOT_CONNECTED ), STCounter(0){
