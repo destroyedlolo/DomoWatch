@@ -33,14 +33,16 @@ static void syncTime( lv_obj_t *, lv_event_t event ){
 	}
 }
 
-static void startMQTT( lv_obj_t *, lv_event_t event ){
+static void startstopMQTT( lv_obj_t *, lv_event_t event ){
 	if(event == LV_EVENT_CLICKED){
-		Serial.println("MQTT requested");
 
-		if( network.MQTTconnected() )
-			Serial.println("MQTT already connected");
-		else
+		if( network.MQTTconnected() ){
+			Serial.println("MQTT disconnecting");
+			network.MQTTdisconnect();
+		} else {
+			Serial.println("MQTT requested");
 			network.MQTTconnect();
+		}
 	}
 }
 
@@ -96,7 +98,7 @@ TlNetwork::TlNetwork( TileView *parent, TileView *cloned ) :
 	this->MQTTIcon->setClickable( false );	// Pass click to the parent
 	this->MQTTIcon->setPosXY(0,0);
 
-	this->MQTTButton->attacheEventeHandler( startMQTT );
+	this->MQTTButton->attacheEventeHandler( startstopMQTT );
 
 		/*
 		 * Consumption
