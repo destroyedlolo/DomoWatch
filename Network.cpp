@@ -169,13 +169,36 @@ static void getDisconnected( WiFiEvent_t event, WiFiEventInfo_t info ){
 	WiFi.mode(WIFI_OFF);
 }
 
+bool first=true;	// Subscribe once
 static void getMQTTConnected( bool ){
+    Serial.println("MQTT Connected");
+	network.setStatus( Network::net_status_t::WIFI_MQTT);
+
+	if(first){
+		first = false;
+		network.MQTTsubscribe( "TeleInfo/Consommation/values/PAPP", 0 );
+    	Serial.println("Subscribing ...");
+	}
 }
 
-static void getMQTTDisconnected( AsyncMqttClientDisconnectReason ){
+static void getMQTTDisconnected( AsyncMqttClientDisconnectReason r ){
+    Serial.print("MQTT Disconnected due to ");
+	switch(r){
+	case AsyncMqttClientDisconnectReason::TCP_DISCONNECTED : Serial.println( "TCP_DISCONNECTED" ); break;
+	case AsyncMqttClientDisconnectReason::MQTT_UNACCEPTABLE_PROTOCOL_VERSION : Serial.println( "MQTT_UNACCEPTABLE_PROTOCOL_VERSION" ); break;
+	case AsyncMqttClientDisconnectReason::MQTT_IDENTIFIER_REJECTED : Serial.println( "MQTT_IDENTIFIER_REJECTED" ); break;
+	case AsyncMqttClientDisconnectReason::MQTT_SERVER_UNAVAILABLE : Serial.println( "MQTT_SERVER_UNAVAILABLE" ); break;
+	case AsyncMqttClientDisconnectReason::MQTT_MALFORMED_CREDENTIALS : Serial.println( "MQTT_MALFORMED_CREDENTIALS" ); break;
+	case AsyncMqttClientDisconnectReason::MQTT_NOT_AUTHORIZED : Serial.println( "MQTT_NOT_AUTHORIZED" ); break;
+	case AsyncMqttClientDisconnectReason::ESP8266_NOT_ENOUGH_SPACE : Serial.println( "ESP8266_NOT_ENOUGH_SPACE" ); break;
+	case AsyncMqttClientDisconnectReason::TLS_BAD_FINGERPRINT : Serial.println( "TLS_BAD_FINGERPRINT" ); break;
+	default :
+		Serial.println( "Unknown" );
+	}
 }
 
 static void getMQTTMessage( char* topic, char* payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total ){
+	Serial.printf("Received t:'%s' m:'%s'\n", topic, payload);
 }
 
 Network::Network() : status( WIFI_NOT_CONNECTED ), STCounter(0){
@@ -242,13 +265,27 @@ void Network::connect( void ){
 }
 
 void Network::disconnect( void ){
-//	WiFi.disconnect(true);
+	if( this->MQTTconnected() )
+		this->MQTTdisconnect( true );	// Enforce MQTT to disconnect (to be clean)
+
 	WiFi.mode(WIFI_OFF);
 	Serial.println("Network is disconnecting");
 }
 
 void Network::MQTTconnect( void ){
 	this->mqttClient.connect();
+}
+
+void Network::MQTTdisconnect( bool force ){
+	this->mqttClient.disconnect( force );
+}
+
+bool Network::MQTTconnected( void ){
+	return(this->mqttClient.connected());
+}
+
+uint16_t Network::MQTTsubscribe(const char* topic, uint8_t qos){
+	return(this->mqttClient.subscribe( topic, qos ));
 }
 
 void Network::increaseSTC( void ){

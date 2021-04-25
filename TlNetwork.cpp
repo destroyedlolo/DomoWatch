@@ -35,7 +35,10 @@ static void startMQTT( lv_obj_t *, lv_event_t event ){
 	if(event == LV_EVENT_CLICKED){
 		Serial.println("MQTT requested");
 
-		network.MQTTconnect();
+		if( network.MQTTconnected() )
+			Serial.println("MQTT already connected");
+		else
+			network.MQTTconnect();
 	}
 }
 

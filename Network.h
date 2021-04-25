@@ -66,8 +66,9 @@ public:
 		 * the GUI is updated
 		 */
 	void MQTTconnect( void );
-	void MQTTdisconnect( void );
-	void MQTTconnected( void );
+	void MQTTdisconnect( bool force=false );
+	bool MQTTconnected( void );
+	uint16_t MQTTsubscribe(const char* topic, uint8_t qos=0);
 };
 
 extern Network network;

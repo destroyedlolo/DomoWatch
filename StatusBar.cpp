@@ -166,7 +166,7 @@ void StatusBar::updateNetwork( void ){
 		this->wifiIcon->Recolor(LV_COLOR_LIME);
 		break;
 	case Network::net_status_t::WIFI_MQTT :
-		this->wifiIcon->Recolor(LV_COLOR_NAVY);
+		this->wifiIcon->Recolor(LV_COLOR_BLUE);
 		break;
 	default :
 		this->wifiIcon->Recolor(LV_COLOR_WHITE);
