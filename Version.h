@@ -14,5 +14,5 @@
 */
 
 #ifndef VERSION_H
-#define VERSION_H "0.1100"
+#define VERSION_H "0.1101"
 #endif

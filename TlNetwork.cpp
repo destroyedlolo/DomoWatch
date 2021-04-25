@@ -8,6 +8,7 @@
 
 LV_IMG_DECLARE(timezone_64px);
 LV_IMG_DECLARE(MQTT_64px);
+LV_IMG_DECLARE(brightness_32px);
 
 	/****
 	 * callbacks
@@ -40,6 +41,19 @@ static void startMQTT( lv_obj_t *, lv_event_t event ){
 		else
 			network.MQTTconnect();
 	}
+}
+
+void TlNetwork::subscribe( void ){
+	network.MQTTsubscribe( "TeleInfo/Consommation/values/PAPP" );
+}
+
+bool TlNetwork::msgreceived( const char *topic, const char *payload ){
+	if(!strcmp( topic, "TeleInfo/Consommation/values/PAPP" )){
+		this->consoText->setText( payload );
+		return true;
+	}
+
+	return false;
 }
 
 TlNetwork::TlNetwork( TileView *parent, TileView *cloned ) : 
@@ -78,4 +92,24 @@ TlNetwork::TlNetwork( TileView *parent, TileView *cloned ) :
 	this->MQTTIcon->setPosXY(0,0);
 
 	this->MQTTButton->attacheEventeHandler( startMQTT );
+
+		/*
+		 * Consumption
+		 */
+	this->consoCont = new Container( this );
+	this->consoCont->Align( LV_ALIGN_IN_BOTTOM_LEFT );
+	this->consoCont->setFit( LV_FIT_TIGHT );	// Its size is the one of it's child
+	this->consoCont->AutoRealign();	// otherwise the icon is shifted
+	this->consoCont->setPadding(0);
+	this->consoCont->setClickable( false );	// Pass click to the parent
+
+	this->consoIcon = new Image( this->consoCont );
+	this->consoIcon->Set( &brightness_32px );
+	this->consoIcon->setClickable( false );
+//	this->brightnessIcon->Align( LV_ALIGN_IN_TOP_LEFT );
+
+	this->consoText = new Label( this->consoCont );	// Battery value
+	this->consoText->setText( "-----" );
+	this->consoText->Align( LV_ALIGN_OUT_RIGHT_MID, this->consoIcon, 20 );
+	this->consoText->AutoRealign();
 }

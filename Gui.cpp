@@ -177,3 +177,11 @@ void Gui::updateMovements( void ){
 void Gui::backToHome( void ){
 	this->_tileview->setActiveTile( 1,1, 1 );
 }
+
+void Gui::subscribe( void ){
+	this->_tile_network->subscribe();
+}
+
+void Gui::msgreceived( const char *topic, const char *payload ){
+	/* bool ret = */ this->_tile_network->msgreceived( topic, payload );
+}

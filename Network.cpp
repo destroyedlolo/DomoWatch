@@ -23,6 +23,7 @@
 
 #include "Gui.h"
 #include "InterTskCom.h"
+#include "Gui.h"
 
 #include <WiFi.h>
 
@@ -169,16 +170,17 @@ static void getDisconnected( WiFiEvent_t event, WiFiEventInfo_t info ){
 	WiFi.mode(WIFI_OFF);
 }
 
-bool first=true;	// Subscribe once
+
 static void getMQTTConnected( bool ){
     Serial.println("MQTT Connected");
 	network.setStatus( Network::net_status_t::WIFI_MQTT);
 
-	if(first){
-		first = false;
-		network.MQTTsubscribe( "TeleInfo/Consommation/values/PAPP", 0 );
-    	Serial.println("Subscribing ...");
-	}
+		/* Subscriptions are lost when mQTT get disconnected.
+		 * Consequently, we need to resubmit everything even
+		 * if we did it before connection loss
+		 */
+   	Serial.println("Subscribing ...");
+	gui->subscribe();
 }
 
 static void getMQTTDisconnected( AsyncMqttClientDisconnectReason r ){
@@ -199,6 +201,7 @@ static void getMQTTDisconnected( AsyncMqttClientDisconnectReason r ){
 
 static void getMQTTMessage( char* topic, char* payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total ){
 	Serial.printf("Received t:'%s' m:'%s'\n", topic, payload);
+	gui->msgreceived( topic, payload );
 }
 
 Network::Network() : status( WIFI_NOT_CONNECTED ), STCounter(0){
