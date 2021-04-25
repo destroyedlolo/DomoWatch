@@ -7,6 +7,9 @@
 #include "TlNetwork.h"
 
 LV_IMG_DECLARE(timezone_64px);
+LV_IMG_DECLARE(MQTT_64px);
+LV_IMG_DECLARE(brightness_32px);
+LV_IMG_DECLARE(soleil_32px);
 
 	/****
 	 * callbacks
@@ -30,21 +33,98 @@ static void syncTime( lv_obj_t *, lv_event_t event ){
 	}
 }
 
+static void startMQTT( lv_obj_t *, lv_event_t event ){
+	if(event == LV_EVENT_CLICKED){
+		Serial.println("MQTT requested");
+
+		if( network.MQTTconnected() )
+			Serial.println("MQTT already connected");
+		else
+			network.MQTTconnect();
+	}
+}
+
+void TlNetwork::subscribe( void ){
+	network.MQTTsubscribe( "TeleInfo/Consommation/values/PAPP" );
+	network.MQTTsubscribe( "TeleInfo/Production/values/PAPP" );
+}
+
+bool TlNetwork::msgreceived( const char *topic, const char *payload ){
+	if(!strcmp( topic, "TeleInfo/Consommation/values/PAPP" )){
+		this->consoText->setText( payload );
+		return true;
+	} else if(!strcmp( topic, "TeleInfo/Production/values/PAPP" )){
+		this->prodText->setText( payload );
+		return true;
+	}
+
+	return false;
+}
+
 TlNetwork::TlNetwork( TileView *parent, TileView *cloned ) : 
 	Container( parent, cloned )
 {
-		/* button above the icon to handle action */
+		/*
+		 * NTP
+		 */
+
 	this->syncButton = new Button( this );
-	this->syncButton->setLayout( LV_LAYOUT_ROW_MID );	// child are horizontally aligned
-//	this->syncButton->setSize( this->getWidth() / 2, this->getHeight() );
+	this->syncButton->Align( LV_ALIGN_IN_TOP_LEFT );	// it is itself aligned on the left
 	this->syncButton->setFit( LV_FIT_TIGHT );	// Its size is the one of it's child
-	this->syncButton->Align( LV_ALIGN_IN_LEFT_MID );	// it is itself aligned on the left
-	lv_style_set_bg_opa( this->syncButton->getStyle(), LV_OBJ_PART_MAIN, LV_OPA_0 );
-	this->syncButton->applyStyle();
+	this->syncButton->AutoRealign();	// otherwise the icon is shifted
+	this->syncButton->setPadding(0);
 
 	this->syncIcon = new Image( this->syncButton );
 	this->syncIcon->Set( &timezone_64px );
 	this->syncIcon->setClickable( false );	// Pass click to the parent
 
 	this->syncButton->attacheEventeHandler( syncTime );
+
+
+		/*
+		 * MQTT
+		 */
+
+	this->MQTTButton = new Button( this );
+	this->MQTTButton->Align( LV_ALIGN_OUT_RIGHT_MID, this->syncButton, 20 );	
+	this->MQTTButton->setFit( LV_FIT_TIGHT );	// Its size is the one of it's child
+	this->MQTTButton->AutoRealign();	// otherwise the icon is shifted
+	this->MQTTButton->setPadding(0);
+
+	this->MQTTIcon = new Image( this->MQTTButton );
+	this->MQTTIcon->Set( &MQTT_64px );
+	this->MQTTIcon->setClickable( false );	// Pass click to the parent
+	this->MQTTIcon->setPosXY(0,0);
+
+	this->MQTTButton->attacheEventeHandler( startMQTT );
+
+		/*
+		 * Consumption
+		 */
+	this->NRJCont = new Container( this );
+	this->NRJCont->Align( LV_ALIGN_IN_BOTTOM_LEFT );
+	this->NRJCont->setFit( LV_FIT_TIGHT );	// Its size is the one of it's child
+	this->NRJCont->AutoRealign();	// otherwise the icon is shifted
+	this->NRJCont->setPadding(0);
+	this->NRJCont->setClickable( false );	// Pass click to the parent
+
+	this->consoIcon = new Image( this->NRJCont );
+	this->consoIcon->Set( &brightness_32px );
+	this->consoIcon->setClickable( false );
+
+	this->consoText = new Label( this->NRJCont );	// Battery value
+	this->consoText->setText( "-----" );
+	this->consoText->Align( LV_ALIGN_OUT_RIGHT_MID, this->consoIcon, 20 );
+	this->consoText->AutoRealign();
+
+	this->prodIcon = new Image( this->NRJCont );
+	this->prodIcon->Set( &soleil_32px );
+	this->prodIcon->Align( LV_ALIGN_OUT_TOP_MID, this->consoIcon, 2 );
+	this->prodIcon->setClickable( false );
+
+	this->prodText = new Label( this->NRJCont );	// Battery value
+	this->prodText->setText( "-----" );
+	this->prodText->Align( LV_ALIGN_OUT_RIGHT_MID, this->prodIcon, 20 );
+	this->prodText->AutoRealign();
+
 }

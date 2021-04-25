@@ -4,13 +4,15 @@
 #ifndef NETWORK_H
 #define NETWORK_H
 
+#include <AsyncMqttClient.h>
+
 class Network {
 public:
 	enum net_status_t {
 		WIFI_NOT_CONNECTED = 0,
 		WIFI_FAILED,	// Failed attempt to connect or to communicate
 		WIFI_CONNECTING,
-		WIFI_BUSY,		// Something is on way
+		WIFI_MQTT,		// MQTT connected as well to the broker
 		WIFI_CONNECTED
 	};
 
@@ -22,6 +24,8 @@ private:
 		/* Slave tasks */
 	uint32_t STCounter;
 	SemaphoreHandle_t STC_mutex;
+
+	AsyncMqttClient mqttClient;
 
 public:
 	Network();
@@ -41,7 +45,6 @@ public:
 		 * point of view) or not
 		 *
 		 * Thie network is active ONLY if it's connected
-		 * or busy.
 		 */
 	bool isActive( enum net_status_t v = (enum net_status_t)-1 );
 
@@ -53,11 +56,19 @@ public:
 	void decreaseSTC( void );
 	bool isSlaveTaskRunning( void );
 
-		/* (dis)connect to the WiFi
+		/* WiFi related
 		 * the GUI is updated
 		 */
 	void connect( void );
 	void disconnect( void );
+
+		/* MQTT related
+		 * the GUI is updated
+		 */
+	void MQTTconnect( void );
+	void MQTTdisconnect( bool force=false );
+	bool MQTTconnected( void );
+	uint16_t MQTTsubscribe(const char* topic, uint8_t qos=0);
 };
 
 extern Network network;

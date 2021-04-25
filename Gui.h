@@ -26,14 +26,13 @@ class Gui :
 	Container	*_workarea;		// container of the work area (all but the status bar)
 	TileView	*_tileview;
 
-	/* Tiles */
+		/* Tiles */
 	TlNetwork	*_tile_network;
 	TlDateTime	*_tile_datetime;
 	TlStatus	*_tile_status;
 	TlScreen	*_tile_screen;
 
 public:
-
 
 		/* Battery icons */
 	enum lv_icon_battery_t {
@@ -77,6 +76,17 @@ public:
 		 */
 	void updateMovements( void );
 	void backToHome( void );
+
+		/* MQTT handling */
+
+		/* Subscribe to tiles' topics */
+	void subscribe( void );
+
+	/* MQTT message received
+	 * -> const char *topic
+	 * -> const char *payload
+	 */
+	void msgreceived( const char *topic, const char *payload );
 };
 
 

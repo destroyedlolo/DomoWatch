@@ -15,11 +15,33 @@ class TlNetwork : public Container {
 	Button		*syncButton;
 	Image		*syncIcon;
 
+	/* MQTT */
+	Button		*MQTTButton;
+	Image		*MQTTIcon;
+
+	/* Consumption */
+	Container	*NRJCont;
+	Image		*consoIcon;
+	Label 		*consoText;
+	Image		*prodIcon;
+	Label 		*prodText;
+
 public:
 	/* Screen's tile constructor
 	 * -> parent, cloned : see Container
 	 */
 	TlNetwork( TileView *parent, TileView *cloned=NULL );
+
+	/* Subscribe to topics used but this tile */
+	void subscribe( void );
+
+	/* MQTT message received
+	 * -> const char *topic
+	 * -> const char *payload
+	 * <- is the message accepted. If not, the message may
+	 * 	be passed to further handlers
+	 */
+	bool msgreceived( const char *topic, const char *payload );
 };
 
 #endif
