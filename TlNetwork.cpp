@@ -9,6 +9,7 @@
 LV_IMG_DECLARE(timezone_64px);
 LV_IMG_DECLARE(MQTT_64px);
 LV_IMG_DECLARE(brightness_32px);
+LV_IMG_DECLARE(soleil_32px);
 
 	/****
 	 * callbacks
@@ -45,11 +46,15 @@ static void startMQTT( lv_obj_t *, lv_event_t event ){
 
 void TlNetwork::subscribe( void ){
 	network.MQTTsubscribe( "TeleInfo/Consommation/values/PAPP" );
+	network.MQTTsubscribe( "TeleInfo/Production/values/PAPP" );
 }
 
 bool TlNetwork::msgreceived( const char *topic, const char *payload ){
 	if(!strcmp( topic, "TeleInfo/Consommation/values/PAPP" )){
 		this->consoText->setText( payload );
+		return true;
+	} else if(!strcmp( topic, "TeleInfo/Production/values/PAPP" )){
+		this->prodText->setText( payload );
 		return true;
 	}
 
@@ -96,20 +101,30 @@ TlNetwork::TlNetwork( TileView *parent, TileView *cloned ) :
 		/*
 		 * Consumption
 		 */
-	this->consoCont = new Container( this );
-	this->consoCont->Align( LV_ALIGN_IN_BOTTOM_LEFT );
-	this->consoCont->setFit( LV_FIT_TIGHT );	// Its size is the one of it's child
-	this->consoCont->AutoRealign();	// otherwise the icon is shifted
-	this->consoCont->setPadding(0);
-	this->consoCont->setClickable( false );	// Pass click to the parent
+	this->NRJCont = new Container( this );
+	this->NRJCont->Align( LV_ALIGN_IN_BOTTOM_LEFT );
+	this->NRJCont->setFit( LV_FIT_TIGHT );	// Its size is the one of it's child
+	this->NRJCont->AutoRealign();	// otherwise the icon is shifted
+	this->NRJCont->setPadding(0);
+	this->NRJCont->setClickable( false );	// Pass click to the parent
 
-	this->consoIcon = new Image( this->consoCont );
+	this->consoIcon = new Image( this->NRJCont );
 	this->consoIcon->Set( &brightness_32px );
 	this->consoIcon->setClickable( false );
-//	this->brightnessIcon->Align( LV_ALIGN_IN_TOP_LEFT );
 
-	this->consoText = new Label( this->consoCont );	// Battery value
+	this->consoText = new Label( this->NRJCont );	// Battery value
 	this->consoText->setText( "-----" );
 	this->consoText->Align( LV_ALIGN_OUT_RIGHT_MID, this->consoIcon, 20 );
 	this->consoText->AutoRealign();
+
+	this->prodIcon = new Image( this->NRJCont );
+	this->prodIcon->Set( &soleil_32px );
+	this->prodIcon->Align( LV_ALIGN_OUT_TOP_MID, this->consoIcon, 2 );
+	this->prodIcon->setClickable( false );
+
+	this->prodText = new Label( this->NRJCont );	// Battery value
+	this->prodText->setText( "-----" );
+	this->prodText->Align( LV_ALIGN_OUT_RIGHT_MID, this->prodIcon, 20 );
+	this->prodText->AutoRealign();
+
 }

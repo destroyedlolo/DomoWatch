@@ -20,9 +20,11 @@ class TlNetwork : public Container {
 	Image		*MQTTIcon;
 
 	/* Consumption */
-	Container	*consoCont;
+	Container	*NRJCont;
 	Image		*consoIcon;
 	Label 		*consoText;
+	Image		*prodIcon;
+	Label 		*prodText;
 
 public:
 	/* Screen's tile constructor
