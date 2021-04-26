@@ -41,6 +41,8 @@
 #include <soc/rtc.h>	// RTC interface
 #include <rom/rtc.h>	// RTC wakeup code
 
+#include <WiFi.h>
+
 /* Enable DEEPSLEEP while doing long click
  * unfortunately, at wakeup, the touch screen doesn't work anymore.
  * Consequentely, it's disabled for the moment.
@@ -286,6 +288,12 @@ void setup(){
 
 	ttgo->rtc->check();			// Ensure the RTC is valid (if not use compilation time)
 	ttgo->rtc->syncToSystem();	// sync with ESP32
+
+		/****
+		* WiFi initialisation
+		*****/
+
+	WiFi.persistent(false);		// Don't store anything b/w session as it's useless on a mobile device
 
 		/****
 		* start the GUI
