@@ -174,8 +174,8 @@ void Gui::updateMovements( void ){
 	this->_tileview->setValidPositions( valid_pos, sz);	// Finally apply the new one
 }
 
-void Gui::backToHome( void ){
-	this->_tileview->setActiveTile( 1,1, 1 );
+void Gui::backToHome( lv_anim_enable_t anim ){
+	this->_tileview->setActiveTile( 1,1, anim );
 }
 
 void Gui::subscribe( void ){
