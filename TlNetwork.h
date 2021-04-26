@@ -26,6 +26,13 @@ class TlNetwork : public Container {
 	Image		*prodIcon;
 	Label 		*prodText;
 
+	/* Temperatures */
+	Container	*tempCont;
+	Image		*salonIcon;
+	Label 		*salonText;
+	Image		*jardinIcon;
+	Label 		*jardinText;
+
 public:
 	/* Screen's tile constructor
 	 * -> parent, cloned : see Container
