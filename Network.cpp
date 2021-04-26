@@ -184,6 +184,8 @@ static void getMQTTConnected( bool ){
 }
 
 static void getMQTTDisconnected( AsyncMqttClientDisconnectReason r ){
+	network.setStatus( WiFi.status() == WL_CONNECTED ? Network::net_status_t::WIFI_CONNECTED : Network::net_status_t::WIFI_NOT_CONNECTED );
+
     Serial.print("MQTT Disconnected due to ");
 	switch(r){
 	case AsyncMqttClientDisconnectReason::TCP_DISCONNECTED : Serial.println( "TCP_DISCONNECTED" ); break;

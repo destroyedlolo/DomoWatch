@@ -10,6 +10,8 @@ LV_IMG_DECLARE(timezone_64px);
 LV_IMG_DECLARE(MQTT_64px);
 LV_IMG_DECLARE(brightness_32px);
 LV_IMG_DECLARE(soleil_32px);
+LV_IMG_DECLARE(jardin_32px);
+LV_IMG_DECLARE(salon_32px);
 
 	/****
 	 * callbacks
@@ -33,20 +35,24 @@ static void syncTime( lv_obj_t *, lv_event_t event ){
 	}
 }
 
-static void startMQTT( lv_obj_t *, lv_event_t event ){
+static void startstopMQTT( lv_obj_t *, lv_event_t event ){
 	if(event == LV_EVENT_CLICKED){
-		Serial.println("MQTT requested");
 
-		if( network.MQTTconnected() )
-			Serial.println("MQTT already connected");
-		else
+		if( network.MQTTconnected() ){
+			Serial.println("MQTT disconnecting");
+			network.MQTTdisconnect();
+		} else {
+			Serial.println("MQTT requested");
 			network.MQTTconnect();
+		}
 	}
 }
 
 void TlNetwork::subscribe( void ){
 	network.MQTTsubscribe( "TeleInfo/Consommation/values/PAPP" );
 	network.MQTTsubscribe( "TeleInfo/Production/values/PAPP" );
+	network.MQTTsubscribe( "maison/Temperature/Dehors" );
+	network.MQTTsubscribe( "maison/Temperature/Salon" );
 }
 
 bool TlNetwork::msgreceived( const char *topic, const char *payload ){
@@ -55,6 +61,12 @@ bool TlNetwork::msgreceived( const char *topic, const char *payload ){
 		return true;
 	} else if(!strcmp( topic, "TeleInfo/Production/values/PAPP" )){
 		this->prodText->setText( payload );
+		return true;
+	} else if(!strcmp( topic, "maison/Temperature/Dehors" )){
+		this->jardinText->setText( payload );
+		return true;
+	} else if(!strcmp( topic, "maison/Temperature/Salon" )){
+		this->salonText->setText( payload );
 		return true;
 	}
 
@@ -96,7 +108,7 @@ TlNetwork::TlNetwork( TileView *parent, TileView *cloned ) :
 	this->MQTTIcon->setClickable( false );	// Pass click to the parent
 	this->MQTTIcon->setPosXY(0,0);
 
-	this->MQTTButton->attacheEventeHandler( startMQTT );
+	this->MQTTButton->attacheEventeHandler( startstopMQTT );
 
 		/*
 		 * Consumption
@@ -114,17 +126,47 @@ TlNetwork::TlNetwork( TileView *parent, TileView *cloned ) :
 
 	this->consoText = new Label( this->NRJCont );	// Battery value
 	this->consoText->setText( "-----" );
-	this->consoText->Align( LV_ALIGN_OUT_RIGHT_MID, this->consoIcon, 20 );
+	this->consoText->Align( LV_ALIGN_OUT_RIGHT_MID, this->consoIcon, 10 );
 	this->consoText->AutoRealign();
 
 	this->prodIcon = new Image( this->NRJCont );
 	this->prodIcon->Set( &soleil_32px );
-	this->prodIcon->Align( LV_ALIGN_OUT_TOP_MID, this->consoIcon, 2 );
+	this->prodIcon->Align( LV_ALIGN_OUT_TOP_MID, this->consoIcon, 0, -15 );
 	this->prodIcon->setClickable( false );
 
 	this->prodText = new Label( this->NRJCont );	// Battery value
 	this->prodText->setText( "-----" );
-	this->prodText->Align( LV_ALIGN_OUT_RIGHT_MID, this->prodIcon, 20 );
+	this->prodText->Align( LV_ALIGN_OUT_RIGHT_MID, this->prodIcon, 10 );
 	this->prodText->AutoRealign();
+
+		/*
+		 * Temperatures
+		 */
+
+	this->tempCont = new Container( this );
+	this->tempCont->Align( LV_ALIGN_OUT_RIGHT_MID, this->NRJCont, 30 );
+	this->tempCont->setFit( LV_FIT_TIGHT );	// Its size is the one of it's child
+	this->tempCont->AutoRealign();	// otherwise the icon is shifted
+	this->tempCont->setPadding(0);
+	this->tempCont->setClickable( false );	// Pass click to the parent
+
+	this->salonIcon = new Image( this->tempCont );
+	this->salonIcon->Set( &salon_32px );
+	this->salonIcon->setClickable( false );
+
+	this->salonText = new Label( this->tempCont );	// Battery value
+	this->salonText->setText( "--.---" );
+	this->salonText->Align( LV_ALIGN_OUT_RIGHT_MID, this->salonIcon, 10 );
+	this->salonText->AutoRealign();
+
+	this->jardinIcon = new Image( this->tempCont );
+	this->jardinIcon->Set( &jardin_32px );
+	this->jardinIcon->Align( LV_ALIGN_OUT_TOP_MID, this->salonIcon, 0, -15 );
+	this->jardinIcon->setClickable( false );
+
+	this->jardinText = new Label( this->tempCont );	// Battery value
+	this->jardinText->setText( "--.---" );
+	this->jardinText->Align( LV_ALIGN_OUT_RIGHT_MID, this->jardinIcon, 10 );
+	this->jardinText->AutoRealign();
 
 }
