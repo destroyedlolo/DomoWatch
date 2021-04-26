@@ -129,11 +129,16 @@ void light_sleep(){
 	ttgo->stopLvglTick();	// stop Lvgl
 	ttgo->bma->enableStepCountInterrupt(false);	// Step counter will not generate interrupt
 
+	gui->backToHome(LV_ANIM_OFF);	// return to safe position
+	if( WiFi.isConnected() )
+		network.disconnect();
+
 	setCpuFrequencyMhz(20);
 	for(uint8_t i = bl_lev; i; i--){
 		if( bl_lev )
 			delay( 750 / bl_lev );
 		ttgo->bl->adjust( i );
+		lv_task_handler();
 	}
 	ttgo->displaySleep();	// turn off touchscreen
 	ttgo->closeBL();		// turn off back light

@@ -75,7 +75,7 @@ public:
 		 * This function updates allowed movements as per activated extensions
 		 */
 	void updateMovements( void );
-	void backToHome( void );
+	void backToHome( lv_anim_enable_t anim=LV_ANIM_ON );
 
 		/* MQTT handling */
 
