@@ -19,19 +19,22 @@ class TlNetwork : public Container {
 	Button		*MQTTButton;
 	Image		*MQTTIcon;
 
-	/* Consumption */
-	Container	*NRJCont;
-	Image		*consoIcon;
-	Label 		*consoText;
-	Image		*prodIcon;
-	Label 		*prodText;
-
 	/* Temperatures */
 	Container	*tempCont;
 	Image		*salonIcon;
 	Label 		*salonText;
 	Image		*jardinIcon;
 	Label 		*jardinText;
+	Image		*congeloIcon;
+	Label 		*congeloText;
+
+	/* Energy */
+	Container	*NRJCont;
+	Image		*consoIcon;
+	Label 		*consoText;
+	Image		*prodIcon;
+	Label 		*prodText;
+
 
 public:
 	/* Screen's tile constructor
