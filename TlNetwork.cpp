@@ -12,6 +12,7 @@ LV_IMG_DECLARE(brightness_32px);
 LV_IMG_DECLARE(soleil_32px);
 LV_IMG_DECLARE(jardin_32px);
 LV_IMG_DECLARE(salon_32px);
+LV_IMG_DECLARE(congelo_32px);
 
 	/****
 	 * callbacks
@@ -53,6 +54,7 @@ void TlNetwork::subscribe( void ){
 	network.MQTTsubscribe( "TeleInfo/Production/values/PAPP" );
 	network.MQTTsubscribe( "maison/Temperature/Dehors" );
 	network.MQTTsubscribe( "maison/Temperature/Salon" );
+	network.MQTTsubscribe( "maison/Temperature/Congelateur" );
 }
 
 bool TlNetwork::msgreceived( const char *topic, const char *payload ){
@@ -67,6 +69,9 @@ bool TlNetwork::msgreceived( const char *topic, const char *payload ){
 		return true;
 	} else if(!strcmp( topic, "maison/Temperature/Salon" )){
 		this->salonText->setText( payload );
+		return true;
+	} else if(!strcmp( topic, "maison/Temperature/Congelateur" )){
+		this->congeloText->setText( payload );
 		return true;
 	}
 
@@ -111,10 +116,50 @@ TlNetwork::TlNetwork( TileView *parent, TileView *cloned ) :
 	this->MQTTButton->attacheEventeHandler( startstopMQTT );
 
 		/*
+		 * Temperatures
+		 */
+
+	this->tempCont = new Container( this );
+	this->tempCont->Align( LV_ALIGN_IN_BOTTOM_LEFT );
+	this->tempCont->setFit( LV_FIT_TIGHT );	// Its size is the one of it's child
+	this->tempCont->AutoRealign();	// otherwise the icon is shifted
+	this->tempCont->setPadding(0);
+	this->tempCont->setClickable( false );	// Pass click to the parent
+
+	this->salonIcon = new Image( this->tempCont );
+	this->salonIcon->Set( &salon_32px );
+	this->salonIcon->setClickable( false );
+
+	this->salonText = new Label( this->tempCont );	// Battery value
+	this->salonText->setText( "--.---" );
+	this->salonText->Align( LV_ALIGN_OUT_RIGHT_MID, this->salonIcon, 10 );
+	this->salonText->AutoRealign();
+
+	this->jardinIcon = new Image( this->tempCont );
+	this->jardinIcon->Set( &jardin_32px );
+	this->jardinIcon->Align( LV_ALIGN_OUT_TOP_MID, this->salonIcon, 0, -15 );
+	this->jardinIcon->setClickable( false );
+
+	this->jardinText = new Label( this->tempCont );	// Battery value
+	this->jardinText->setText( "--.---" );
+	this->jardinText->Align( LV_ALIGN_OUT_RIGHT_MID, this->jardinIcon, 10 );
+	this->jardinText->AutoRealign();
+
+	this->congeloIcon = new Image( this->tempCont );
+	this->congeloIcon->Set( &congelo_32px );
+	this->congeloIcon->Align( LV_ALIGN_OUT_TOP_MID, this->jardinIcon, 0, -15 );
+	this->congeloIcon->setClickable( false );
+
+	this->congeloText = new Label( this->tempCont );	// Battery value
+	this->congeloText->setText( "--.---" );
+	this->congeloText->Align( LV_ALIGN_OUT_RIGHT_MID, this->congeloIcon, 10 );
+	this->congeloText->AutoRealign();
+
+		/*
 		 * Consumption
 		 */
 	this->NRJCont = new Container( this );
-	this->NRJCont->Align( LV_ALIGN_IN_BOTTOM_LEFT );
+	this->NRJCont->Align( LV_ALIGN_OUT_RIGHT_MID, this->tempCont, 30 );
 	this->NRJCont->setFit( LV_FIT_TIGHT );	// Its size is the one of it's child
 	this->NRJCont->AutoRealign();	// otherwise the icon is shifted
 	this->NRJCont->setPadding(0);
@@ -139,34 +184,5 @@ TlNetwork::TlNetwork( TileView *parent, TileView *cloned ) :
 	this->prodText->Align( LV_ALIGN_OUT_RIGHT_MID, this->prodIcon, 10 );
 	this->prodText->AutoRealign();
 
-		/*
-		 * Temperatures
-		 */
-
-	this->tempCont = new Container( this );
-	this->tempCont->Align( LV_ALIGN_OUT_RIGHT_MID, this->NRJCont, 30 );
-	this->tempCont->setFit( LV_FIT_TIGHT );	// Its size is the one of it's child
-	this->tempCont->AutoRealign();	// otherwise the icon is shifted
-	this->tempCont->setPadding(0);
-	this->tempCont->setClickable( false );	// Pass click to the parent
-
-	this->salonIcon = new Image( this->tempCont );
-	this->salonIcon->Set( &salon_32px );
-	this->salonIcon->setClickable( false );
-
-	this->salonText = new Label( this->tempCont );	// Battery value
-	this->salonText->setText( "--.---" );
-	this->salonText->Align( LV_ALIGN_OUT_RIGHT_MID, this->salonIcon, 10 );
-	this->salonText->AutoRealign();
-
-	this->jardinIcon = new Image( this->tempCont );
-	this->jardinIcon->Set( &jardin_32px );
-	this->jardinIcon->Align( LV_ALIGN_OUT_TOP_MID, this->salonIcon, 0, -15 );
-	this->jardinIcon->setClickable( false );
-
-	this->jardinText = new Label( this->tempCont );	// Battery value
-	this->jardinText->setText( "--.---" );
-	this->jardinText->Align( LV_ALIGN_OUT_RIGHT_MID, this->jardinIcon, 10 );
-	this->jardinText->AutoRealign();
 
 }
