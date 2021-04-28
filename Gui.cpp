@@ -102,6 +102,11 @@ Gui::Gui( void ){
 	this->_tileview->AddTile( this->_tile_screen );	// Add this tile
 // this->_tile_screen->dumpObj("screen");
 
+		// settings, bottom
+	this->_tile_shutter = new TlShutter( this->_tileview, this->_tileview );
+	this->_tile_shutter->setTilePos( {0, 0} );
+	this->_tileview->AddTile( this->_tile_shutter );	// Add this tile
+
 		// date and time is the default tile
 	this->_tileview->setActiveTile( 1,1, LV_ANIM_OFF );
 
@@ -141,6 +146,7 @@ void Gui::updateMovements( void ){
 		// define tiles valid positions
 	const lv_point_t basic_pos[] = { {0,1}, {1,1}, {1,2} };	// basic interface
 	const lv_point_t net_add_pos[] = { {1,0} };	// Network addadum
+	const lv_point_t mqtt_add_pos[] = { {0,0} };	// Network addadum
 
 	static lv_point_t valid_pos[ TABSIZE(basic_pos) + TABSIZE(net_add_pos) ];
 
@@ -151,6 +157,9 @@ void Gui::updateMovements( void ){
 		for(int i=0; i<TABSIZE(net_add_pos); i++)
 			valid_pos[sz++] = net_add_pos[i];
 	}
+
+		for(int i=0; i<TABSIZE(mqtt_add_pos); i++)
+			valid_pos[sz++] = mqtt_add_pos[i];
 
 		// get the actual position
 	lv_coord_t x,y;

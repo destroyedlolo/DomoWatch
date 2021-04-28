@@ -15,6 +15,7 @@
 #include "TlStatus.h"
 #include "TlScreen.h"
 #include "TlNetwork.h"
+#include "TlShutter.h"
 
 class StatusBar;
 
@@ -31,6 +32,7 @@ class Gui :
 	TlDateTime	*_tile_datetime;
 	TlStatus	*_tile_status;
 	TlScreen	*_tile_screen;
+	TlShutter	*_tile_shutter;
 
 public:
 
