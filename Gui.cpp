@@ -158,6 +158,7 @@ void Gui::updateMovements( void ){
 		valid_pos[sz++] = basic_pos[i];
 
 	if( network.isActive() ){
+		_tile_network->clearObsoletedValues();	// check if value are still accurate
 		for(int i=0; i<TABSIZE(net_add_pos); i++)
 			valid_pos[sz++] = net_add_pos[i];
 	}
