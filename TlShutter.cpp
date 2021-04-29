@@ -1,12 +1,34 @@
 #include "Gui.h"
 #include "TlShutter.h"
 
+LV_IMG_DECLARE(up_64px);
+LV_IMG_DECLARE(my_64px);
+LV_IMG_DECLARE(down_64px);
+
+static const char *shutterslabel[] = {
+	"Parents\nBureau\nCuisine\nChat",
+	"Cheminée\nSalon\nBalcon",
+	"Amis\nOcéane\nJoris"
+};
+
+static void stairChanged(lv_obj_t * obj, lv_event_t event){
+	if(event == LV_EVENT_VALUE_CHANGED){
+		Serial.printf( "Stair changed to : %d\n", lv_dropdown_get_selected( obj ));
+		gui->updStair();
+	}
+}
+
+void TlShutter::updStair( void ){
+	this->_shutter->setChoices( shutterslabel[ this->_stair->getSelected() ] );
+	this->_shutter->setSelected( 0 );
+}
+
 TlShutter::TlShutter( TileView *parent, TileView *cloned ) :
 	Container( parent, cloned )
 {
 		/* Stair selector */
 	this->_stair = new DropDown( this );
-	this->_stair->setChoices( "Salon\nRdc\n1er", true );
+	this->_stair->setChoices( "Rdc\nSalon\n1er", true );
 	this->_stair->Align( LV_ALIGN_IN_LEFT_MID, (const lv_obj_t *)NULL, 0, -10 );
 
 		/* Add custom style to add background */
@@ -21,5 +43,39 @@ TlShutter::TlShutter( TileView *parent, TileView *cloned ) :
 	this->_shutter->Align( LV_ALIGN_OUT_BOTTOM_MID, this->_stair, 0, 20);
 	this->_shutter->copyStyle( this->_stair->getStyle() );
 	this->_shutter->applyStyle();
+	this->_shutter->setChoices( shutterslabel[0] );
+
+	this->_stair->attacheEventeHandler( stairChanged );
+
+		/* Movements */
+	this->upButton = new Button( this );
+	this->upButton->Align( LV_ALIGN_IN_TOP_RIGHT );
+	this->upButton->setFit( LV_FIT_TIGHT );
+	this->upButton->AutoRealign();
+	this->upButton->setPadding(0);
+
+	this->upIcon = new Image( this->upButton );
+	this->upIcon->Set( &up_64px );
+	this->upIcon->setClickable( false );	// Pass click to the parent
+
+	this->myButton = new Button( this );
+	this->myButton->Align( LV_ALIGN_IN_RIGHT_MID );
+	this->myButton->setFit( LV_FIT_TIGHT );
+	this->myButton->AutoRealign();
+	this->myButton->setPadding(0);
+
+	this->myIcon = new Image( this->myButton );
+	this->myIcon->Set( &my_64px );
+	this->myIcon->setClickable( false );	// Pass click to the parent
+
+	this->downButton = new Button( this );
+	this->downButton->Align( LV_ALIGN_IN_BOTTOM_RIGHT );
+	this->downButton->setFit( LV_FIT_TIGHT );
+	this->downButton->AutoRealign();
+	this->downButton->setPadding(0);
+
+	this->downIcon = new Image( this->downButton );
+	this->downIcon->Set( &down_64px );
+	this->downIcon->setClickable( false );	// Pass click to the parent
 
 }
