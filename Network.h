@@ -24,7 +24,7 @@ public:
 		NET_CAP_WIFI = 0,	// WiFi connected
 		NET_CAP_MQTT		// %QTT connected
 	};
-	typedef uint8_t net_capacity_t;
+	typedef uint8_t net_capacities_t;
 
 private:
 		/* Network status */
@@ -59,7 +59,7 @@ public:
 	bool isActive( enum net_status_t v = (enum net_status_t)-1 );
 
 		/* get which capacity is enabled (bitwise) */
-	net_capacity_t getCapacity( void );
+	net_capacities_t getCapacities( void );
 
 		/* Slave tasks counter
 		 *

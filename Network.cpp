@@ -266,8 +266,8 @@ bool Network::isActive( enum net_status_t v ){
 	return( v == net_status_t::WIFI_MQTT || v == net_status_t::WIFI_CONNECTED );
 }
 
-Network::net_capacity_t Network::getCapacity( void ){
-	net_capacity_t res = 0;
+Network::net_capacities_t Network::getCapacities( void ){
+	net_capacities_t res = 0;
 
 	switch( this->getStatus() ){
 	case WIFI_CONNECTED :
