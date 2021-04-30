@@ -8,6 +8,7 @@
 
 #include "Gui.h"
 #include "CommandLine.h"
+#include "Network.h"
 
 /* Set the system date
  * format : YYYYMMDD.HHmmSS
@@ -45,6 +46,22 @@ void cmd_reboot( const String & ){
 	ESP.restart();
 }
 
+/* Activate or not the WiFi */
+void cmd_wifi( const String &arg ){
+	if( arg == "on" )
+		network.connect();
+	else
+		network.disconnect();
+}
+
+/* Activate or not the WiFi */
+void cmd_MQTT( const String &arg ){
+	if( arg == "on" )
+		network.MQTTconnect();
+	else
+		network.MQTTdisconnect();
+}
+
 const struct _command {
 	const char *nom;
 	const char *desc;
@@ -53,6 +70,8 @@ const struct _command {
 	{ "setDate", "Set date and time : YYYYMMDD.HHMMSS", cmd_setdate },
 	{ "rtc", "get stored RTC time", cmd_rtc },
 	{ "reboot", "reboot the watch", cmd_reboot },
+	{ "WiFi", "WiFi on/off", cmd_wifi },
+	{ "MQTT", "MQTT on/off", cmd_MQTT },
 	{ NULL, NULL, NULL }
 };
 

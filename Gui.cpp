@@ -142,6 +142,7 @@ void Gui::initAutomation( void ){
 
 void Gui::updateMovements( void ){
 	int sz = 0;
+	Network::net_capacities_t caps = network.getCapacities();	// What is currently active
 
 		// define tiles valid positions
 	const lv_point_t basic_pos[] = { {0,1}, {1,1}, {1,2} };	// basic interface
@@ -157,14 +158,16 @@ void Gui::updateMovements( void ){
 	for(int i=0; i<TABSIZE(basic_pos); i++)
 		valid_pos[sz++] = basic_pos[i];
 
-	if( network.isActive() ){
+	if( caps & _BV(Network::NET_CAP_WIFI) ){
 		_tile_network->clearObsoletedValues();	// check if value are still accurate
 		for(int i=0; i<TABSIZE(net_add_pos); i++)
 			valid_pos[sz++] = net_add_pos[i];
 	}
 
+	if( caps & _BV(Network::NET_CAP_MQTT) ){
 		for(int i=0; i<TABSIZE(mqtt_add_pos); i++)
 			valid_pos[sz++] = mqtt_add_pos[i];
+	}
 
 		// get the actual position
 	lv_coord_t x,y;
