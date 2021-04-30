@@ -16,6 +16,16 @@ public:
 		WIFI_CONNECTED
 	};
 
+		/*	Which capacities are enabled
+		 *
+		 * Dev note : use _BV() macro to get corresponding value
+		 */
+	enum net_capacity_bits {
+		NET_CAP_WIFI = 0,	// WiFi connected
+		NET_CAP_MQTT		// %QTT connected
+	};
+	typedef uint8_t net_capacities_t;
+
 private:
 		/* Network status */
 	enum net_status_t status;
@@ -48,6 +58,9 @@ public:
 		 */
 	bool isActive( enum net_status_t v = (enum net_status_t)-1 );
 
+		/* get which capacity is enabled (bitwise) */
+	net_capacities_t getCapacities( void );
+
 		/* Slave tasks counter
 		 *
 		 * Notez-bien : these function may lock status
@@ -68,7 +81,9 @@ public:
 	void MQTTconnect( void );
 	void MQTTdisconnect( bool force=false );
 	bool MQTTconnected( void );
-	uint16_t MQTTsubscribe(const char* topic, uint8_t qos=0);
+
+	uint16_t MQTTsubscribe(const char *topic, uint8_t qos=0);
+	uint16_t MQTTpublishString(const char *topic, const char *payload, uint8_t qos=0, bool retain=false);
 };
 
 extern Network network;

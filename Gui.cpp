@@ -78,6 +78,11 @@ Gui::Gui( void ){
 		 * Define tiles
 		 ***/
 
+		// Shutters, top-left
+	this->_tile_shutter = new TlShutter( this->_tileview, this->_tileview );
+	this->_tile_shutter->setTilePos( {0, 0} );
+	this->_tileview->AddTile( this->_tile_shutter );	// Add this tile
+
 		 // main tile placed centered
 	this->_tile_datetime = new TlDateTime( this->_tileview, this->_tileview );
 	this->_tile_datetime->setTilePos( {1, 1} );	// place it on the right
@@ -137,19 +142,31 @@ void Gui::initAutomation( void ){
 
 void Gui::updateMovements( void ){
 	int sz = 0;
+	Network::net_capacities_t caps = network.getCapacities();	// What is currently active
 
 		// define tiles valid positions
 	const lv_point_t basic_pos[] = { {0,1}, {1,1}, {1,2} };	// basic interface
-	const lv_point_t net_add_pos[] = { {1,0} };	// Network addadum
+	const lv_point_t net_add_pos[] = { {1,0} };		// Network addendum
+	const lv_point_t mqtt_add_pos[] = { {0,0} };	// MQTT addadum
 
-	static lv_point_t valid_pos[ TABSIZE(basic_pos) + TABSIZE(net_add_pos) ];
+	static lv_point_t valid_pos[ 
+		TABSIZE(basic_pos) + 
+		TABSIZE(net_add_pos) +
+		TABSIZE(mqtt_add_pos)
+	];
 
 	for(int i=0; i<TABSIZE(basic_pos); i++)
 		valid_pos[sz++] = basic_pos[i];
 
-	if( network.isActive() ){
+	if( caps & _BV(Network::NET_CAP_WIFI) ){
+		_tile_network->clearObsoletedValues();	// check if value are still accurate
 		for(int i=0; i<TABSIZE(net_add_pos); i++)
 			valid_pos[sz++] = net_add_pos[i];
+	}
+
+	if( caps & _BV(Network::NET_CAP_MQTT) ){
+		for(int i=0; i<TABSIZE(mqtt_add_pos); i++)
+			valid_pos[sz++] = mqtt_add_pos[i];
 	}
 
 		// get the actual position

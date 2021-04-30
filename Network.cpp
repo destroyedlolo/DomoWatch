@@ -206,7 +206,7 @@ static void getMQTTMessage( char* topic, char* payload, AsyncMqttClientMessagePr
 	strncpy(t, payload, len);
 	t[len] = 0;
 
-	Serial.printf("Received t:'%s' m:'%s'\n", topic, t);
+//	Serial.printf("Received t:'%s' m:'%s'\n", topic, t);
 	gui->msgreceived( topic, t );
 }
 
@@ -228,15 +228,13 @@ Network::Network() : status( WIFI_NOT_CONNECTED ), STCounter(0){
 }
 
 void Network::setStatus( enum net_status_t v ){
-	enum net_status_t ans = this->status;	// Initial value
 
 	xSemaphoreTake( this->status_mutex, portMAX_DELAY );
 	this->status = v;
 	xSemaphoreGive( this->status_mutex );
 	gui->updateNetwork();
 
-	if( this->isActive( ans ) != this->isActive() )
-		xEventGroupSetBits( itc_signals, WATCH_WIFI_CHANGED );
+	xEventGroupSetBits( itc_signals, WATCH_UPD_MOVEMENTS );
 }
 
 enum Network::net_status_t Network::getStatus( void ){
@@ -268,6 +266,23 @@ bool Network::isActive( enum net_status_t v ){
 	return( v == net_status_t::WIFI_MQTT || v == net_status_t::WIFI_CONNECTED );
 }
 
+Network::net_capacities_t Network::getCapacities( void ){
+	net_capacities_t res = 0;
+
+	switch( this->getStatus() ){
+	case WIFI_CONNECTED :
+		res = _BV(NET_CAP_WIFI);
+		break;
+	case WIFI_MQTT :
+		res = _BV(NET_CAP_WIFI) | _BV(NET_CAP_MQTT);
+		break;
+	default :
+		;
+	}
+
+	return res;
+}
+
 void Network::connect( void ){
 	Serial.println("Network is connecting");
 	WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
@@ -294,20 +309,24 @@ bool Network::MQTTconnected( void ){
 }
 
 uint16_t Network::MQTTsubscribe(const char* topic, uint8_t qos){
-	return(this->mqttClient.subscribe( topic, qos ));
+	return( this->mqttClient.subscribe( topic, qos ) );
+}
+
+uint16_t Network::MQTTpublishString(const char *topic, const char *payload, uint8_t qos, bool retain){
+	return( this->mqttClient.publish( topic, qos, retain, payload, strlen(payload)) );
 }
 
 void Network::increaseSTC( void ){
 	xSemaphoreTake( this->STC_mutex, portMAX_DELAY );
 	if( ++(this->STCounter) == 1 )	// First task launched
-		xEventGroupSetBits( itc_signals, WATCH_WIFI_CHANGED );	// Request GUI update
+		xEventGroupSetBits( itc_signals, WATCH_UPD_MOVEMENTS );	// Request GUI update
 	xSemaphoreGive( this->STC_mutex );
 }
 
 void Network::decreaseSTC( void ){
 	xSemaphoreTake( this->STC_mutex, portMAX_DELAY );
 	if( !(--this->STCounter) )	// Last task finished
-		xEventGroupSetBits( itc_signals, WATCH_WIFI_CHANGED );	// Request GUI update
+		xEventGroupSetBits( itc_signals, WATCH_UPD_MOVEMENTS );	// Request GUI update
 	xSemaphoreGive( this->STC_mutex );
 }
 

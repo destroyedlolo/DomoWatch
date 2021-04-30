@@ -11,6 +11,8 @@
 #include "Button.h"
 
 class TlNetwork : public Container {
+	time_t last;
+
 	/* time synchronisation */
 	Button		*syncButton;
 	Image		*syncIcon;
@@ -52,6 +54,11 @@ public:
 	 * 	be passed to further handlers
 	 */
 	bool msgreceived( const char *topic, const char *payload );
+
+	/* Clear obsoleted value if not accurate anymore
+	 * (too old)
+	 */
+	void clearObsoletedValues( void );
 };
 
 #endif

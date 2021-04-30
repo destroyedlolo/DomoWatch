@@ -58,6 +58,7 @@ void TlNetwork::subscribe( void ){
 }
 
 bool TlNetwork::msgreceived( const char *topic, const char *payload ){
+	this->last = time(NULL);
 	if(!strcmp( topic, "TeleInfo/Consommation/values/PAPP" )){
 		this->consoText->setText( payload );
 		return true;
@@ -78,8 +79,19 @@ bool TlNetwork::msgreceived( const char *topic, const char *payload ){
 	return false;
 }
 
+void TlNetwork::clearObsoletedValues( void ){
+	if(last < time(NULL)-500){	// Clear value if older than 5 minutes
+		this->salonText->setText( "--.---" );
+		this->jardinText->setText( "--.---" );
+		this->congeloText->setText( "--.---" );
+		this->consoText->setText( "-----" );
+		this->prodText->setText( "-----" );
+	} else
+		Serial.println("Fresh data");
+}
+
 TlNetwork::TlNetwork( TileView *parent, TileView *cloned ) : 
-	Container( parent, cloned )
+	Container( parent, cloned ), last(0)
 {
 		/*
 		 * NTP
@@ -183,6 +195,4 @@ TlNetwork::TlNetwork( TileView *parent, TileView *cloned ) :
 	this->prodText->setText( "-----" );
 	this->prodText->Align( LV_ALIGN_OUT_RIGHT_MID, this->prodIcon, 10 );
 	this->prodText->AutoRealign();
-
-
 }

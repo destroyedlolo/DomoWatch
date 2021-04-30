@@ -54,12 +54,12 @@ click on the WiFi icon on the status bar :
 The **main tile** only displays the current date and time with a **status bar** containing *battery level* and a *step counter*. Clicking on it to reset.
 
 ```
-			 ~~~~~~~~~~~~
-			l Net stuff  l
-			 ~~~~~~~~~~~~
-			     /l\
-			      l
-			     \l/
+	 ~~~~~~~~~~	  ~~~~~~~~~~~~
+	l Shutters l <-> l Net stuff  l
+	 ~~~~~~~~~~	  ~~~~~~~~~~~~
+	   /l\		     /l\
+	    l		      l
+	   \l/		     \l/
 	 --------	 -------------
 	| Status | <->	| Time & Date |
 	 -------- 	 -------------
@@ -73,6 +73,7 @@ The **main tile** only displays the current date and time with a **status bar** 
   - On its left, the *status tile* that is displaying some watch's figures (consumption, RAM, ...).
   - On its bottom, the *Screen settings* : take in account it's value is not stored but in memory. In case of a reboot, previous value is lost.
   - On its top, the network related tile. It is only available when the WiFi is connected
+  - On the top-left, shutters' tiles, only available when MQTT is connected
 
 ### Power management
 

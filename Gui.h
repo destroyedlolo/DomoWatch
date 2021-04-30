@@ -15,6 +15,7 @@
 #include "TlStatus.h"
 #include "TlScreen.h"
 #include "TlNetwork.h"
+#include "TlShutter.h"
 
 class StatusBar;
 
@@ -27,6 +28,7 @@ class Gui :
 	TileView	*_tileview;
 
 		/* Tiles */
+	TlShutter	*_tile_shutter;
 	TlNetwork	*_tile_network;
 	TlDateTime	*_tile_datetime;
 	TlStatus	*_tile_status;
@@ -49,8 +51,11 @@ public:
 		LV_ICON_UNKNOWN			// check first of plugged
 	};
 
-	/* Build the GUI
-	 */
+		/*
+		 * GUI
+		 */
+
+	/* Build the GUI */
 	Gui( void );
 
 	/* Launch automation tasks.
@@ -58,10 +63,10 @@ public:
 	 */
 	void initAutomation( void );
 
-		/* Update icons.
-		 *
-		 * Documentation are in StatusBar.h
-		 */
+	/* Update statusbar icons.
+	 *
+	 * Documentation are in StatusBar.h
+	 */
 	void updateStepCounter( void );
 	void updateBatteryIcon( lv_icon_battery_t index );
 	void updateBatteryLevel( void );
@@ -69,17 +74,19 @@ public:
 	void updateNetwork( void );
 
 
-		/* GUI movement
-		 *
-		 * Modules can add other tiles and enable additional movements.
-		 * This function updates allowed movements as per activated extensions
-		 */
+	/* GUI movement
+	 *
+	 * Modules can add other tiles and enable additional movements.
+	 * This function updates allowed movements as per activated extensions
+	 */
 	void updateMovements( void );
 	void backToHome( lv_anim_enable_t anim=LV_ANIM_ON );
 
-		/* MQTT handling */
+		/*
+		 * MQTT handling 
+		 */
 
-		/* Subscribe to tiles' topics */
+	/* Subscribe to tiles' topics */
 	void subscribe( void );
 
 	/* MQTT message received
@@ -87,6 +94,17 @@ public:
 	 * -> const char *payload
 	 */
 	void msgreceived( const char *topic, const char *payload );
+
+		/*
+		 * Shutters
+		 */
+	void updStair( void ){
+		this->_tile_shutter->updStair();
+	}
+
+	const char *whichShutterTopic( void ){
+		return this->_tile_shutter->whichShutterTopic();
+	}
 };
 
 
