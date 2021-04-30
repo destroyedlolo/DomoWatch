@@ -234,7 +234,7 @@ void Network::setStatus( enum net_status_t v ){
 	xSemaphoreGive( this->status_mutex );
 	gui->updateNetwork();
 
-	xEventGroupSetBits( itc_signals, WATCH_WIFI_CHANGED );
+	xEventGroupSetBits( itc_signals, WATCH_UPD_MOVEMENTS );
 }
 
 enum Network::net_status_t Network::getStatus( void ){
@@ -315,14 +315,14 @@ uint16_t Network::MQTTsubscribe(const char* topic, uint8_t qos){
 void Network::increaseSTC( void ){
 	xSemaphoreTake( this->STC_mutex, portMAX_DELAY );
 	if( ++(this->STCounter) == 1 )	// First task launched
-		xEventGroupSetBits( itc_signals, WATCH_WIFI_CHANGED );	// Request GUI update
+		xEventGroupSetBits( itc_signals, WATCH_UPD_MOVEMENTS );	// Request GUI update
 	xSemaphoreGive( this->STC_mutex );
 }
 
 void Network::decreaseSTC( void ){
 	xSemaphoreTake( this->STC_mutex, portMAX_DELAY );
 	if( !(--this->STCounter) )	// Last task finished
-		xEventGroupSetBits( itc_signals, WATCH_WIFI_CHANGED );	// Request GUI update
+		xEventGroupSetBits( itc_signals, WATCH_UPD_MOVEMENTS );	// Request GUI update
 	xSemaphoreGive( this->STC_mutex );
 }
 
