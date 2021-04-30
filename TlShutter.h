@@ -32,6 +32,7 @@ public:
 
 	/* Stairs' drowndown updated */
 	void updStair( void );
+	const char *whichShutterTopic( void );
 };
 
 #endif

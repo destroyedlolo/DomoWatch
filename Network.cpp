@@ -206,7 +206,7 @@ static void getMQTTMessage( char* topic, char* payload, AsyncMqttClientMessagePr
 	strncpy(t, payload, len);
 	t[len] = 0;
 
-	Serial.printf("Received t:'%s' m:'%s'\n", topic, t);
+//	Serial.printf("Received t:'%s' m:'%s'\n", topic, t);
 	gui->msgreceived( topic, t );
 }
 
