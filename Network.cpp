@@ -309,7 +309,11 @@ bool Network::MQTTconnected( void ){
 }
 
 uint16_t Network::MQTTsubscribe(const char* topic, uint8_t qos){
-	return(this->mqttClient.subscribe( topic, qos ));
+	return( this->mqttClient.subscribe( topic, qos ) );
+}
+
+uint16_t Network::MQTTpublishString(const char *topic, const char *payload, uint8_t qos, bool retain){
+	return( this->mqttClient.publish( topic, qos, retain, payload, strlen(payload)) );
 }
 
 void Network::increaseSTC( void ){

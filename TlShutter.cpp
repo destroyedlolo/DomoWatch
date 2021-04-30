@@ -1,4 +1,5 @@
 #include "Gui.h"
+#include "Network.h"
 #include "TlShutter.h"
 
 LV_IMG_DECLARE(up_64px);
@@ -47,18 +48,21 @@ const char *TlShutter::whichShutterTopic( void ){
 static void upClicked( lv_obj_t *, lv_event_t event ){
 	if(event == LV_EVENT_CLICKED){
 		Serial.printf( "up -> '%s'\n", gui->whichShutterTopic() );
+		network.MQTTpublishString( gui->whichShutterTopic(), "Up" );
 	}
 }
 
 static void myClicked( lv_obj_t *, lv_event_t event ){
 	if(event == LV_EVENT_CLICKED){
 		Serial.printf( "my -> '%s'\n", gui->whichShutterTopic() );
+		network.MQTTpublishString( gui->whichShutterTopic(), "My" );
 	}
 }
 
 static void downClicked( lv_obj_t *, lv_event_t event ){
 	if(event == LV_EVENT_CLICKED){
 		Serial.printf( "down -> '%s'\n", gui->whichShutterTopic() );
+		network.MQTTpublishString( gui->whichShutterTopic(), "Down" );
 	}
 }
 
