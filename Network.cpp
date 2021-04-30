@@ -228,15 +228,13 @@ Network::Network() : status( WIFI_NOT_CONNECTED ), STCounter(0){
 }
 
 void Network::setStatus( enum net_status_t v ){
-	enum net_status_t ans = this->status;	// Initial value
 
 	xSemaphoreTake( this->status_mutex, portMAX_DELAY );
 	this->status = v;
 	xSemaphoreGive( this->status_mutex );
 	gui->updateNetwork();
 
-	if( this->isActive( ans ) != this->isActive() )
-		xEventGroupSetBits( itc_signals, WATCH_WIFI_CHANGED );
+	xEventGroupSetBits( itc_signals, WATCH_WIFI_CHANGED );
 }
 
 enum Network::net_status_t Network::getStatus( void ){
@@ -266,6 +264,23 @@ bool Network::isActive( enum net_status_t v ){
 		v = this->status;	// No need to mutex as we won't block if a value is provided as argument
 
 	return( v == net_status_t::WIFI_MQTT || v == net_status_t::WIFI_CONNECTED );
+}
+
+Network::net_capacity_t Network::getCapacity( void ){
+	net_capacity_t res = 0;
+
+	switch( this->getStatus() ){
+	case WIFI_CONNECTED :
+		res = _BV(NET_CAP_WIFI);
+		break;
+	case WIFI_MQTT :
+		res = _BV(NET_CAP_WIFI) | _BV(NET_CAP_MQTT);
+		break;
+	default :
+		;
+	}
+
+	return res;
 }
 
 void Network::connect( void ){

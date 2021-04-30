@@ -80,7 +80,7 @@ bool TlNetwork::msgreceived( const char *topic, const char *payload ){
 }
 
 void TlNetwork::clearObsoletedValues( void ){
-	if(last < time(NULL)-50){	// Clear value if older than 5 minutes
+	if(last < time(NULL)-500){	// Clear value if older than 5 minutes
 		this->salonText->setText( "--.---" );
 		this->jardinText->setText( "--.---" );
 		this->congeloText->setText( "--.---" );

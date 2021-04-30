@@ -16,6 +16,16 @@ public:
 		WIFI_CONNECTED
 	};
 
+		/*	Which capacities are enabled
+		 *
+		 * Dev note : use _BV() macro to get corresponding value
+		 */
+	enum net_capacity_bits {
+		NET_CAP_WIFI = 0,	// WiFi connected
+		NET_CAP_MQTT		// %QTT connected
+	};
+	typedef uint8_t net_capacity_t;
+
 private:
 		/* Network status */
 	enum net_status_t status;
@@ -47,6 +57,9 @@ public:
 		 * Thie network is active ONLY if it's connected
 		 */
 	bool isActive( enum net_status_t v = (enum net_status_t)-1 );
+
+		/* get which capacity is enabled (bitwise) */
+	net_capacity_t getCapacity( void );
 
 		/* Slave tasks counter
 		 *
