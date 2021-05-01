@@ -9,6 +9,35 @@
 
 LV_FONT_DECLARE(Ubuntu_16px);
 
+Container *ContTest = NULL;
+
+static void closepopup( lv_obj_t *, lv_event_t event ){
+	if(event == LV_EVENT_CLICKED){	/* Remove the popup */
+		delete ContTest;
+		ContTest = NULL;
+	}
+}
+
+static void testpopup( lv_obj_t *, lv_event_t event ){
+	if(event == LV_EVENT_CLICKED){
+		if(!ContTest){ /* Create a popup */
+			ContTest = new Container(lv_scr_act());	// on top of the whole screen
+			ContTest->setSize( LV_HOR_RES-20, LV_VER_RES - BARHEIGHT-20);
+			ContTest->setPosXY( 10,10 + BARHEIGHT );
+
+				// Create a style to make if visible
+			lv_style_set_radius( ContTest->getStyle(), LV_OBJ_PART_MAIN, 15 );
+			lv_style_set_bg_color( ContTest->getStyle(), LV_OBJ_PART_MAIN, LV_COLOR_GRAY );
+			lv_style_set_bg_opa( ContTest->getStyle(), LV_OBJ_PART_MAIN, LV_OPA_50 );
+			lv_style_set_border_width( ContTest->getStyle(), LV_OBJ_PART_MAIN, 5 );
+			ContTest->applyStyle();
+
+			ContTest->setClickable( true );	// the object is clickable
+			ContTest->attacheEventeHandler( closepopup );	// click on it to close
+		}
+	}
+}
+
 TlStatus::TlStatus( TileView *parent, TileView *cloned ) : 
 	Container( parent, cloned )
 {
@@ -64,6 +93,9 @@ TlStatus::TlStatus( TileView *parent, TileView *cloned ) :
 	this->_version->setText( "DomoWatch " VERSION_H );
 	this->_version->Align( LV_ALIGN_IN_BOTTOM_MID );
 	this->_version->AutoRealign();
+
+	this->_version->setClickable( true );
+	this->_version->attacheEventeHandler( testpopup );
 
 		/* Display last boot time 
 		 * This information will be set once at GUI creation
