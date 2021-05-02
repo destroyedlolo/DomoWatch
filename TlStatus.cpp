@@ -2,6 +2,8 @@
 *	Settings tile
 *************************************************/
 
+#include <Chart.h>
+
 #include "Gui.h"
 #include "TlStatus.h"
 #include "Version.h"
@@ -9,31 +11,71 @@
 
 LV_FONT_DECLARE(Ubuntu_16px);
 
-Container *ContTest = NULL;
+Chart *ChartTest = NULL;
+Chart::Serie *serie1;
+Chart::Serie *serie2;
 
 static void closepopup( lv_obj_t *, lv_event_t event ){
 	if(event == LV_EVENT_CLICKED){	/* Remove the popup */
-		delete ContTest;
-		ContTest = NULL;
+		delete serie1;
+		delete serie2;
+
+		delete ChartTest;
+		ChartTest = NULL;
 	}
 }
 
 static void testpopup( lv_obj_t *, lv_event_t event ){
 	if(event == LV_EVENT_CLICKED){
-		if(!ContTest){ /* Create a popup */
-			ContTest = new Container(lv_scr_act());	// on top of the whole screen
-			ContTest->setSize( LV_HOR_RES-20, LV_VER_RES - BARHEIGHT-20);
-			ContTest->setPosXY( 10,10 + BARHEIGHT );
+		if(!ChartTest){ /* Create a popup */
+			ChartTest = new Chart(
+				10,				// Number of points
+				lv_scr_act()	// Parent, clone
+			);
+
+				// Feed the chart
+
+			serie1 = ChartTest->addSerie( LV_COLOR_RED );
+			serie2 = ChartTest->addSerie( LV_COLOR_GREEN );
+
+			serie1->Insert( 0 );
+			serie1->Insert( 10 );
+			serie1->Insert( 20 );
+			serie1->Insert( 20 );
+			serie1->Insert( 20 );
+			serie1->Insert( 40 );
+			serie1->Insert( 60 );
+			serie1->Insert( 70 );
+			serie1->Insert( 90 );
+			serie1->Insert( 100 );
+
+				// For the moment, the 2nd serie is not displayed
+				// duno why :(
+
+			serie2->Insert( 90 );
+			serie2->Insert( 70 );
+			serie2->Insert( 65 );
+			serie2->Insert( 65 );
+			serie2->Insert( 40 );
+			serie2->Insert( 50 );
+			serie2->Insert( 50 );
+			serie2->Insert( 20 );
+			serie2->Insert( 35 );
+			serie2->Insert( 50 );
+
+				// Geometry
+			ChartTest->setSize( LV_HOR_RES-20, LV_VER_RES - BARHEIGHT-20);
+			ChartTest->setPosXY( 10,10 + BARHEIGHT );
 
 				// Create a style to make if visible
-			lv_style_set_radius( ContTest->getStyle(), LV_OBJ_PART_MAIN, 15 );
-			lv_style_set_bg_color( ContTest->getStyle(), LV_OBJ_PART_MAIN, LV_COLOR_GRAY );
-			lv_style_set_bg_opa( ContTest->getStyle(), LV_OBJ_PART_MAIN, LV_OPA_50 );
-			lv_style_set_border_width( ContTest->getStyle(), LV_OBJ_PART_MAIN, 5 );
-			ContTest->applyStyle();
+			lv_style_set_radius( ChartTest->getStyle(), LV_OBJ_PART_MAIN, 15 );
+			lv_style_set_bg_color( ChartTest->getStyle(), LV_OBJ_PART_MAIN, LV_COLOR_GRAY );
+			lv_style_set_bg_opa( ChartTest->getStyle(), LV_OBJ_PART_MAIN, LV_OPA_50 );
+			lv_style_set_border_width( ChartTest->getStyle(), LV_OBJ_PART_MAIN, 5 );
+			ChartTest->applyStyle();
 
-			ContTest->setClickable( true );	// the object is clickable
-			ContTest->attacheEventeHandler( closepopup );	// click on it to close
+			ChartTest->setClickable( true );	// the object is clickable
+			ChartTest->attacheEventeHandler( closepopup );	// click on it to close
 		}
 	}
 }
