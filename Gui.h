@@ -8,6 +8,8 @@
 #include <Arduino.h>
 #include <lvgl/lvgl.h>
 
+#include <Image.h>
+
 #include "Style.h"
 #include "Container.h"
 #include "TileView.h"
@@ -22,7 +24,7 @@ class StatusBar;
 class Gui : 
 	public Style 	// default object style
 {
-	lv_obj_t	*_background;	// Background image
+	Image		*_background;	// Background image
 	StatusBar	*_statusbar;
 	Container	*_workarea;		// container of the work area (all but the status bar)
 	TileView	*_tileview;

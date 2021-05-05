@@ -32,7 +32,7 @@ TlDateTime::TlDateTime( TileView *parent, TileView *cloned ) :
 
 		/* Display time */
 	this->timelabel = new Label( this->cont );
-	this->timelabel->setFont( &Ubuntu_48px );
+	this->timelabel->setStyleTextFont( &Ubuntu_48px );
 	this->timelabel->applyStyle();
 	this->timelabel->setText( "??:??:??" );
 	this->timelabel->Align( LV_ALIGN_IN_TOP_MID );
@@ -41,7 +41,7 @@ TlDateTime::TlDateTime( TileView *parent, TileView *cloned ) :
 
 		/* and date */
 	this->datelabel = new Label( this->cont );
-	this->datelabel->setFont( &Ubuntu_16px );
+	this->datelabel->setStyleTextFont( &Ubuntu_16px );
 	this->datelabel->applyStyle();
 	this->datelabel->setText( "??.???? ????" );
 	this->datelabel->Align( LV_ALIGN_IN_BOTTOM_MID );

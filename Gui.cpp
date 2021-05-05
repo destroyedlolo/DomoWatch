@@ -7,6 +7,7 @@
 #include "Network.h"
 
 #define BACKGROUND Annecy	// Which background to use
+LV_IMG_DECLARE( BACKGROUND );
 
 	/*****
 	 * objects
@@ -23,24 +24,20 @@ Gui::Gui( void ){
 		/***
 		 * Build main style
 		 ***/
-	lv_style_set_radius( this->getStyle(), LV_OBJ_PART_MAIN, 0 );
-	lv_style_set_bg_color( this->getStyle(), LV_OBJ_PART_MAIN, LV_COLOR_GRAY );
-	lv_style_set_bg_opa( this->getStyle(), LV_OBJ_PART_MAIN, LV_OPA_0 );
-	lv_style_set_border_width( this->getStyle(), LV_OBJ_PART_MAIN, 0 );
-
-	lv_style_set_text_color( this->getStyle(), LV_OBJ_PART_MAIN, LV_COLOR_WHITE );
-	lv_style_set_image_recolor( this->getStyle(), LV_OBJ_PART_MAIN, LV_COLOR_WHITE );
+	this->setStyleRadius( 0 );
+	this->setStyleBgColor( LV_COLOR_GRAY );
+	this->setStyleBgOpacity( LV_OPA_0 );
+	this->setStyleBorderWidth( 0 );
+	this->setStyleTextColor( LV_COLOR_WHITE );
 
 		/***
 		 * Background images 
 		 ***/
-	this->_background = lv_img_create( lv_scr_act() , NULL );
-	lv_obj_set_width( this->_background, lv_disp_get_hor_res( NULL ) );
-	lv_obj_set_height( this->_background, lv_disp_get_ver_res( NULL ) );
-	LV_IMG_DECLARE( BACKGROUND );
-	lv_img_set_src( this->_background, &BACKGROUND );
- 	lv_obj_align( this->_background, NULL, LV_ALIGN_CENTER, 0, 0 );
-	lv_obj_set_hidden( this->_background, false );	// Image is visible
+	this->_background = new Image( lv_scr_act() );
+	this->_background->setSize( lv_disp_get_hor_res( NULL ), lv_disp_get_ver_res( NULL ) );
+	this->_background->Set( &BACKGROUND );
+	this->_background->Align( LV_ALIGN_CENTER );
+	this->_background->setHidden( false );
 
 		/***
 		 * Status bar
@@ -57,7 +54,6 @@ Gui::Gui( void ){
 	this->_workarea = new Container( lv_scr_act() );
 	this->_workarea->setSize( LV_HOR_RES, LV_VER_RES - BARHEIGHT);	// Keep some space for the statusbar
 	this->_workarea->copyStyle( this->getStyle() );
-//	lv_style_set_bg_opa( this->_workarea->getStyle(), LV_OBJ_PART_MAIN, LV_OPA_10 );
 	this->_workarea->Align( LV_ALIGN_OUT_BOTTOM_MID, this->_statusbar);
 	this->_workarea->applyStyle();
 
