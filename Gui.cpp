@@ -23,13 +23,11 @@ Gui::Gui( void ){
 		/***
 		 * Build main style
 		 ***/
-	lv_style_set_radius( this->getStyle(), LV_OBJ_PART_MAIN, 0 );
-	lv_style_set_bg_color( this->getStyle(), LV_OBJ_PART_MAIN, LV_COLOR_GRAY );
-	lv_style_set_bg_opa( this->getStyle(), LV_OBJ_PART_MAIN, LV_OPA_0 );
-	lv_style_set_border_width( this->getStyle(), LV_OBJ_PART_MAIN, 0 );
-
-	lv_style_set_text_color( this->getStyle(), LV_OBJ_PART_MAIN, LV_COLOR_WHITE );
-	lv_style_set_image_recolor( this->getStyle(), LV_OBJ_PART_MAIN, LV_COLOR_WHITE );
+	this->setStyleRadius( 0 );
+	this->setStyleBgColor( LV_COLOR_GRAY );
+	this->setStyleBgOpacity( LV_OPA_0 );
+	this->setStyleBorderWidth( 0 );
+	this->setStyleTextColor( LV_COLOR_WHITE );
 
 		/***
 		 * Background images 
