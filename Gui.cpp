@@ -54,7 +54,6 @@ Gui::Gui( void ){
 	this->_workarea = new Container( lv_scr_act() );
 	this->_workarea->setSize( LV_HOR_RES, LV_VER_RES - BARHEIGHT);	// Keep some space for the statusbar
 	this->_workarea->copyStyle( this->getStyle() );
-//	lv_style_set_bg_opa( this->_workarea->getStyle(), LV_OBJ_PART_MAIN, LV_OPA_10 );
 	this->_workarea->Align( LV_ALIGN_OUT_BOTTOM_MID, this->_statusbar);
 	this->_workarea->applyStyle();
 

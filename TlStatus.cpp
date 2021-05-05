@@ -11,72 +11,6 @@
 
 LV_FONT_DECLARE(Ubuntu_16px);
 
-Chart *ChartTest = NULL;
-Chart::Serie *serie1;
-Chart::Serie *serie2;
-
-static void closepopup( lv_obj_t *, lv_event_t event ){
-	if(event == LV_EVENT_CLICKED){	/* Remove the popup */
-		delete serie1;
-		delete serie2;
-
-		delete ChartTest;
-		ChartTest = NULL;
-	}
-}
-
-static void testpopup( lv_obj_t *, lv_event_t event ){
-	if(event == LV_EVENT_CLICKED){
-		if(!ChartTest){ /* Create a popup */
-			ChartTest = new Chart(
-				10,				// Number of points
-				lv_scr_act()	// Parent, clone
-			);
-
-				// Create a style to make if visible
-			lv_style_set_radius( ChartTest->getStyle(), LV_OBJ_PART_MAIN, 15 );
-			lv_style_set_bg_color( ChartTest->getStyle(), LV_OBJ_PART_MAIN, LV_COLOR_WHITE );
-			lv_style_set_bg_opa( ChartTest->getStyle(), LV_OBJ_PART_MAIN, LV_OPA_80 );
-			lv_style_set_border_width( ChartTest->getStyle(), LV_OBJ_PART_MAIN, 5 );
-			ChartTest->applyStyle();
-
-				// Feed the chart
-			serie1 = ChartTest->addSerie( LV_COLOR_RED );
-			serie2 = ChartTest->addSerie( LV_COLOR_GREEN );
-
-			serie1->Insert( 0 );
-			serie1->Insert( 10 );
-			serie1->Insert( 20 );
-			serie1->Insert( 20 );
-			serie1->Insert( 20 );
-			serie1->Insert( 40 );
-			serie1->Insert( 60 );
-			serie1->Insert( 70 );
-			serie1->Insert( 90 );
-			serie1->Insert( 100 );
-
-			serie2->Insert( 90 );
-			serie2->Insert( 70 );
-			serie2->Insert( 65 );
-			serie2->Insert( 65 );
-			serie2->Insert( 40 );
-			serie2->Insert( 50 );
-			serie2->Insert( 50 );
-			serie2->Insert( 20 );
-			serie2->Insert( 35 );
-			serie2->Insert( 50 );
-
-				// Geometry
-			ChartTest->setSize( LV_HOR_RES-20, LV_VER_RES - BARHEIGHT-20);
-			ChartTest->setPosXY( 10,10 + BARHEIGHT );
-
-
-			ChartTest->setClickable( true );	// the object is clickable
-			ChartTest->attacheEventeHandler( closepopup );	// click on it to close
-		}
-	}
-}
-
 TlStatus::TlStatus( TileView *parent, TileView *cloned ) : 
 	Container( parent, cloned )
 {
@@ -132,9 +66,6 @@ TlStatus::TlStatus( TileView *parent, TileView *cloned ) :
 	this->_version->setText( "DomoWatch " VERSION_H );
 	this->_version->Align( LV_ALIGN_IN_BOTTOM_MID );
 	this->_version->AutoRealign();
-
-	this->_version->setClickable( true );
-	this->_version->attacheEventeHandler( testpopup );
 
 		/* Display last boot time 
 		 * This information will be set once at GUI creation
