@@ -11,6 +11,8 @@ The final goal of this project is to controle my smart home automation using TTG
 
 In addition, the code has been made in **POO way** and being **very modular** (and commented as well) : should be a good starting point for new projects.
 
+**This is the LEGACY branch which is compatible with LEGACY branch of emToile** : this branch exists for maintenance only and will be deprecated as soon as the master branch reach the same level of evolution.
+
 ## Install
 
 This project can be build using **Arduino IDE** and needs :
