@@ -42,6 +42,8 @@ StatusBar::StatusBar( lv_style_t *mainstyle, lv_obj_t *parent, const lv_obj_t *c
 {
 	this->copyStyle( mainstyle );	// Copy gui style
 
+/**** Rajouter ImageRecolor *****/
+
 		/***
 		 * Customize style of the bar
 		 ***/
