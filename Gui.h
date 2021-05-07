@@ -8,31 +8,17 @@
 #include <Arduino.h>
 #include <lvgl/lvgl.h>
 
+#include <Image.h>
+
 #include "Style.h"
 #include "Container.h"
 #include "TileView.h"
-#include "TlDateTime.h"
-#include "TlStatus.h"
-#include "TlScreen.h"
-#include "TlNetwork.h"
-#include "TlShutter.h"
-
-class StatusBar;
 
 class Gui : 
 	public Style 	// default object style
 {
-	lv_obj_t	*_background;	// Background image
-	StatusBar	*_statusbar;
+	Image		*_background;	// Background image
 	Container	*_workarea;		// container of the work area (all but the status bar)
-	TileView	*_tileview;
-
-		/* Tiles */
-	TlShutter	*_tile_shutter;
-	TlNetwork	*_tile_network;
-	TlDateTime	*_tile_datetime;
-	TlStatus	*_tile_status;
-	TlScreen	*_tile_screen;
 
 public:
 
@@ -99,11 +85,12 @@ public:
 		 * Shutters
 		 */
 	void updStair( void ){
-		this->_tile_shutter->updStair();
+//		this->_tile_shutter->updStair();
 	}
 
 	const char *whichShutterTopic( void ){
-		return this->_tile_shutter->whichShutterTopic();
+//		return this->_tile_shutter->whichShutterTopic();
+return "bla";
 	}
 };
 
