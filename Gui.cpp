@@ -3,10 +3,13 @@
 *************************************************/
 
 #include "Gui.h"
+#include "StatusBar.h"
 #include "Network.h"
 
 #define BACKGROUND Annecy	// Which background to use
 LV_IMG_DECLARE( BACKGROUND );
+
+LV_FONT_DECLARE( Ubuntu_16px );
 
 	/*****
 	 * objects
@@ -28,6 +31,7 @@ Gui::Gui( void ){
 	this->setBgOpacity( LV_OPA_0 );
 	this->setBorderWidth( 0 );
 	this->setTextColor( LV_COLOR_WHITE );
+	this->seTexttFont( &Ubuntu_16px );
 
 		/***
 		 * Background images 
@@ -39,6 +43,11 @@ Gui::Gui( void ){
 	this->_background->setHidden( false );
 
 		/***
+		 * Status bar
+		 ***/
+	this->_statusbar = new StatusBar( *this, lv_scr_act() );
+
+		/***
 		 * Work area
 		 * this container is only need to allow heritage b/w tiles and their
 		 * tileview.
@@ -47,7 +56,7 @@ Gui::Gui( void ){
 		 ***/
 	this->_workarea = new Container( lv_scr_act() );
 	this->_workarea->setSize( LV_HOR_RES, LV_VER_RES - BARHEIGHT);	// Keep some space for the statusbar
-//	this->_workarea->Align( LV_ALIGN_OUT_BOTTOM_MID, this->_statusbar);
+	this->_workarea->Align( LV_ALIGN_OUT_BOTTOM_MID, this->_statusbar);
 	this->_workarea->addStyle( *this );
 
 		

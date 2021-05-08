@@ -10,15 +10,19 @@
 
 #include <Image.h>
 
-#include "Style.h"
-#include "Container.h"
-#include "TileView.h"
+#include <Style.h>
+#include <Container.h>
+#include <TileView.h>
+
+class StatusBar;
 
 class Gui : 
-	public Style 	// default object style
+	public Style 	// default objects style
 {
 	Image		*_background;	// Background image
+	StatusBar	*_statusbar;
 	Container	*_workarea;		// container of the work area (all but the status bar)
+
 
 public:
 
@@ -36,6 +40,7 @@ public:
 		LV_ICON_CALCULATION,	// calculated against charging percentage
 		LV_ICON_UNKNOWN			// check first of plugged
 	};
+
 
 		/*
 		 * GUI
