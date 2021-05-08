@@ -70,7 +70,18 @@ Gui::Gui( void ){
 	this->_tileview->setSize( LV_HOR_RES, LV_VER_RES - BARHEIGHT);	// Keep some space for the statusbar
 	this->_tileview->Align( LV_ALIGN_OUT_BOTTOM_MID, this->_statusbar);
 	this->_tileview->setEdgeFlash( true );
-		
+
+	this->updateMovements();	// Allow movement
+
+		/***
+		 * Define tiles
+		 ***/
+
+		 // main tile placed centered
+	this->_tile_datetime = new TlDateTime( this->_tileview, this->_tileview );
+	this->_tile_datetime->setTilePos( {1, 1} );	// place it on the right
+	this->_tileview->AddTile( this->_tile_datetime );	// Add this tile
+
 		/* The GUI is initialised,
 		 * ready to launch automation
 		 */
@@ -95,14 +106,14 @@ void Gui::updateNetwork( void ){
 
 void Gui::initAutomation( void ){
 	this->_statusbar->initAutomation();
-//	this->_tile_datetime->initAutomation();
+	this->_tile_datetime->initAutomation();
 //	this->_tile_status->initAutomation();
 }
 
 #define TABSIZE(t) ( sizeof(t) / sizeof(t[1]) )
 
 void Gui::updateMovements( void ){
-/*
+#if 0
 	int sz = 0;
 	Network::net_capacities_t caps = network.getCapacities();	// What is currently active
 
@@ -151,11 +162,14 @@ void Gui::updateMovements( void ){
 		// otherwise, LVGL is lost and setActiveTile() is not doing the
 		// expected result
 	this->_tileview->setValidPositions( valid_pos, sz);	// Finally apply the new one
-*/
+#else
+	lv_point_t basic_pos[] = { {1,1} };
+	this->_tileview->setValidPositions( basic_pos, 1);
+#endif
 }
 
 void Gui::backToHome( lv_anim_enable_t anim ){
-//	this->_tileview->setActiveTile( 1,1, anim );
+	this->_tileview->setActiveTile( 1,1, anim );
 }
 
 void Gui::subscribe( void ){

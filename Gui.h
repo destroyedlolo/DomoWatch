@@ -14,6 +14,8 @@
 #include <Container.h>
 #include <TileView.h>
 
+#include "TlDateTime.h"
+
 class StatusBar;
 
 class Gui {
@@ -21,6 +23,9 @@ class Gui {
 	StatusBar	*_statusbar;
 //	Container	*_workarea;		// container of the work area (all but the status bar)
 	TileView	*_tileview;
+
+		/* Tiles */
+	TlDateTime	*_tile_datetime;
 
 public:
 
