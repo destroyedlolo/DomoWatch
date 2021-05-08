@@ -31,7 +31,7 @@ public:
 	 * -> mainstyle : style to apply
 	 * -> parent, cloned : see Container
 	 */
-	StatusBar( Style &mainstyle, lv_obj_t *parent=NULL, const lv_obj_t *cloned=NULL );
+	StatusBar( lv_obj_t *parent=NULL, const lv_obj_t *cloned=NULL );
 
 	/* Initialise automation
 	 */

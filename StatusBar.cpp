@@ -23,10 +23,10 @@ static void stepClicked( lv_obj_t *, lv_event_t event ){
 
 LV_IMG_DECLARE(foot_16px);
 
-StatusBar::StatusBar( Style &mainstyle, lv_obj_t *parent, const lv_obj_t *cloned ) : 
+StatusBar::StatusBar( lv_obj_t *parent, const lv_obj_t *cloned ) : 
 	Container( parent, cloned )
 {
-	this->addStyle( mainstyle );	// Copy gui style
+	this->addStyle( gui->getMainStyle() );	// Copy gui style
 
 		/***
 		 * Customize style of the bar
@@ -42,7 +42,7 @@ StatusBar::StatusBar( Style &mainstyle, lv_obj_t *parent, const lv_obj_t *cloned
 		/* Create of button above step counter to reset it */
 //	this->stepButton = new Button( *gui, this );
 	this->stepButton = new Button( this );
-	this->stepButton->addStyle( gui->getStyle() );
+	this->stepButton->addStyle( gui->getMainStyle() );
 	this->stepButton->setLayout( LV_LAYOUT_ROW_MID );	// child are horizontally aligned
 	this->stepButton->setSize( this->getWidth() / 2, this->getHeight() );
 	this->stepButton->Align( LV_ALIGN_IN_LEFT_MID );	// it is itself aligned on the left
@@ -59,8 +59,7 @@ st.setTextColor( LV_COLOR_WHITE );
 
 //	this->stepCounter = new Label( *gui, this->stepButton );
 	this->stepCounter = new Label( this->stepButton );
-	this->stepCounter->addStyle( st.getStyle() );
-//	this->stepCounter->refreshStyle( );
+	this->stepCounter->addStyle( gui->getMainStyle() );
 	this->stepCounter->setText( "??????" );
 	this->stepCounter->setClickable( false );	// Pass click to the parent
 

@@ -26,12 +26,13 @@ Gui::Gui( void ){
 		/***
 		 * Build main style
 		 ***/
-	this->setRadius( 0 );
-	this->setBgColor( LV_COLOR_GRAY );
-	this->setBgOpacity( LV_OPA_0 );
-	this->setBorderWidth( 0 );
-	this->setTextColor( LV_COLOR_WHITE );
-	this->seTexttFont( &Ubuntu_16px );
+	this->_mainstyle = new Style();
+	this->_mainstyle->setRadius( 0 );
+	this->_mainstyle->setBgColor( LV_COLOR_GRAY );
+	this->_mainstyle->setBgOpacity( LV_OPA_0 );
+	this->_mainstyle->setBorderWidth( 0 );
+	this->_mainstyle->setTextColor( LV_COLOR_WHITE );
+	this->_mainstyle->seTexttFont( &Ubuntu_16px );
 
 		/***
 		 * Background images 
@@ -45,7 +46,7 @@ Gui::Gui( void ){
 		/***
 		 * Status bar
 		 ***/
-	this->_statusbar = new StatusBar( *this, lv_scr_act() );
+//	this->_statusbar = new StatusBar( lv_scr_act() );
 
 		/***
 		 * Work area
@@ -56,8 +57,8 @@ Gui::Gui( void ){
 		 ***/
 	this->_workarea = new Container( lv_scr_act() );
 	this->_workarea->setSize( LV_HOR_RES, LV_VER_RES - BARHEIGHT);	// Keep some space for the statusbar
-	this->_workarea->Align( LV_ALIGN_OUT_BOTTOM_MID, this->_statusbar);
-	this->_workarea->addStyle( *this );
+//	this->_workarea->Align( LV_ALIGN_OUT_BOTTOM_MID, this->_statusbar);
+	this->_workarea->addStyle( this->getMainStyle() );
 
 		
 		/* The GUI is initialised,

@@ -16,13 +16,13 @@
 
 class StatusBar;
 
-class Gui : 
-	public Style 	// default objects style
-{
+class Gui {
 	Image		*_background;	// Background image
 	StatusBar	*_statusbar;
 	Container	*_workarea;		// container of the work area (all but the status bar)
 
+	/* Style */
+	Style		*_mainstyle;
 
 public:
 
@@ -41,6 +41,11 @@ public:
 		LV_ICON_UNKNOWN			// check first of plugged
 	};
 
+		/*
+		 * Accessors
+		 */
+	
+	Style *getMainStyle( void ){ return this->_mainstyle; }
 
 		/*
 		 * GUI
