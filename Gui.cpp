@@ -16,6 +16,7 @@ LV_FONT_DECLARE( Ubuntu_16px );
 	 *****/
 	
 Gui *gui;
+Style *mainStyle;
 
 	/**** 
 	 * Build the GUI
@@ -26,13 +27,13 @@ Gui::Gui( void ){
 		/***
 		 * Build main style
 		 ***/
-	this->_mainstyle = new Style();
-	this->_mainstyle->setRadius( 0 );
-	this->_mainstyle->setBgColor( LV_COLOR_GRAY );
-	this->_mainstyle->setBgOpacity( LV_OPA_0 );
-	this->_mainstyle->setBorderWidth( 0 );
-	this->_mainstyle->setTextColor( LV_COLOR_WHITE );
-	this->_mainstyle->seTexttFont( &Ubuntu_16px );
+	mainStyle = new Style();
+	mainStyle->setRadius( 0 );
+	mainStyle->setBgColor( LV_COLOR_GRAY );
+	mainStyle->setBgOpacity( LV_OPA_0 );
+	mainStyle->setBorderWidth( 0 );
+	mainStyle->setTextColor( LV_COLOR_WHITE );
+	mainStyle->seTexttFont( &Ubuntu_16px );
 
 		/***
 		 * Background images 
@@ -46,8 +47,9 @@ Gui::Gui( void ){
 		/***
 		 * Status bar
 		 ***/
-//	this->_statusbar = new StatusBar( lv_scr_act() );
+	this->_statusbar = new StatusBar( lv_scr_act() );
 
+#if 0
 		/***
 		 * Work area
 		 * this container is only need to allow heritage b/w tiles and their
@@ -56,10 +58,18 @@ Gui::Gui( void ){
 		 * room for the status bar.
 		 ***/
 	this->_workarea = new Container( lv_scr_act() );
+	this->_workarea->addStyle( mainStyle );
 	this->_workarea->setSize( LV_HOR_RES, LV_VER_RES - BARHEIGHT);	// Keep some space for the statusbar
-//	this->_workarea->Align( LV_ALIGN_OUT_BOTTOM_MID, this->_statusbar);
-	this->_workarea->addStyle( this->getMainStyle() );
+	this->_workarea->Align( LV_ALIGN_OUT_BOTTOM_MID, this->_statusbar);
+#endif
 
+		/***
+		 * Tileview
+		 ***/
+	this->_tileview = new TileView( mainStyle, lv_scr_act() );
+	this->_tileview->setSize( LV_HOR_RES, LV_VER_RES - BARHEIGHT);	// Keep some space for the statusbar
+	this->_tileview->Align( LV_ALIGN_OUT_BOTTOM_MID, this->_statusbar);
+	this->_tileview->setEdgeFlash( true );
 		
 		/* The GUI is initialised,
 		 * ready to launch automation
@@ -68,15 +78,15 @@ Gui::Gui( void ){
 }
 
 void Gui::updateStepCounter( void ){
-//	this->_statusbar->updateStepCounter();
+	this->_statusbar->updateStepCounter();
 }
 
 void Gui::updateBatteryIcon( lv_icon_battery_t index ){
-//	this->_statusbar->updateBatteryIcon( index);
+	this->_statusbar->updateBatteryIcon( index );
 }
 
 void Gui::updateBatteryLevel( void ){
-//	this->_statusbar->updateBatteryLevel();
+	this->_statusbar->updateBatteryLevel();
 }
 
 void Gui::updateNetwork( void ){
@@ -84,7 +94,7 @@ void Gui::updateNetwork( void ){
 }
 
 void Gui::initAutomation( void ){
-//	this->_statusbar->initAutomation();
+	this->_statusbar->initAutomation();
 //	this->_tile_datetime->initAutomation();
 //	this->_tile_status->initAutomation();
 }

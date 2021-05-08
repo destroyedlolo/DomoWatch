@@ -19,10 +19,8 @@ class StatusBar;
 class Gui {
 	Image		*_background;	// Background image
 	StatusBar	*_statusbar;
-	Container	*_workarea;		// container of the work area (all but the status bar)
-
-	/* Style */
-	Style		*_mainstyle;
+//	Container	*_workarea;		// container of the work area (all but the status bar)
+	TileView	*_tileview;
 
 public:
 
@@ -41,11 +39,6 @@ public:
 		LV_ICON_UNKNOWN			// check first of plugged
 	};
 
-		/*
-		 * Accessors
-		 */
-	
-	Style *getMainStyle( void ){ return this->_mainstyle; }
 
 		/*
 		 * GUI
@@ -115,7 +108,8 @@ extern uint32_t inactive_wifi_counter;
 #define BARHEIGHT 30	// Status bar height
 
 extern TTGOClass *ttgo;
-extern class Gui *gui;
+extern Gui *gui;
+extern Style *mainStyle;
 
 extern bool mvtWakeup;
 extern uint8_t bl_lev;
