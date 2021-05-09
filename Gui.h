@@ -16,6 +16,7 @@
 
 #include "TlDateTime.h"
 #include "TlStatus.h"
+#include "TlScreen.h"
 
 class StatusBar;
 
@@ -28,6 +29,7 @@ class Gui {
 		/* Tiles */
 	TlDateTime	*_tile_datetime;
 	TlStatus	*_tile_status;
+	TlScreen	*_tile_screen;
 
 public:
 
@@ -118,6 +120,7 @@ extern TTGOClass *ttgo;
 extern Gui *gui;
 extern Style *mainStyle;
 extern Style *gaugeStyle;
+extern Style *sliderStyle;
 
 extern bool mvtWakeup;
 extern uint8_t bl_lev;
