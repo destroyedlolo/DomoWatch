@@ -17,11 +17,28 @@ static void stepClicked( lv_obj_t *, lv_event_t event ){
 	}
 }
 
+static void wifiClicked( lv_obj_t *, lv_event_t event ){
+	if(event == LV_EVENT_CLICKED){
+		Serial.println("WIFI clicked");
+		if( network.isActive() ){
+			/* Nothing on way : we can disconnect */
+			network.disconnect();
+		} else if( network.getStatus() == Network::net_status_t::WIFI_NOT_CONNECTED ||
+						network.getStatus() == Network::net_status_t::WIFI_FAILED ){
+			/* Not connected : we can connect */
+			network.connect();
+		} else
+			Serial.println("Network is processing");
+	}
+}
+
+
 	/*****
 	 * GUI
 	 *****/
 
 LV_IMG_DECLARE(foot_16px);
+LV_IMG_DECLARE(wifi_16px);
 
 StatusBar::StatusBar( lv_obj_t *parent, const lv_obj_t *cloned ) : 
 	Container( parent, cloned )
@@ -73,13 +90,19 @@ StatusBar::StatusBar( lv_obj_t *parent, const lv_obj_t *cloned ) :
 	this->batIcon = new Image( this );		// corresponding icon
 	this->batIcon->Set( LV_SYMBOL_BATTERY_FULL );
 	this->batIcon->Align( LV_ALIGN_OUT_LEFT_MID,  this->batPercent->getMyself(), -5);
-
-	Image *tst = new Image( this );
-	tst->Align( LV_ALIGN_OUT_LEFT_MID,  this->batIcon->getMyself());
-	tst->Set( &foot_16px );
-
 this->batIcon->dumpObj();
-tst->dumpObj();
+
+		/***
+		 * Wifi
+		 *
+		 * Set it clickable to enable/disable WiFi networking
+		 ****/
+	this->wifiIcon = new Image( this );
+	this->wifiIcon->Set( &wifi_16px );
+	this->wifiIcon->Align( LV_ALIGN_OUT_LEFT_MID, this->batIcon, -15 );
+	this->wifiIcon->setIntensity();
+	this->wifiIcon->setClickable( true );
+	this->wifiIcon->attacheEventeHandler( wifiClicked );
 }
 
 void StatusBar::updateStepCounter( void ){
@@ -126,6 +149,25 @@ void StatusBar::updateBatteryIcon( Gui::lv_icon_battery_t index ){
 Serial.printf(" *** batIcon %d\n", index);
 }
 
+void StatusBar::updateNetwork( void ){
+Serial.printf(" *** upd net : %d\n", network.getStatus() );
+	switch( network.getStatus() ){
+	case Network::net_status_t::WIFI_CONNECTING :
+		this->wifiIcon->Recolor(LV_COLOR_ORANGE);
+		break;
+	case Network::Network::net_status_t::WIFI_FAILED :
+		this->wifiIcon->Recolor(LV_COLOR_RED);
+		break;
+	case Network::Network::net_status_t::WIFI_CONNECTED :
+		this->wifiIcon->Recolor(LV_COLOR_LIME);
+		break;
+	case Network::net_status_t::WIFI_MQTT :
+		this->wifiIcon->Recolor(LV_COLOR_BLUE);
+		break;
+	default :
+		this->wifiIcon->Recolor(LV_COLOR_WHITE);
+	}
+}
 
 	/*
 	 * Utilities
