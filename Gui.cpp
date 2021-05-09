@@ -111,6 +111,9 @@ Gui::Gui( void ){
 
 	this->updateMovements();	// Allow movement
 
+		// date and time is the default tile
+	this->_tileview->setActiveTile( 1,1, LV_ANIM_OFF );
+
 		/* The GUI is initialised,
 		 * ready to launch automation
 		 */
