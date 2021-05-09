@@ -3,16 +3,22 @@
 *************************************************/
 
 #include "Gui.h"
+#include "StatusBar.h"
 #include "Network.h"
 
 #define BACKGROUND Annecy	// Which background to use
 LV_IMG_DECLARE( BACKGROUND );
+
+LV_FONT_DECLARE( Ubuntu_16px );
 
 	/*****
 	 * objects
 	 *****/
 	
 Gui *gui;
+
+Style *mainStyle;
+Style *gaugeStyle;
 
 	/**** 
 	 * Build the GUI
@@ -23,11 +29,23 @@ Gui::Gui( void ){
 		/***
 		 * Build main style
 		 ***/
-	this->setRadius( 0 );
-	this->setBgColor( LV_COLOR_GRAY );
-	this->setBgOpacity( LV_OPA_0 );
-	this->setBorderWidth( 0 );
-	this->setTextColor( LV_COLOR_WHITE );
+	mainStyle = new Style();
+	mainStyle->setRadius( 0 );
+	mainStyle->setBgColor( LV_COLOR_GRAY );
+	mainStyle->setBgOpacity( LV_OPA_0 );
+	mainStyle->setBorderWidth( 0 );
+	mainStyle->setTextColor( LV_COLOR_WHITE );
+	mainStyle->seTexttFont( &Ubuntu_16px );
+
+		/***
+		 * Build Gauge style
+		 ***/
+	gaugeStyle = new Style();
+	gaugeStyle->copyStyle( mainStyle );
+	gaugeStyle->setBgColor( LV_COLOR_AQUA );
+	gaugeStyle->setBgOpacity( LV_OPA_100 );
+	gaugeStyle->setBorderWidth( 1 );
+	gaugeStyle->setRadius( 5 );
 
 		/***
 		 * Background images 
@@ -39,18 +57,45 @@ Gui::Gui( void ){
 	this->_background->setHidden( false );
 
 		/***
+		 * Status bar
+		 ***/
+	this->_statusbar = new StatusBar( lv_scr_act() );
+
+		/***
 		 * Work area
 		 * this container is only need to allow heritage b/w tiles and their
 		 * tileview.
 		 * Without it, child will be shifted down as the tv must leave
 		 * room for the status bar.
 		 ***/
-	this->_workarea = new Container( lv_scr_act() );
+	this->_workarea = new Container( mainStyle, lv_scr_act() );
 	this->_workarea->setSize( LV_HOR_RES, LV_VER_RES - BARHEIGHT);	// Keep some space for the statusbar
-//	this->_workarea->Align( LV_ALIGN_OUT_BOTTOM_MID, this->_statusbar);
-	this->_workarea->addStyle( *this );
+	this->_workarea->Align( LV_ALIGN_OUT_BOTTOM_MID, this->_statusbar);
 
-		
+		/***
+		 * Tileview
+		 ***/
+
+	this->_tileview = new TileView( mainStyle, this->_workarea );
+	this->_tileview->setEdgeFlash( true );
+
+		/***
+		 * Define tiles
+		 ***/
+
+		 // main tile placed centered
+	this->_tile_datetime = new TlDateTime( this->_tileview, this->_tileview );
+	this->_tile_datetime->setTilePos( {1, 1} );	// place it on the right
+	this->_tileview->AddTile( this->_tile_datetime );	// Add this tile
+
+		// status one, placed on the left
+	this->_tile_status = new TlStatus( this->_tileview, this->_tileview );
+	this->_tile_status->setTilePos( {0, 1} );
+	this->_tileview->AddTile( this->_tile_status );
+
+
+	this->updateMovements();	// Allow movement
+
 		/* The GUI is initialised,
 		 * ready to launch automation
 		 */
@@ -58,15 +103,15 @@ Gui::Gui( void ){
 }
 
 void Gui::updateStepCounter( void ){
-//	this->_statusbar->updateStepCounter();
+	this->_statusbar->updateStepCounter();
 }
 
 void Gui::updateBatteryIcon( lv_icon_battery_t index ){
-//	this->_statusbar->updateBatteryIcon( index);
+	this->_statusbar->updateBatteryIcon( index );
 }
 
 void Gui::updateBatteryLevel( void ){
-//	this->_statusbar->updateBatteryLevel();
+	this->_statusbar->updateBatteryLevel();
 }
 
 void Gui::updateNetwork( void ){
@@ -74,20 +119,20 @@ void Gui::updateNetwork( void ){
 }
 
 void Gui::initAutomation( void ){
-//	this->_statusbar->initAutomation();
-//	this->_tile_datetime->initAutomation();
-//	this->_tile_status->initAutomation();
+	this->_statusbar->initAutomation();
+	this->_tile_datetime->initAutomation();
+	this->_tile_status->initAutomation();
 }
 
 #define TABSIZE(t) ( sizeof(t) / sizeof(t[1]) )
 
 void Gui::updateMovements( void ){
-/*
 	int sz = 0;
 	Network::net_capacities_t caps = network.getCapacities();	// What is currently active
 
 		// define tiles valid positions
-	const lv_point_t basic_pos[] = { {0,1}, {1,1}, {1,2} };	// basic interface
+//	const lv_point_t basic_pos[] = { {0,1}, {1,1}, {1,2} };	// basic interface
+	const lv_point_t basic_pos[] = { {0,1}, {1,1} };	// basic interface
 	const lv_point_t net_add_pos[] = { {1,0} };		// Network addendum
 	const lv_point_t mqtt_add_pos[] = { {0,0} };	// MQTT addadum
 
@@ -100,6 +145,7 @@ void Gui::updateMovements( void ){
 	for(int i=0; i<TABSIZE(basic_pos); i++)
 		valid_pos[sz++] = basic_pos[i];
 
+#if 0
 	if( caps & _BV(Network::NET_CAP_WIFI) ){
 		_tile_network->clearObsoletedValues();	// check if value are still accurate
 		for(int i=0; i<TABSIZE(net_add_pos); i++)
@@ -110,6 +156,7 @@ void Gui::updateMovements( void ){
 		for(int i=0; i<TABSIZE(mqtt_add_pos); i++)
 			valid_pos[sz++] = mqtt_add_pos[i];
 	}
+#endif
 
 		// get the actual position
 	lv_coord_t x,y;
@@ -131,11 +178,10 @@ void Gui::updateMovements( void ){
 		// otherwise, LVGL is lost and setActiveTile() is not doing the
 		// expected result
 	this->_tileview->setValidPositions( valid_pos, sz);	// Finally apply the new one
-*/
 }
 
 void Gui::backToHome( lv_anim_enable_t anim ){
-//	this->_tileview->setActiveTile( 1,1, anim );
+	this->_tileview->setActiveTile( 1,1, anim );
 }
 
 void Gui::subscribe( void ){
