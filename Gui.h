@@ -117,6 +117,7 @@ extern uint32_t inactive_wifi_counter;
 extern TTGOClass *ttgo;
 extern Gui *gui;
 extern Style *mainStyle;
+extern Style *gaugeStyle;
 
 extern bool mvtWakeup;
 extern uint8_t bl_lev;

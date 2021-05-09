@@ -16,7 +16,9 @@ LV_FONT_DECLARE( Ubuntu_16px );
 	 *****/
 	
 Gui *gui;
+
 Style *mainStyle;
+Style *gaugeStyle;
 
 	/**** 
 	 * Build the GUI
@@ -34,6 +36,16 @@ Gui::Gui( void ){
 	mainStyle->setBorderWidth( 0 );
 	mainStyle->setTextColor( LV_COLOR_WHITE );
 	mainStyle->seTexttFont( &Ubuntu_16px );
+
+		/***
+		 * Build Gauge style
+		 ***/
+	gaugeStyle = new Style();
+	gaugeStyle->copyStyle( mainStyle );
+	gaugeStyle->setBgColor( LV_COLOR_AQUA );
+	gaugeStyle->setBgOpacity( LV_OPA_100 );
+	gaugeStyle->setBorderWidth( 1 );
+	gaugeStyle->setRadius( 5 );
 
 		/***
 		 * Background images 

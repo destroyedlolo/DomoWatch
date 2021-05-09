@@ -15,51 +15,30 @@ TlStatus::TlStatus( TileView *parent, TileView *cloned ) :
 {
 
 	this->_battery = new Label( mainStyle, this );
-	this->_battery->setFont( &Ubuntu_16px );
 	this->_battery->setLongTextMode( LV_LABEL_LONG_BREAK );	// Has to be done BEFORE setWidth()
 	this->_battery->setWidth( parent->getWidth() );	// otherwise, it is ignored
 	this->_battery->Align( LV_ALIGN_IN_TOP_LEFT, (const lv_obj_t *)NULL, 0,5 );
 	this->updAXP( true );	// Initial update otherwise alignment will be wrong
 
-#if 0
-	this->_ram = new Label( this );
-	this->_ram->setFont( &Ubuntu_16px );
+	this->_ram = new Label( mainStyle, this );
 	this->_ram->setLongTextMode( LV_LABEL_LONG_SROLL_CIRC );
 	this->_ram->setWidth( parent->getWidth()/2 - 5 );
 	this->_ram->Align( LV_ALIGN_OUT_BOTTOM_LEFT, this->_battery, 0,10 );
 
-	this->_ramg = new BarGauge( this );
-	lv_style_set_radius( this->_ramg->getStyle(), LV_OBJ_PART_MAIN, 8 );	// set custom style
-	lv_style_set_bg_color( this->_ramg->getStyle(), LV_OBJ_PART_MAIN, LV_COLOR_AQUA );
-	lv_style_set_bg_opa( this->_ramg->getStyle(), LV_OBJ_PART_MAIN, LV_OPA_100 );
-/*
-	lv_style_set_bg_color( this->_ramg->getStyle(), LV_BAR_PART_INDIC, LV_COLOR_BLUE);
-	lv_style_set_text_color( this->_ramg->getStyle(), LV_BAR_PART_INDIC, LV_COLOR_BLACK );
-	lv_style_set_bg_opa( this->_ramg->getStyle(), LV_BAR_PART_INDIC, LV_OPA_100 );
-*/
-	lv_style_set_border_width( this->_ramg->getStyle(), LV_OBJ_PART_MAIN, 1 );
-	lv_style_set_text_color( this->_ramg->getStyle(), LV_OBJ_PART_MAIN, LV_COLOR_WHITE );
-	this->_ramg->applyStyle();
+	this->_ramg = new BarGauge( gaugeStyle, this );
 	this->_ramg->setSize( parent->getWidth()/2 -10, 16 );
 	this->_ramg->setPosXY( parent->getWidth()/2 +5, this->_ram->getY() );
-//	this->_ramg->Align( LV_ALIGN_OUT_RIGHT_TOP, this->_ram );
 	this->updRam( true );
 
-	this->_PSram = new Label( this );
-	this->_PSram->setFont( &Ubuntu_16px );
+	this->_PSram = new Label( mainStyle, this );
 	this->_PSram->setLongTextMode( LV_LABEL_LONG_SROLL_CIRC );
 	this->_PSram->setWidth( parent->getWidth()/2 - 5 );
 	this->_PSram->Align( LV_ALIGN_OUT_BOTTOM_LEFT, this->_ram );
 
-	this->_PSramg = new BarGauge( this );
-	this->_PSramg->copyStyle( this->_ramg->getStyle() );	// Apply the same style
-	this->_PSramg->applyStyle();
+	this->_PSramg = new BarGauge( gaugeStyle, this );
 	this->_PSramg->setSize( parent->getWidth()/2 -10, 16 );
 	this->_PSramg->setPosXY( parent->getWidth()/2 +5, this->_PSram->getY() );
-//	this->_PSramg->Align( LV_ALIGN_OUT_RIGHT_TOP, this->_PSram );
-
 	this->updPSRam( true );
-#endif
 
 		/* Display version */
 	this->_version = new Label( mainStyle, this );
@@ -168,8 +147,8 @@ void TlStatus::updPSRam( bool init ){
 
 void TlStatus::updatefields( void ){
 	this->updAXP();
-//	this->updRam();
-//	this->updPSRam();
+	this->updRam();
+	this->updPSRam();
 }
 
 static void cbUpd( lv_task_t *tsk ){
