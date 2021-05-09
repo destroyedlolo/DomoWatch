@@ -32,7 +32,7 @@ StatusBar::StatusBar( lv_obj_t *parent, const lv_obj_t *cloned ) :
 		 * Customize style of the bar
 		 ***/
 
-	this->setBgOpacity( LV_OPA_20 );
+	this->setBgOpacity( LV_OPA_80 );
 	this->setSize( LV_HOR_RES, BARHEIGHT );
 
 		/***
@@ -70,15 +70,13 @@ StatusBar::StatusBar( lv_obj_t *parent, const lv_obj_t *cloned ) :
 	this->batPercent->Align( LV_ALIGN_IN_RIGHT_MID );
 	this->batPercent->AutoRealign();
 
-	this->batIcon = new Image( mainStyle, this );		// corresponding icon
-	this->batIcon->setIntensity();
+	this->batIcon = new Image( this );		// corresponding icon
 	this->batIcon->Set( LV_SYMBOL_BATTERY_FULL );
 	this->batIcon->Align( LV_ALIGN_OUT_LEFT_MID,  this->batPercent->getMyself(), -5);
-	this->batPercent->AutoRealign();
 
 	Image *tst = new Image( this );
-	tst->Align( LV_ALIGN_OUT_LEFT_MID,  this->batIcon->getMyself(), -5);
-	tst->Set( LV_SYMBOL_BATTERY_FULL );
+	tst->Align( LV_ALIGN_OUT_LEFT_MID,  this->batIcon->getMyself());
+	tst->Set( &foot_16px );
 
 this->batIcon->dumpObj();
 tst->dumpObj();

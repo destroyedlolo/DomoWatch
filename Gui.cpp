@@ -19,6 +19,7 @@ Gui *gui;
 
 Style *mainStyle;
 Style *gaugeStyle;
+Style *sliderStyle;
 
 	/**** 
 	 * Build the GUI
@@ -46,6 +47,16 @@ Gui::Gui( void ){
 	gaugeStyle->setBgOpacity( LV_OPA_100 );
 	gaugeStyle->setBorderWidth( 1 );
 	gaugeStyle->setRadius( 5 );
+
+		/***
+		 * Build Gauge style
+		 ***/
+	sliderStyle = new Style();
+	sliderStyle->copyStyle( mainStyle );
+	sliderStyle->setBgColor( LV_COLOR_AQUA );
+	sliderStyle->setBgOpacity( LV_OPA_100 );
+	sliderStyle->setBorderWidth( 1 );
+	sliderStyle->setRadius( 5 );
 
 		/***
 		 * Background images 
@@ -93,8 +104,15 @@ Gui::Gui( void ){
 	this->_tile_status->setTilePos( {0, 1} );
 	this->_tileview->AddTile( this->_tile_status );
 
+		// settings, bottom
+	this->_tile_screen = new TlScreen( this->_tileview, this->_tileview );
+	this->_tile_screen->setTilePos( {1, 2} );
+	this->_tileview->AddTile( this->_tile_screen );
 
 	this->updateMovements();	// Allow movement
+
+		// date and time is the default tile
+	this->_tileview->setActiveTile( 1,1, LV_ANIM_OFF );
 
 		/* The GUI is initialised,
 		 * ready to launch automation
@@ -131,8 +149,7 @@ void Gui::updateMovements( void ){
 	Network::net_capacities_t caps = network.getCapacities();	// What is currently active
 
 		// define tiles valid positions
-//	const lv_point_t basic_pos[] = { {0,1}, {1,1}, {1,2} };	// basic interface
-	const lv_point_t basic_pos[] = { {0,1}, {1,1} };	// basic interface
+	const lv_point_t basic_pos[] = { {0,1}, {1,1}, {1,2} };	// basic interface
 	const lv_point_t net_add_pos[] = { {1,0} };		// Network addendum
 	const lv_point_t mqtt_add_pos[] = { {0,0} };	// MQTT addadum
 
