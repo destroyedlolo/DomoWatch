@@ -43,6 +43,24 @@ TlDateTime::TlDateTime( TileView *parent, TileView *cloned ) :
 	this->datelabel->Align( LV_ALIGN_IN_BOTTOM_MID );
 	this->datelabel->AutoRealign();
 	this->datelabel->setClickable( false );	// Pass click to the parent
+
+#if 0
+LV_IMG_DECLARE(foot_16px);
+lv_obj_t 	*_obj = lv_img_create( lv_scr_act(), NULL );
+lv_obj_align( _obj, NULL, LV_ALIGN_IN_BOTTOM_MID, 0,0 );
+lv_img_set_src( _obj, LV_SYMBOL_DUMMY "Test" );
+Serial.printf(" Obj : %d,%d %dx%d\n", 
+		lv_obj_get_x(_obj), lv_obj_get_y(_obj),
+		lv_obj_get_width(_obj), lv_obj_get_height(_obj)
+);
+
+#if 0
+	Image *tst = new Image( lv_scr_act() );
+	tst->Align( LV_ALIGN_IN_BOTTOM_MID);
+	tst->Set( &foot_16px );
+tst->dumpObj("tst DT");
+#endif
+#endif
 }
 
 void TlDateTime::updateTime( void ){
