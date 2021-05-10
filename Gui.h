@@ -101,12 +101,11 @@ public:
 		 * Shutters
 		 */
 	void updStair( void ){
-//		this->_tile_shutter->updStair();
+		this->_tile_shutter->updStair();
 	}
 
 	const char *whichShutterTopic( void ){
-//		return this->_tile_shutter->whichShutterTopic();
-return "bla";
+		return this->_tile_shutter->whichShutterTopic();
 	}
 };
 

@@ -73,6 +73,8 @@ static void downClicked( lv_obj_t *, lv_event_t event ){
 TlShutter::TlShutter( TileView *parent, TileView *cloned ) :
 	Container( parent, cloned )
 {
+this->dumpObj( "shut" );
+
 		/* Stair selector */
 	this->_stair = new DropDown( stairsStyle, this );
 	this->_stair->setChoices( "Rdc\nSalon\n1er", true );
@@ -93,6 +95,8 @@ TlShutter::TlShutter( TileView *parent, TileView *cloned ) :
 
 	this->upIcon->attacheEventeHandler( upClicked );
 
+this->upIcon->dumpObj( "up" );
+
 	this->myIcon = new Image( this );
 	this->myIcon->Align( LV_ALIGN_IN_RIGHT_MID );
 	this->myIcon->Set( &my_64px );
@@ -105,5 +109,6 @@ TlShutter::TlShutter( TileView *parent, TileView *cloned ) :
 	this->downIcon->Set( &down_64px );
 	this->downIcon->setClickable( true );
 
+this->downIcon->dumpObj( "down" );
 	this->downIcon->attacheEventeHandler( downClicked );
 }
