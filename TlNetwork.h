@@ -17,7 +17,6 @@ class TlNetwork : public Container {
 	Image		*syncIcon;
 
 	/* MQTT */
-	Button		*MQTTButton;
 	Image		*MQTTIcon;
 
 	/* Temperatures */

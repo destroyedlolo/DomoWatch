@@ -49,7 +49,7 @@ StatusBar::StatusBar( lv_obj_t *parent, const lv_obj_t *cloned ) :
 		 * Customize style of the bar
 		 ***/
 
-	this->setBgOpacity( LV_OPA_80 );
+	this->setBgOpacity( LV_OPA_40 );
 	this->setSize( LV_HOR_RES, BARHEIGHT );
 
 		/***

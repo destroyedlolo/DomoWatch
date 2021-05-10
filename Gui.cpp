@@ -20,6 +20,7 @@ Gui *gui;
 Style *mainStyle;
 Style *gaugeStyle;
 Style *sliderStyle;
+Style *stairsStyle;
 
 	/**** 
 	 * Build the GUI
@@ -57,6 +58,15 @@ Gui::Gui( void ){
 	sliderStyle->setBgOpacity( LV_OPA_100 );
 	sliderStyle->setBorderWidth( 1 );
 	sliderStyle->setRadius( 5 );
+
+		/***
+		 * Stairs drop down style
+		 ***/
+	stairsStyle = new Style();
+	sliderStyle->copyStyle( mainStyle );
+	sliderStyle->setRadius( 5 );
+	sliderStyle->setBgOpacity( LV_OPA_70 );
+	sliderStyle->setBorderWidth( 1 );
 
 		/***
 		 * Background images 
@@ -113,6 +123,11 @@ Gui::Gui( void ){
 	this->_tile_network = new TlNetwork( this->_tileview, this->_tileview );
 	this->_tile_network->setTilePos( {1, 0} );
 	this->_tileview->AddTile( this->_tile_network );
+
+			// Shutters, top-left
+	this->_tile_shutter = new TlShutter( this->_tileview, this->_tileview );
+	this->_tile_shutter->setTilePos( {0, 0} );
+	this->_tileview->AddTile( this->_tile_shutter );
 
 	this->updateMovements();	// Allow movement
 

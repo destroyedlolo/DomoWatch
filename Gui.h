@@ -18,6 +18,7 @@
 #include "TlStatus.h"
 #include "TlScreen.h"
 #include "TlNetwork.h"
+#include "TlShutter.h"
 
 class StatusBar;
 
@@ -32,6 +33,7 @@ class Gui {
 	TlStatus	*_tile_status;
 	TlScreen	*_tile_screen;
 	TlNetwork	*_tile_network;
+	TlShutter	*_tile_shutter;
 
 public:
 
@@ -123,6 +125,7 @@ extern Gui *gui;
 extern Style *mainStyle;
 extern Style *gaugeStyle;
 extern Style *sliderStyle;
+extern Style *stairsStyle;
 
 extern bool mvtWakeup;
 extern uint8_t bl_lev;
