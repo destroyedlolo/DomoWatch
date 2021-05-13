@@ -67,7 +67,7 @@ StatusBar::StatusBar( lv_obj_t *parent, const lv_obj_t *cloned ) :
 	this->stepIcon->Set( &foot_16px );
 	this->stepIcon->setClickable( false );	// Pass click to the parent
 
-	this->stepCounter = new Label( mainStyle, this->stepButton );
+	this->stepCounter = new Label( this->stepButton );
 	this->stepCounter->setText( "??????" );
 	this->stepCounter->setClickable( false );	// Pass click to the parent
 
@@ -81,7 +81,7 @@ StatusBar::StatusBar( lv_obj_t *parent, const lv_obj_t *cloned ) :
 		 * No need for a button around as no action is possible
 		 * so using "classical" alignment
 		 ***/
-	this->batPercent = new Label( mainStyle, this );	// Battery value
+	this->batPercent = new Label( this );	// Battery value
 	this->batPercent->setText( "100%" );
 	this->batPercent->Align( LV_ALIGN_IN_RIGHT_MID );
 	this->batPercent->AutoRealign();
