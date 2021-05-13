@@ -88,9 +88,9 @@ StatusBar::StatusBar( lv_obj_t *parent, const lv_obj_t *cloned ) :
 	this->batPercent->AutoRealign();
 
 	this->batIcon = new Image( this );		// corresponding icon
+	this->batIcon->seTexttFont( &lv_font_montserrat_16 );
 	this->batIcon->Set( LV_SYMBOL_BATTERY_FULL );
 	this->batIcon->Align( LV_ALIGN_OUT_LEFT_MID,  this->batPercent->getMyself(), -5);
-this->batIcon->dumpObj();
 
 		/***
 		 * Wifi
