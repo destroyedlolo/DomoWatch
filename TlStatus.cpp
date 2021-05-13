@@ -14,13 +14,13 @@ TlStatus::TlStatus( TileView *parent, TileView *cloned ) :
 	Container( parent, cloned )
 {
 
-	this->_battery = new Label( mainStyle, this );
+	this->_battery = new Label( this );
 	this->_battery->setLongTextMode( LV_LABEL_LONG_BREAK );	// Has to be done BEFORE setWidth()
 	this->_battery->setWidth( parent->getWidth() );	// otherwise, it is ignored
 	this->_battery->Align( LV_ALIGN_IN_TOP_LEFT, (const lv_obj_t *)NULL, 0,5 );
 	this->updAXP( true );	// Initial update otherwise alignment will be wrong
 
-	this->_ram = new Label( mainStyle, this );
+	this->_ram = new Label( this );
 	this->_ram->setLongTextMode( LV_LABEL_LONG_SROLL_CIRC );
 	this->_ram->setWidth( parent->getWidth()/2 - 5 );
 	this->_ram->Align( LV_ALIGN_OUT_BOTTOM_LEFT, this->_battery, 0,10 );
@@ -30,7 +30,7 @@ TlStatus::TlStatus( TileView *parent, TileView *cloned ) :
 	this->_ramg->setPosXY( parent->getWidth()/2 +5, this->_ram->getY() );
 	this->updRam( true );
 
-	this->_PSram = new Label( mainStyle, this );
+	this->_PSram = new Label( this );
 	this->_PSram->setLongTextMode( LV_LABEL_LONG_SROLL_CIRC );
 	this->_PSram->setWidth( parent->getWidth()/2 - 5 );
 	this->_PSram->Align( LV_ALIGN_OUT_BOTTOM_LEFT, this->_ram );
@@ -41,7 +41,7 @@ TlStatus::TlStatus( TileView *parent, TileView *cloned ) :
 	this->updPSRam( true );
 
 		/* Display version */
-	this->_version = new Label( mainStyle, this );
+	this->_version = new Label( this );
 	this->_version->seTexttFont( &Ubuntu_16px );
 	this->_version->setText( "DomoWatch " VERSION_H );
 	this->_version->Align( LV_ALIGN_IN_BOTTOM_MID );
@@ -58,7 +58,7 @@ TlStatus::TlStatus( TileView *parent, TileView *cloned ) :
 	localtime_r( &now, &info );
 	strftime( buf, sizeof(buf), "Boot at %H:%M on %d %b %Y", &info );
 
-	this->_boottime = new Label( mainStyle, this );
+	this->_boottime = new Label( this );
 	this->_boottime->seTexttFont( &Ubuntu_16px );
 	this->_boottime->setText( buf );
 	this->_boottime->Align( LV_ALIGN_OUT_TOP_MID, this->_version );

@@ -63,10 +63,10 @@ Gui::Gui( void ){
 		 * Stairs drop down style
 		 ***/
 	stairsStyle = new Style();
-	sliderStyle->copyStyle( mainStyle );
-	sliderStyle->setRadius( 5 );
-	sliderStyle->setBgOpacity( LV_OPA_70 );
-	sliderStyle->setBorderWidth( 1 );
+	stairsStyle->copyStyle( mainStyle );
+	stairsStyle->setRadius( 5 );
+	stairsStyle->setBgOpacity( LV_OPA_70 );
+	stairsStyle->setBorderWidth( 1 );
 
 		/***
 		 * Background images 

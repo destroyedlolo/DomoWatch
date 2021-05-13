@@ -29,7 +29,7 @@ TlDateTime::TlDateTime( TileView *parent, TileView *cloned ) :
 	this->cont->setClickable( false );	// Pass click to the parent
 
 		/* Display time */
-	this->timelabel = new Label( mainStyle, this->cont );
+	this->timelabel = new Label( this->cont );
 	this->timelabel->seTexttFont( &Ubuntu_48px );
 	this->timelabel->setText( "??:??:??" );
 	this->timelabel->Align( LV_ALIGN_IN_TOP_MID );
@@ -37,7 +37,7 @@ TlDateTime::TlDateTime( TileView *parent, TileView *cloned ) :
 	this->timelabel->setClickable( false );	// Pass click to the parent
 
 		/* and date */
-	this->datelabel = new Label( mainStyle, this->cont );
+	this->datelabel = new Label( this->cont );
 	this->datelabel->seTexttFont( &Ubuntu_16px );
 	this->datelabel->setText( "??.???? ????" );
 	this->datelabel->Align( LV_ALIGN_IN_BOTTOM_MID );
