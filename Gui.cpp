@@ -20,6 +20,7 @@ Gui *gui;
 Style *mainStyle;
 Style *gaugeStyle;
 Style *sliderStyle;
+Style *stairsStyle;
 
 	/**** 
 	 * Build the GUI
@@ -57,6 +58,15 @@ Gui::Gui( void ){
 	sliderStyle->setBgOpacity( LV_OPA_100 );
 	sliderStyle->setBorderWidth( 1 );
 	sliderStyle->setRadius( 5 );
+
+		/***
+		 * Stairs drop down style
+		 ***/
+	stairsStyle = new Style();
+	sliderStyle->copyStyle( mainStyle );
+	sliderStyle->setRadius( 5 );
+	sliderStyle->setBgOpacity( LV_OPA_70 );
+	sliderStyle->setBorderWidth( 1 );
 
 		/***
 		 * Background images 
@@ -109,6 +119,16 @@ Gui::Gui( void ){
 	this->_tile_screen->setTilePos( {1, 2} );
 	this->_tileview->AddTile( this->_tile_screen );
 
+		// Network, on the top
+	this->_tile_network = new TlNetwork( this->_tileview, this->_tileview );
+	this->_tile_network->setTilePos( {1, 0} );
+	this->_tileview->AddTile( this->_tile_network );
+
+			// Shutters, top-left
+	this->_tile_shutter = new TlShutter( this->_tileview, this->_tileview );
+	this->_tile_shutter->setTilePos( {0, 0} );
+	this->_tileview->AddTile( this->_tile_shutter );
+
 	this->updateMovements();	// Allow movement
 
 		// date and time is the default tile
@@ -133,7 +153,7 @@ void Gui::updateBatteryLevel( void ){
 }
 
 void Gui::updateNetwork( void ){
-//	this->_statusbar->updateNetwork();
+	this->_statusbar->updateNetwork();
 }
 
 void Gui::initAutomation( void ){
@@ -162,7 +182,6 @@ void Gui::updateMovements( void ){
 	for(int i=0; i<TABSIZE(basic_pos); i++)
 		valid_pos[sz++] = basic_pos[i];
 
-#if 0
 	if( caps & _BV(Network::NET_CAP_WIFI) ){
 		_tile_network->clearObsoletedValues();	// check if value are still accurate
 		for(int i=0; i<TABSIZE(net_add_pos); i++)
@@ -173,7 +192,6 @@ void Gui::updateMovements( void ){
 		for(int i=0; i<TABSIZE(mqtt_add_pos); i++)
 			valid_pos[sz++] = mqtt_add_pos[i];
 	}
-#endif
 
 		// get the actual position
 	lv_coord_t x,y;
@@ -202,9 +220,9 @@ void Gui::backToHome( lv_anim_enable_t anim ){
 }
 
 void Gui::subscribe( void ){
-//	this->_tile_network->subscribe();
+	this->_tile_network->subscribe();
 }
 
 void Gui::msgreceived( const char *topic, const char *payload ){
-//	/* bool ret = */ this->_tile_network->msgreceived( topic, payload );
+	/* bool ret = */ this->_tile_network->msgreceived( topic, payload );
 }

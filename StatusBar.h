@@ -21,6 +21,9 @@ class StatusBar : public Container {
 	Image		*stepIcon;
 	Label 		*stepCounter;
 
+	/* WiFi */
+	Image		*wifiIcon;
+
 	/* Battery */
 	Label 		*batPercent;
 	Image		*batIcon;
@@ -47,12 +50,14 @@ public:
 	 */
 	void updateBatteryLevel( void );
 
-
 	/* Update battery icon
 	 * -> lv_icon_battery_t index : see Gui.h
 	 */
 	void updateBatteryIcon( Gui::lv_icon_battery_t index );
 
+	/* Update wifi icon as per net_status
+	 */
+	void updateNetwork( void );
 };
 
 #endif

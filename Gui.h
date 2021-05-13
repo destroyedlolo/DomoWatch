@@ -17,6 +17,8 @@
 #include "TlDateTime.h"
 #include "TlStatus.h"
 #include "TlScreen.h"
+#include "TlNetwork.h"
+#include "TlShutter.h"
 
 class StatusBar;
 
@@ -30,6 +32,8 @@ class Gui {
 	TlDateTime	*_tile_datetime;
 	TlStatus	*_tile_status;
 	TlScreen	*_tile_screen;
+	TlNetwork	*_tile_network;
+	TlShutter	*_tile_shutter;
 
 public:
 
@@ -97,12 +101,11 @@ public:
 		 * Shutters
 		 */
 	void updStair( void ){
-//		this->_tile_shutter->updStair();
+		this->_tile_shutter->updStair();
 	}
 
 	const char *whichShutterTopic( void ){
-//		return this->_tile_shutter->whichShutterTopic();
-return "bla";
+		return this->_tile_shutter->whichShutterTopic();
 	}
 };
 
@@ -121,6 +124,7 @@ extern Gui *gui;
 extern Style *mainStyle;
 extern Style *gaugeStyle;
 extern Style *sliderStyle;
+extern Style *stairsStyle;
 
 extern bool mvtWakeup;
 extern uint8_t bl_lev;
