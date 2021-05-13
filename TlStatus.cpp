@@ -42,7 +42,7 @@ TlStatus::TlStatus( TileView *parent, TileView *cloned ) :
 
 		/* Display version */
 	this->_version = new Label( mainStyle, this );
-	this->_version->setFont( &Ubuntu_16px );
+	this->_version->seTexttFont( &Ubuntu_16px );
 	this->_version->setText( "DomoWatch " VERSION_H );
 	this->_version->Align( LV_ALIGN_IN_BOTTOM_MID );
 	this->_version->AutoRealign();
@@ -59,7 +59,7 @@ TlStatus::TlStatus( TileView *parent, TileView *cloned ) :
 	strftime( buf, sizeof(buf), "Boot at %H:%M on %d %b %Y", &info );
 
 	this->_boottime = new Label( mainStyle, this );
-	this->_boottime->setFont( &Ubuntu_16px );
+	this->_boottime->seTexttFont( &Ubuntu_16px );
 	this->_boottime->setText( buf );
 	this->_boottime->Align( LV_ALIGN_OUT_TOP_MID, this->_version );
 	this->_boottime->AutoRealign();
