@@ -149,7 +149,6 @@ void StatusBar::updateBatteryIcon( Gui::lv_icon_battery_t index ){
 }
 
 void StatusBar::updateNetwork( void ){
-Serial.printf(" *** upd net : %d\n", network.getStatus() );
 	switch( network.getStatus() ){
 	case Network::net_status_t::WIFI_CONNECTING :
 		this->wifiIcon->Recolor(LV_COLOR_ORANGE);

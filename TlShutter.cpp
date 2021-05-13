@@ -73,7 +73,7 @@ static void downClicked( lv_obj_t *, lv_event_t event ){
 TlShutter::TlShutter( TileView *parent, TileView *cloned ) :
 	Container( parent, cloned )
 {
-this->dumpObj( "shut" );
+this->dumpObj( "shut1" );
 
 		/* Stair selector */
 	this->_stair = new DropDown( stairsStyle, this );
@@ -89,26 +89,28 @@ this->dumpObj( "shut" );
 
 		/* Movements */
 	this->upIcon = new Image( this );
-	this->upIcon->Align( LV_ALIGN_IN_TOP_RIGHT );
 	this->upIcon->Set( &up_64px );
+	this->upIcon->Align( LV_ALIGN_IN_TOP_RIGHT );
 	this->upIcon->setClickable( true );
+
 
 	this->upIcon->attacheEventeHandler( upClicked );
 
 this->upIcon->dumpObj( "up" );
 
 	this->myIcon = new Image( this );
-	this->myIcon->Align( LV_ALIGN_IN_RIGHT_MID );
 	this->myIcon->Set( &my_64px );
+	this->myIcon->Align( LV_ALIGN_IN_RIGHT_MID );
 	this->myIcon->setClickable( true );
 
 	this->myIcon->attacheEventeHandler( myClicked );
 
 	this->downIcon = new Image( this );
-	this->downIcon->Align( LV_ALIGN_IN_BOTTOM_RIGHT );
 	this->downIcon->Set( &down_64px );
+	this->downIcon->Align( LV_ALIGN_IN_BOTTOM_RIGHT );
 	this->downIcon->setClickable( true );
 
 this->downIcon->dumpObj( "down" );
 	this->downIcon->attacheEventeHandler( downClicked );
+this->dumpObj( "shut2" );
 }

@@ -108,8 +108,8 @@ TlNetwork::TlNetwork( TileView *parent, TileView *cloned ) :
 		 */
 
 	this->MQTTIcon = new Image( this );
-	this->MQTTIcon->Align( LV_ALIGN_OUT_RIGHT_MID, this->syncIcon, 20 );	
 	this->MQTTIcon->Set( &MQTT_64px );
+	this->MQTTIcon->Align( LV_ALIGN_OUT_RIGHT_MID, this->syncIcon, 20 );	
 	this->MQTTIcon->setClickable( true );	// Pass click to the parent
 	this->MQTTIcon->attacheEventeHandler( startstopMQTT );
 
