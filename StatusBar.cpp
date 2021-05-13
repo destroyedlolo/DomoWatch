@@ -38,7 +38,6 @@ static void wifiClicked( lv_obj_t *, lv_event_t event ){
 	 *****/
 
 LV_IMG_DECLARE(foot_16px);
-LV_IMG_DECLARE(wifi_16px);
 
 StatusBar::StatusBar( lv_obj_t *parent, const lv_obj_t *cloned ) : 
 	Container( parent, cloned )
@@ -98,7 +97,9 @@ StatusBar::StatusBar( lv_obj_t *parent, const lv_obj_t *cloned ) :
 		 * Set it clickable to enable/disable WiFi networking
 		 ****/
 	this->wifiIcon = new Image( this );
-	this->wifiIcon->Set( &wifi_16px );
+	this->wifiIcon->seTexttFont( &lv_font_montserrat_16 );
+	this->wifiIcon->Set( LV_SYMBOL_WIFI );
+	this->wifiIcon->Recolor( LV_COLOR_WHITE );	// Apply the color
 	this->wifiIcon->Align( LV_ALIGN_OUT_LEFT_MID, this->batIcon, -15 );
 	this->wifiIcon->setIntensity();
 	this->wifiIcon->setClickable( true );
@@ -145,8 +146,6 @@ void StatusBar::updateBatteryIcon( Gui::lv_icon_battery_t index ){
 
 	static const char *icons[] = {LV_SYMBOL_BATTERY_EMPTY, LV_SYMBOL_BATTERY_1, LV_SYMBOL_BATTERY_2, LV_SYMBOL_BATTERY_3, LV_SYMBOL_BATTERY_FULL, LV_SYMBOL_CHARGE};
 	this->batIcon->Set( icons[index] );	// And the icon
-
-Serial.printf(" *** batIcon %d\n", index);
 }
 
 void StatusBar::updateNetwork( void ){
