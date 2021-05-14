@@ -117,47 +117,64 @@ TlNetwork::TlNetwork( TileView *parent, TileView *cloned ) :
 		 * Temperatures
 		 */
 
-	this->tempCont = new Container( mainStyle, this->getMyself() );
-	this->tempCont->Align( LV_ALIGN_IN_BOTTOM_LEFT );
-	this->tempCont->setFit( LV_FIT_TIGHT );	// Its size is the one of it's child
-	this->tempCont->AutoRealign();	// otherwise the icon is shifted
-	this->tempCont->setPadding(0);
-	this->tempCont->setClickable( false );	// Pass click to the parent
+	this->congeloCont = new Container( mainStyle, this->getMyself() );
+	this->congeloCont->Align( LV_ALIGN_IN_BOTTOM_LEFT );
+	this->congeloCont->setFit( LV_FIT_TIGHT );	// Its size is the one of it's child
+	this->congeloCont->AutoRealign();	// otherwise the icon is shifted
+	this->congeloCont->setPadding(0);
+	this->congeloCont->setClickable( false );	// Pass click to the parent
 
-	this->salonIcon = new Image( this->tempCont );
-	this->salonIcon->Set( &salon_32px );
-	this->salonIcon->setClickable( false );
-
-	this->salonText = new Label( this->tempCont );	// Battery value
-	this->salonText->setText( "--.---" );
-	this->salonText->Align( LV_ALIGN_OUT_RIGHT_MID, this->salonIcon, 10 );
-	this->salonText->AutoRealign();
-
-	this->jardinIcon = new Image( this->tempCont );
-	this->jardinIcon->Set( &jardin_32px );
-	this->jardinIcon->Align( LV_ALIGN_OUT_TOP_MID, this->salonIcon, 0, -15 );
-	this->jardinIcon->setClickable( false );
-
-	this->jardinText = new Label( this->tempCont );	// Battery value
-	this->jardinText->setText( "--.---" );
-	this->jardinText->Align( LV_ALIGN_OUT_RIGHT_MID, this->jardinIcon, 10 );
-	this->jardinText->AutoRealign();
-
-	this->congeloIcon = new Image( this->tempCont );
+	this->congeloIcon = new Image( this->congeloCont );
 	this->congeloIcon->Set( &congelo_32px );
-	this->congeloIcon->Align( LV_ALIGN_OUT_TOP_MID, this->jardinIcon, 0, -15 );
+	this->congeloIcon->Align( LV_ALIGN_IN_LEFT_MID );
 	this->congeloIcon->setClickable( false );
 
-	this->congeloText = new Label( this->tempCont );	// Battery value
+	this->congeloText = new Label( this->congeloCont );	// Battery value
 	this->congeloText->setText( "--.---" );
 	this->congeloText->Align( LV_ALIGN_OUT_RIGHT_MID, this->congeloIcon, 10 );
 	this->congeloText->AutoRealign();
 
+
+	this->jardinCont = new Container( mainStyle, this->getMyself() );
+	this->jardinCont->Align( LV_ALIGN_OUT_TOP_LEFT, this->congeloCont, 0, -15);
+	this->jardinCont->setFit( LV_FIT_TIGHT );	// Its size is the one of it's child
+	this->jardinCont->AutoRealign();	// otherwise the icon is shifted
+	this->jardinCont->setPadding(0);
+	this->jardinCont->setClickable( false );	// Pass click to the parent
+
+	this->jardinIcon = new Image( this->jardinCont );
+	this->jardinIcon->Set( &jardin_32px );
+	this->jardinIcon->Align( LV_ALIGN_IN_LEFT_MID );
+	this->jardinIcon->setClickable( false );
+
+	this->jardinText = new Label( this->jardinCont );	// Battery value
+	this->jardinText->setText( "--.---" );
+	this->jardinText->Align( LV_ALIGN_OUT_RIGHT_MID, this->jardinIcon, 10 );
+	this->jardinText->AutoRealign();
+
+
+	this->salonCont = new Container( mainStyle, this->getMyself() );
+	this->salonCont->Align( LV_ALIGN_OUT_TOP_LEFT, this->jardinCont, 0, -15);
+	this->salonCont->setFit( LV_FIT_TIGHT );	// Its size is the one of it's child
+	this->salonCont->AutoRealign();	// otherwise the icon is shifted
+	this->salonCont->setPadding(0);
+	this->salonCont->setClickable( false );	// Pass click to the parent
+
+	this->salonIcon = new Image( this->salonCont );
+	this->salonIcon->Set( &salon_32px );
+	this->salonIcon->setClickable( false );
+
+	this->salonText = new Label( this->salonCont );	// Battery value
+	this->salonText->setText( "--.---" );
+	this->salonText->Align( LV_ALIGN_OUT_RIGHT_MID, this->salonIcon, 10 );
+	this->salonText->AutoRealign();
+
 		/*
 		 * Consumption
 		 */
+
 	this->NRJCont = new Container( mainStyle, this->getMyself() );
-	this->NRJCont->Align( LV_ALIGN_OUT_RIGHT_MID, this->tempCont, 30 );
+	this->NRJCont->Align( LV_ALIGN_OUT_RIGHT_BOTTOM, this->congeloCont, 30 );
 	this->NRJCont->setFit( LV_FIT_TIGHT );	// Its size is the one of it's child
 	this->NRJCont->AutoRealign();	// otherwise the icon is shifted
 	this->NRJCont->setPadding(0);
