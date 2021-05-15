@@ -54,6 +54,7 @@ static void startstopMQTT( lv_obj_t *, lv_event_t event ){
 static void congeloPopup( lv_obj_t *, lv_event_t event ){
 	if( event == LV_EVENT_CLICKED && network.MQTTconnected() ){
 		Serial.println("Congelo history popup");
+		gui->openPopup( DWPopup::Kind::SALON );
 	}
 }
 
@@ -124,7 +125,7 @@ TlNetwork::TlNetwork( TileView *parent, TileView *cloned ) :
 	this->syncIcon = new Image( this );
 	this->syncIcon->Align( LV_ALIGN_IN_TOP_LEFT );	// it is itself aligned on the left
 	this->syncIcon->Set( &timezone_64px );
-	this->syncIcon->setClickable( true );	// Pass click to the parent
+	this->syncIcon->setClickable( true );
 	this->syncIcon->attacheEventeHandler( syncTime );
 
 		/*
@@ -134,7 +135,7 @@ TlNetwork::TlNetwork( TileView *parent, TileView *cloned ) :
 	this->MQTTIcon = new Image( this );
 	this->MQTTIcon->Set( &MQTT_64px );
 	this->MQTTIcon->Align( LV_ALIGN_OUT_RIGHT_MID, this->syncIcon, 20 );	
-	this->MQTTIcon->setClickable( true );	// Pass click to the parent
+	this->MQTTIcon->setClickable( true );
 	this->MQTTIcon->attacheEventeHandler( startstopMQTT );
 
 		/*
@@ -146,7 +147,7 @@ TlNetwork::TlNetwork( TileView *parent, TileView *cloned ) :
 	this->congeloCont->setFit( LV_FIT_TIGHT );	// Its size is the one of it's child
 	this->congeloCont->AutoRealign();	// otherwise the icon is shifted
 	this->congeloCont->setPadding(0);
-	this->congeloCont->setClickable( true );	// Pass click to the parent
+	this->congeloCont->setClickable( true );
 	this->congeloCont->attacheEventeHandler( congeloPopup );
 
 	this->congeloIcon = new Image( this->congeloCont );

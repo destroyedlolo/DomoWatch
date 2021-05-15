@@ -21,12 +21,13 @@ Style *mainStyle;
 Style *gaugeStyle;
 Style *sliderStyle;
 Style *stairsStyle;
+Style *popupStyle;
 
 	/**** 
 	 * Build the GUI
 	 *****/
 
-Gui::Gui( void ){
+Gui::Gui( void ) : _popup(NULL){
 
 		/***
 		 * Build main style
@@ -50,7 +51,7 @@ Gui::Gui( void ){
 	gaugeStyle->setRadius( 5 );
 
 		/***
-		 * Build Gauge style
+		 * Build Slider style
 		 ***/
 	sliderStyle = new Style();
 	sliderStyle->copyStyle( mainStyle );
@@ -67,6 +68,14 @@ Gui::Gui( void ){
 	stairsStyle->setRadius( 5 );
 	stairsStyle->setBgOpacity( LV_OPA_70 );
 	stairsStyle->setBorderWidth( 1 );
+
+		/***
+		 * Stairs Popup style
+		 ***/
+	popupStyle = new Style();
+	popupStyle->copyStyle( mainStyle );
+	popupStyle->setBgOpacity( LV_OPA_80 );
+	popupStyle->setBorderWidth( 2 );
 
 		/***
 		 * Background images 
@@ -165,6 +174,10 @@ void Gui::initAutomation( void ){
 #define TABSIZE(t) ( sizeof(t) / sizeof(t[1]) )
 
 void Gui::updateMovements( void ){
+
+		// As the GUI is changing, we may have to close popup
+	this->closePopup();
+
 	int sz = 0;
 	Network::net_capacities_t caps = network.getCapacities();	// What is currently active
 
