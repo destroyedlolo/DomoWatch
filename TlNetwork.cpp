@@ -18,7 +18,6 @@ LV_IMG_DECLARE(congelo_32px);
 	 * callbacks
 	 ***/
 
-
 /* Request time synchronisation.
  *
  * It seems, NTP query is done in a background tasks.
@@ -27,7 +26,7 @@ LV_IMG_DECLARE(congelo_32px);
  * at shutdonw.
  */
 static void syncTime( lv_obj_t *, lv_event_t event ){
-	if(event == LV_EVENT_CLICKED){
+	if( event == LV_EVENT_CLICKED ){
 		Serial.println("Time synchronisation requested");
 
 		configTzTime("CET-1CEST-2,M3.5.0/02:00:00,M10.5.0/03:00:00", "pool.ntp.org");
@@ -36,9 +35,12 @@ static void syncTime( lv_obj_t *, lv_event_t event ){
 	}
 }
 
+/* Connect or disconnect to the broker
+ *
+ * It's also asynchronous
+ */
 static void startstopMQTT( lv_obj_t *, lv_event_t event ){
-	if(event == LV_EVENT_CLICKED){
-
+	if( event == LV_EVENT_CLICKED ){
 		if( network.MQTTconnected() ){
 			Serial.println("MQTT disconnecting");
 			network.MQTTdisconnect();
@@ -49,6 +51,14 @@ static void startstopMQTT( lv_obj_t *, lv_event_t event ){
 	}
 }
 
+static void congeloPopup( lv_obj_t *, lv_event_t event ){
+	if( event == LV_EVENT_CLICKED && network.MQTTconnected() ){
+		Serial.println("Congelo history popup");
+	}
+}
+
+/* Subscribe to MQTT's topics
+ */
 void TlNetwork::subscribe( void ){
 	network.MQTTsubscribe( "TeleInfo/Consommation/values/PAPP" );
 	network.MQTTsubscribe( "TeleInfo/Production/values/PAPP" );
@@ -57,6 +67,11 @@ void TlNetwork::subscribe( void ){
 	network.MQTTsubscribe( "maison/Temperature/Congelateur" );
 }
 
+/* We got a message !
+ * -> const char *topic : which topic
+ * -> const char *payload : message's content
+ *	(only text payload is supported)
+ */
 bool TlNetwork::msgreceived( const char *topic, const char *payload ){
 	this->last = time(NULL);
 	if(!strcmp( topic, "TeleInfo/Consommation/values/PAPP" )){
@@ -79,6 +94,10 @@ bool TlNetwork::msgreceived( const char *topic, const char *payload ){
 	return false;
 }
 
+
+
+/* Check if display is too old and need to be cleared
+ */
 void TlNetwork::clearObsoletedValues( void ){
 	if(last < time(NULL)-500){	// Clear value if older than 5 minutes
 		this->salonText->setText( "--.---" );
@@ -89,6 +108,11 @@ void TlNetwork::clearObsoletedValues( void ){
 	} else
 		Serial.println("Fresh data");
 }
+
+
+	/****
+	 * GUI
+	 ***/
 
 TlNetwork::TlNetwork( TileView *parent, TileView *cloned ) : 
 	Container( parent, cloned ), last(0)
@@ -122,7 +146,8 @@ TlNetwork::TlNetwork( TileView *parent, TileView *cloned ) :
 	this->congeloCont->setFit( LV_FIT_TIGHT );	// Its size is the one of it's child
 	this->congeloCont->AutoRealign();	// otherwise the icon is shifted
 	this->congeloCont->setPadding(0);
-	this->congeloCont->setClickable( false );	// Pass click to the parent
+	this->congeloCont->setClickable( true );	// Pass click to the parent
+	this->congeloCont->attacheEventeHandler( congeloPopup );
 
 	this->congeloIcon = new Image( this->congeloCont );
 	this->congeloIcon->Set( &congelo_32px );
