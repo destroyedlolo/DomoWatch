@@ -18,7 +18,6 @@ DWPopup::DWPopup( lv_obj_t *parent, enum Kind k ) :
 		// Close this popup
 	this->setClickable( true );
 	this->attacheEventeHandler( closePopup );
-Serial.println("DWPopup()");
 
 	switch( this->kind ){
 	case SALON :

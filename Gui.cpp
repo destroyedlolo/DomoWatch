@@ -74,11 +74,12 @@ Gui::Gui( void ) : _popup(NULL){
 		 ***/
 	popupStyle = new Style();
 	popupStyle->copyStyle( mainStyle );
-	mainStyle->setBgColor( LV_COLOR_WHITE );
+	popupStyle->setBgColor( LV_COLOR_BLACK );
 	popupStyle->setBgOpacity( LV_OPA_80 );
 	popupStyle->setBorderWidth( 2 );
 	popupStyle->setCaptionFont( &lv_font_montserrat_22 );
 	popupStyle->setCaptionAlign( LV_ALIGN_IN_TOP_MID );
+	popupStyle->setCaptionColor( LV_COLOR_RED );
 
 		/***
 		 * Background images 
