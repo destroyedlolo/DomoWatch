@@ -34,7 +34,7 @@ Gui::Gui( void ) : _popup(NULL){
 		 ***/
 	mainStyle = new Style();
 	mainStyle->setRadius( 0 );
-	mainStyle->setBgColor( LV_COLOR_GRAY );
+	mainStyle->setBgColor( LV_COLOR_WHITE );
 	mainStyle->setBgOpacity( LV_OPA_0 );
 	mainStyle->setBorderWidth( 0 );
 	mainStyle->setTextColor( LV_COLOR_WHITE );
@@ -61,7 +61,7 @@ Gui::Gui( void ) : _popup(NULL){
 	sliderStyle->setRadius( 5 );
 
 		/***
-		 * Stairs drop down style
+		 * Build drop down style
 		 ***/
 	stairsStyle = new Style();
 	stairsStyle->copyStyle( mainStyle );
@@ -70,12 +70,14 @@ Gui::Gui( void ) : _popup(NULL){
 	stairsStyle->setBorderWidth( 1 );
 
 		/***
-		 * Stairs Popup style
+		 * Build Popup style
 		 ***/
 	popupStyle = new Style();
 	popupStyle->copyStyle( mainStyle );
 	popupStyle->setBgOpacity( LV_OPA_80 );
 	popupStyle->setBorderWidth( 2 );
+	popupStyle->setCaptionFont( &lv_font_montserrat_22 );
+	popupStyle->setCaptionAlign( LV_ALIGN_IN_TOP_MID );
 
 		/***
 		 * Background images 

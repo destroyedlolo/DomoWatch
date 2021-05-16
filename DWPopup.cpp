@@ -14,7 +14,6 @@ DWPopup::DWPopup( lv_obj_t *parent, enum Kind k ) :
 	Container( parent ), kind( k )
 {
 	this->setSize( lv_obj_get_width( parent ), lv_obj_get_height( parent ) );
-	this->addStyle( popupStyle );
 
 		// Close this popup
 	this->setClickable( true );
