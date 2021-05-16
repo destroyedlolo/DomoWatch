@@ -37,3 +37,14 @@ DWPopup::~DWPopup(){
 		break;
 	}
 }
+
+bool DWPopup::msgreceived( const char *topic, const char *payload ){
+		switch( this->kind ){
+	case SALON :
+	case JARDIN :
+		return this->popup.temperature->msgreceived( topic, payload );
+		break;
+	}
+
+	return false;
+}

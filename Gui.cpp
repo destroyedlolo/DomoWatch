@@ -240,5 +240,10 @@ void Gui::subscribe( void ){
 }
 
 void Gui::msgreceived( const char *topic, const char *payload ){
-	/* bool ret = */ this->_tile_network->msgreceived( topic, payload );
+	bool ret = this->_tile_network->msgreceived( topic, payload );
+	if( !ret && this->_popup )
+		ret = this->_popup->msgreceived( topic, payload );
+
+	if( !ret )
+		Serial.printf("%s : ignored\n", topic);
 }

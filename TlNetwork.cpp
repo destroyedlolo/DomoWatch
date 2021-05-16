@@ -51,9 +51,9 @@ static void startstopMQTT( lv_obj_t *, lv_event_t event ){
 	}
 }
 
-static void congeloPopup( lv_obj_t *, lv_event_t event ){
+static void salonPopup( lv_obj_t *, lv_event_t event ){
 	if( event == LV_EVENT_CLICKED && network.MQTTconnected() ){
-		Serial.println("Congelo history popup");
+		Serial.println("Salon history popup");
 		gui->openPopup( DWPopup::Kind::SALON );
 	}
 }
@@ -147,8 +147,7 @@ TlNetwork::TlNetwork( TileView *parent, TileView *cloned ) :
 	this->congeloCont->setFit( LV_FIT_TIGHT );	// Its size is the one of it's child
 	this->congeloCont->AutoRealign();	// otherwise the icon is shifted
 	this->congeloCont->setPadding(0);
-	this->congeloCont->setClickable( true );
-	this->congeloCont->attacheEventeHandler( congeloPopup );
+	this->congeloCont->setClickable( false);
 
 	this->congeloIcon = new Image( this->congeloCont );
 	this->congeloIcon->Set( &congelo_32px );
@@ -184,7 +183,8 @@ TlNetwork::TlNetwork( TileView *parent, TileView *cloned ) :
 	this->salonCont->setFit( LV_FIT_TIGHT );	// Its size is the one of it's child
 	this->salonCont->AutoRealign();	// otherwise the icon is shifted
 	this->salonCont->setPadding(0);
-	this->salonCont->setClickable( false );	// Pass click to the parent
+	this->salonCont->setClickable( true);
+	this->salonCont->attacheEventeHandler( salonPopup );
 
 	this->salonIcon = new Image( this->salonCont );
 	this->salonIcon->Set( &salon_32px );

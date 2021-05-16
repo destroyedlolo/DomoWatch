@@ -12,6 +12,7 @@
 
 class TemperatureChart : public Chart {
 	Chart::Serie *serie;
+	String repTopic;
 
 public:
 	/* Temperature char constructor
@@ -22,6 +23,14 @@ public:
 	TemperatureChart( lv_obj_t *parent, const char *title, const char *topic );
 
 	~TemperatureChart();
+
+	/* MQTT message received
+	 * -> const char *topic
+	 * -> const char *payload
+	 * <- is the message accepted. If not, the message may
+	 * 	be passed to further handlers
+	 */
+	bool msgreceived( const char *topic, const char *payload );
 };
 
 #endif

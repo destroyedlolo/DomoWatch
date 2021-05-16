@@ -33,6 +33,14 @@ public :
 	/* DWPopup destructor
 	 */
 	~DWPopup();
+
+	/* MQTT message received
+	 * -> const char *topic
+	 * -> const char *payload
+	 * <- is the message accepted. If not, the message may
+	 * 	be passed to further handlers
+	 */
+	bool msgreceived( const char *topic, const char *payload );
 };
 
 #endif
