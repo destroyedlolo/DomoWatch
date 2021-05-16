@@ -83,6 +83,7 @@ public:
 	bool MQTTconnected( void );
 
 	uint16_t MQTTsubscribe(const char *topic, uint8_t qos=0);
+	uint16_t MQTTunsubscribe(const char *topic);
 	uint16_t MQTTpublishString(const char *topic, const char *payload, uint8_t qos=0, bool retain=false);
 };
 

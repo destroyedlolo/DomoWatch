@@ -34,7 +34,7 @@ Gui::Gui( void ) : _popup(NULL){
 		 ***/
 	mainStyle = new Style();
 	mainStyle->setRadius( 0 );
-	mainStyle->setBgColor( LV_COLOR_WHITE );
+	mainStyle->setBgColor( LV_COLOR_GRAY );
 	mainStyle->setBgOpacity( LV_OPA_0 );
 	mainStyle->setBorderWidth( 0 );
 	mainStyle->setTextColor( LV_COLOR_WHITE );
@@ -74,6 +74,7 @@ Gui::Gui( void ) : _popup(NULL){
 		 ***/
 	popupStyle = new Style();
 	popupStyle->copyStyle( mainStyle );
+	mainStyle->setBgColor( LV_COLOR_WHITE );
 	popupStyle->setBgOpacity( LV_OPA_80 );
 	popupStyle->setBorderWidth( 2 );
 	popupStyle->setCaptionFont( &lv_font_montserrat_22 );
