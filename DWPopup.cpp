@@ -21,8 +21,10 @@ DWPopup::DWPopup( lv_obj_t *parent, enum Kind k ) :
 
 	switch( this->kind ){
 	case SALON :
-	case JARDIN :
 		this->popup.temperature = new TemperatureChart( this->getMyself(), "Salon", "TSalon" );
+		break;
+	case JARDIN :
+		this->popup.temperature = new TemperatureChart( this->getMyself(), "Exterieur", "TDehors" );
 		break;
 	}
 	

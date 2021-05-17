@@ -6,7 +6,7 @@
 * Notez-Bien :
 * 	- As only integer can be stored, temperature are
 *	 	multiplied by 100
-* 	- Hardcoded for 100 samples
+* 	- Hardcoded for 50 samples
 *************************************************/
 
 #include "Gui.h"
@@ -14,7 +14,7 @@
 #include "Network.h"
 
 TemperatureChart::TemperatureChart( lv_obj_t *parent, const char *title, const char *topic ) :
-	Chart( 100, parent )
+	Chart( 50, parent )
 {
 	this->setSize( lv_obj_get_width( parent ), lv_obj_get_height( parent ) );
 	this->addStyle( popupStyle );
@@ -29,11 +29,12 @@ TemperatureChart::TemperatureChart( lv_obj_t *parent, const char *title, const c
 	network.MQTTsubscribe( this->repTopic.c_str() );
 
 	String subtopic = topic;
-	subtopic += ";100";
+	subtopic += ";50";
 	network.MQTTpublishString( "DemandeHistorique", subtopic.c_str() );
 }
 
 TemperatureChart::~TemperatureChart(){
+	network.MQTTunsubscribe( this->repTopic.c_str() );
 	delete this->serie;
 }
 
@@ -58,7 +59,7 @@ bool TemperatureChart::msgreceived( const char *topic, const char *payload ){
 				max = val;
 		}
 		this->serie->setRange( min*100, max*100 );
-		Serial.printf( "Temperature char : %f -> %f \n", min, max );
+		Serial.printf( "Temperature chart : %f -> %f \n", min, max );
 
 		return true;
 	}

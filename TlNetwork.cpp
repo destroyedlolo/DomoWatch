@@ -58,6 +58,13 @@ static void salonPopup( lv_obj_t *, lv_event_t event ){
 	}
 }
 
+static void dehorsPopup( lv_obj_t *, lv_event_t event ){
+	if( event == LV_EVENT_CLICKED && network.MQTTconnected() ){
+		Serial.println("Dehors history popup");
+		gui->openPopup( DWPopup::Kind::JARDIN );
+	}
+}
+
 /* Subscribe to MQTT's topics
  */
 void TlNetwork::subscribe( void ){
@@ -165,7 +172,8 @@ TlNetwork::TlNetwork( TileView *parent, TileView *cloned ) :
 	this->jardinCont->setFit( LV_FIT_TIGHT );	// Its size is the one of it's child
 	this->jardinCont->AutoRealign();	// otherwise the icon is shifted
 	this->jardinCont->setPadding(0);
-	this->jardinCont->setClickable( false );	// Pass click to the parent
+	this->jardinCont->setClickable( true );	// Pass click to the parent
+	this->jardinCont->attacheEventeHandler( dehorsPopup );
 
 	this->jardinIcon = new Image( this->jardinCont );
 	this->jardinIcon->Set( &jardin_32px );
