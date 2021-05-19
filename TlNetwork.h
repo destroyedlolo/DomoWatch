@@ -20,11 +20,15 @@ class TlNetwork : public Container {
 	Image		*MQTTIcon;
 
 	/* Temperatures */
-	Container	*tempCont;
+	Container	*salonCont;
 	Image		*salonIcon;
 	Label 		*salonText;
+
+	Container	*jardinCont;
 	Image		*jardinIcon;
 	Label 		*jardinText;
+
+	Container	*congeloCont;
 	Image		*congeloIcon;
 	Label 		*congeloText;
 
@@ -37,7 +41,7 @@ class TlNetwork : public Container {
 
 
 public:
-	/* Screen's tile constructor
+	/* Network's tile constructor
 	 * -> parent, cloned : see Container
 	 */
 	TlNetwork( TileView *parent, TileView *cloned=NULL );

@@ -18,7 +18,6 @@ LV_IMG_DECLARE(congelo_32px);
 	 * callbacks
 	 ***/
 
-
 /* Request time synchronisation.
  *
  * It seems, NTP query is done in a background tasks.
@@ -27,7 +26,7 @@ LV_IMG_DECLARE(congelo_32px);
  * at shutdonw.
  */
 static void syncTime( lv_obj_t *, lv_event_t event ){
-	if(event == LV_EVENT_CLICKED){
+	if( event == LV_EVENT_CLICKED ){
 		Serial.println("Time synchronisation requested");
 
 		configTzTime("CET-1CEST-2,M3.5.0/02:00:00,M10.5.0/03:00:00", "pool.ntp.org");
@@ -36,9 +35,12 @@ static void syncTime( lv_obj_t *, lv_event_t event ){
 	}
 }
 
+/* Connect or disconnect to the broker
+ *
+ * It's also asynchronous
+ */
 static void startstopMQTT( lv_obj_t *, lv_event_t event ){
-	if(event == LV_EVENT_CLICKED){
-
+	if( event == LV_EVENT_CLICKED ){
 		if( network.MQTTconnected() ){
 			Serial.println("MQTT disconnecting");
 			network.MQTTdisconnect();
@@ -49,6 +51,22 @@ static void startstopMQTT( lv_obj_t *, lv_event_t event ){
 	}
 }
 
+static void salonPopup( lv_obj_t *, lv_event_t event ){
+	if( event == LV_EVENT_CLICKED && network.MQTTconnected() ){
+		Serial.println("Salon history popup");
+		gui->openPopup( DWPopup::Kind::SALON );
+	}
+}
+
+static void dehorsPopup( lv_obj_t *, lv_event_t event ){
+	if( event == LV_EVENT_CLICKED && network.MQTTconnected() ){
+		Serial.println("Dehors history popup");
+		gui->openPopup( DWPopup::Kind::JARDIN );
+	}
+}
+
+/* Subscribe to MQTT's topics
+ */
 void TlNetwork::subscribe( void ){
 	network.MQTTsubscribe( "TeleInfo/Consommation/values/PAPP" );
 	network.MQTTsubscribe( "TeleInfo/Production/values/PAPP" );
@@ -57,6 +75,11 @@ void TlNetwork::subscribe( void ){
 	network.MQTTsubscribe( "maison/Temperature/Congelateur" );
 }
 
+/* We got a message !
+ * -> const char *topic : which topic
+ * -> const char *payload : message's content
+ *	(only text payload is supported)
+ */
 bool TlNetwork::msgreceived( const char *topic, const char *payload ){
 	this->last = time(NULL);
 	if(!strcmp( topic, "TeleInfo/Consommation/values/PAPP" )){
@@ -79,6 +102,10 @@ bool TlNetwork::msgreceived( const char *topic, const char *payload ){
 	return false;
 }
 
+
+
+/* Check if display is too old and need to be cleared
+ */
 void TlNetwork::clearObsoletedValues( void ){
 	if(last < time(NULL)-500){	// Clear value if older than 5 minutes
 		this->salonText->setText( "--.---" );
@@ -90,6 +117,11 @@ void TlNetwork::clearObsoletedValues( void ){
 		Serial.println("Fresh data");
 }
 
+
+	/****
+	 * GUI
+	 ***/
+
 TlNetwork::TlNetwork( TileView *parent, TileView *cloned ) : 
 	Container( parent, cloned ), last(0)
 {
@@ -100,7 +132,7 @@ TlNetwork::TlNetwork( TileView *parent, TileView *cloned ) :
 	this->syncIcon = new Image( this );
 	this->syncIcon->Align( LV_ALIGN_IN_TOP_LEFT );	// it is itself aligned on the left
 	this->syncIcon->Set( &timezone_64px );
-	this->syncIcon->setClickable( true );	// Pass click to the parent
+	this->syncIcon->setClickable( true );
 	this->syncIcon->attacheEventeHandler( syncTime );
 
 		/*
@@ -110,54 +142,73 @@ TlNetwork::TlNetwork( TileView *parent, TileView *cloned ) :
 	this->MQTTIcon = new Image( this );
 	this->MQTTIcon->Set( &MQTT_64px );
 	this->MQTTIcon->Align( LV_ALIGN_OUT_RIGHT_MID, this->syncIcon, 20 );	
-	this->MQTTIcon->setClickable( true );	// Pass click to the parent
+	this->MQTTIcon->setClickable( true );
 	this->MQTTIcon->attacheEventeHandler( startstopMQTT );
 
 		/*
 		 * Temperatures
 		 */
 
-	this->tempCont = new Container( mainStyle, this->getMyself() );
-	this->tempCont->Align( LV_ALIGN_IN_BOTTOM_LEFT );
-	this->tempCont->setFit( LV_FIT_TIGHT );	// Its size is the one of it's child
-	this->tempCont->AutoRealign();	// otherwise the icon is shifted
-	this->tempCont->setPadding(0);
-	this->tempCont->setClickable( false );	// Pass click to the parent
+	this->congeloCont = new Container( mainStyle, this->getMyself() );
+	this->congeloCont->Align( LV_ALIGN_IN_BOTTOM_LEFT );
+	this->congeloCont->setFit( LV_FIT_TIGHT );	// Its size is the one of it's child
+	this->congeloCont->AutoRealign();	// otherwise the icon is shifted
+	this->congeloCont->setPadding(0);
+	this->congeloCont->setClickable( false);
 
-	this->salonIcon = new Image( this->tempCont );
-	this->salonIcon->Set( &salon_32px );
-	this->salonIcon->setClickable( false );
-
-	this->salonText = new Label( this->tempCont );	// Battery value
-	this->salonText->setText( "--.---" );
-	this->salonText->Align( LV_ALIGN_OUT_RIGHT_MID, this->salonIcon, 10 );
-	this->salonText->AutoRealign();
-
-	this->jardinIcon = new Image( this->tempCont );
-	this->jardinIcon->Set( &jardin_32px );
-	this->jardinIcon->Align( LV_ALIGN_OUT_TOP_MID, this->salonIcon, 0, -15 );
-	this->jardinIcon->setClickable( false );
-
-	this->jardinText = new Label( this->tempCont );	// Battery value
-	this->jardinText->setText( "--.---" );
-	this->jardinText->Align( LV_ALIGN_OUT_RIGHT_MID, this->jardinIcon, 10 );
-	this->jardinText->AutoRealign();
-
-	this->congeloIcon = new Image( this->tempCont );
+	this->congeloIcon = new Image( this->congeloCont );
 	this->congeloIcon->Set( &congelo_32px );
-	this->congeloIcon->Align( LV_ALIGN_OUT_TOP_MID, this->jardinIcon, 0, -15 );
+	this->congeloIcon->Align( LV_ALIGN_IN_LEFT_MID );
 	this->congeloIcon->setClickable( false );
 
-	this->congeloText = new Label( this->tempCont );	// Battery value
+	this->congeloText = new Label( this->congeloCont );	// Battery value
 	this->congeloText->setText( "--.---" );
 	this->congeloText->Align( LV_ALIGN_OUT_RIGHT_MID, this->congeloIcon, 10 );
 	this->congeloText->AutoRealign();
 
+
+	this->jardinCont = new Container( mainStyle, this->getMyself() );
+	this->jardinCont->Align( LV_ALIGN_OUT_TOP_LEFT, this->congeloCont, 0, -15);
+	this->jardinCont->setFit( LV_FIT_TIGHT );	// Its size is the one of it's child
+	this->jardinCont->AutoRealign();	// otherwise the icon is shifted
+	this->jardinCont->setPadding(0);
+	this->jardinCont->setClickable( true );	// Pass click to the parent
+	this->jardinCont->attacheEventeHandler( dehorsPopup );
+
+	this->jardinIcon = new Image( this->jardinCont );
+	this->jardinIcon->Set( &jardin_32px );
+	this->jardinIcon->Align( LV_ALIGN_IN_LEFT_MID );
+	this->jardinIcon->setClickable( false );
+
+	this->jardinText = new Label( this->jardinCont );	// Battery value
+	this->jardinText->setText( "--.---" );
+	this->jardinText->Align( LV_ALIGN_OUT_RIGHT_MID, this->jardinIcon, 10 );
+	this->jardinText->AutoRealign();
+
+
+	this->salonCont = new Container( mainStyle, this->getMyself() );
+	this->salonCont->Align( LV_ALIGN_OUT_TOP_LEFT, this->jardinCont, 0, -15);
+	this->salonCont->setFit( LV_FIT_TIGHT );	// Its size is the one of it's child
+	this->salonCont->AutoRealign();	// otherwise the icon is shifted
+	this->salonCont->setPadding(0);
+	this->salonCont->setClickable( true);
+	this->salonCont->attacheEventeHandler( salonPopup );
+
+	this->salonIcon = new Image( this->salonCont );
+	this->salonIcon->Set( &salon_32px );
+	this->salonIcon->setClickable( false );
+
+	this->salonText = new Label( this->salonCont );	// Battery value
+	this->salonText->setText( "--.---" );
+	this->salonText->Align( LV_ALIGN_OUT_RIGHT_MID, this->salonIcon, 10 );
+	this->salonText->AutoRealign();
+
 		/*
 		 * Consumption
 		 */
+
 	this->NRJCont = new Container( mainStyle, this->getMyself() );
-	this->NRJCont->Align( LV_ALIGN_OUT_RIGHT_MID, this->tempCont, 30 );
+	this->NRJCont->Align( LV_ALIGN_OUT_RIGHT_BOTTOM, this->congeloCont, 30 );
 	this->NRJCont->setFit( LV_FIT_TIGHT );	// Its size is the one of it's child
 	this->NRJCont->AutoRealign();	// otherwise the icon is shifted
 	this->NRJCont->setPadding(0);

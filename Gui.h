@@ -19,6 +19,7 @@
 #include "TlScreen.h"
 #include "TlNetwork.h"
 #include "TlShutter.h"
+#include "DWPopup.h"
 
 class StatusBar;
 
@@ -34,6 +35,9 @@ class Gui {
 	TlScreen	*_tile_screen;
 	TlNetwork	*_tile_network;
 	TlShutter	*_tile_shutter;
+
+		/* Popup */
+	DWPopup		*_popup;
 
 public:
 
@@ -107,6 +111,30 @@ public:
 	const char *whichShutterTopic( void ){
 		return this->_tile_shutter->whichShutterTopic();
 	}
+
+		/*
+		 * Popup
+		 *
+		 * LVGL is asynchronous, modal popups have to be programmed.
+		 */
+	/* open a popup.
+	 * Documentation is DWPopup's one.
+	 */
+	void openPopup( enum DWPopup::Kind k ){
+		closePopup();	// Close previous one if needed
+
+		this->_popup = new DWPopup( this->_workarea->getMyself(), k );
+	}
+
+	/* Close the popup if neeed.
+	 * Everything is up to the popup destructor.
+	 */
+	void closePopup( void ){
+		if( this->_popup ){
+			delete( this->_popup );
+			this->_popup = NULL;
+		}
+	}
 };
 
 
@@ -125,6 +153,7 @@ extern Style *mainStyle;
 extern Style *gaugeStyle;
 extern Style *sliderStyle;
 extern Style *stairsStyle;
+extern Style *popupStyle;
 
 extern bool mvtWakeup;
 extern uint8_t bl_lev;

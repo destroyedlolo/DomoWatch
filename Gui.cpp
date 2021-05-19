@@ -21,12 +21,13 @@ Style *mainStyle;
 Style *gaugeStyle;
 Style *sliderStyle;
 Style *stairsStyle;
+Style *popupStyle;
 
 	/**** 
 	 * Build the GUI
 	 *****/
 
-Gui::Gui( void ){
+Gui::Gui( void ) : _popup(NULL){
 
 		/***
 		 * Build main style
@@ -50,7 +51,7 @@ Gui::Gui( void ){
 	gaugeStyle->setRadius( 5 );
 
 		/***
-		 * Build Gauge style
+		 * Build Slider style
 		 ***/
 	sliderStyle = new Style();
 	sliderStyle->copyStyle( mainStyle );
@@ -60,13 +61,25 @@ Gui::Gui( void ){
 	sliderStyle->setRadius( 5 );
 
 		/***
-		 * Stairs drop down style
+		 * Build drop down style
 		 ***/
 	stairsStyle = new Style();
 	stairsStyle->copyStyle( mainStyle );
 	stairsStyle->setRadius( 5 );
 	stairsStyle->setBgOpacity( LV_OPA_70 );
 	stairsStyle->setBorderWidth( 1 );
+
+		/***
+		 * Build Popup style
+		 ***/
+	popupStyle = new Style();
+	popupStyle->copyStyle( mainStyle );
+	popupStyle->setBgColor( LV_COLOR_WHITE );
+	popupStyle->setBgOpacity( LV_OPA_80 );
+	popupStyle->setBorderWidth( 2 );
+	popupStyle->setCaptionFont( &lv_font_montserrat_22 );
+	popupStyle->setCaptionAlign( LV_ALIGN_IN_TOP_MID );
+	popupStyle->setCaptionColor( LV_COLOR_BLACK );
 
 		/***
 		 * Background images 
@@ -165,6 +178,10 @@ void Gui::initAutomation( void ){
 #define TABSIZE(t) ( sizeof(t) / sizeof(t[1]) )
 
 void Gui::updateMovements( void ){
+
+		// As the GUI is changing, we may have to close popup
+	this->closePopup();
+
 	int sz = 0;
 	Network::net_capacities_t caps = network.getCapacities();	// What is currently active
 
@@ -224,5 +241,10 @@ void Gui::subscribe( void ){
 }
 
 void Gui::msgreceived( const char *topic, const char *payload ){
-	/* bool ret = */ this->_tile_network->msgreceived( topic, payload );
+	bool ret = this->_tile_network->msgreceived( topic, payload );
+	if( !ret && this->_popup )
+		ret = this->_popup->msgreceived( topic, payload );
+
+	if( !ret )
+		Serial.printf("%s : ignored\n", topic);
 }

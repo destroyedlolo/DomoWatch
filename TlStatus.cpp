@@ -1,9 +1,6 @@
 /************************************************
 *	Settings tile
 *************************************************/
-
-#include <Chart.h>
-
 #include "Gui.h"
 #include "TlStatus.h"
 #include "Version.h"
