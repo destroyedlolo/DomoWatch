@@ -14,7 +14,8 @@ In addition, the code has been made in **POO way** and being **very modular** (a
 ## Install
 
 This project can be build using **Arduino IDE** and needs :
-- [Xinyuan-LilyGO /TTGO_TWatch_Library](https://github.com/Xinyuan-LilyGO/TTGO_TWatch_Library) and dependancies to be installed
+- [Xinyuan-LilyGO /TTGO_TWatch_Library](https://github.com/Xinyuan-LilyGO/TTGO_TWatch_Library) and dependancies to be installed.
+**LV_FONT_MONTSERRAT_10** needs to be set to **1** in *src/lv_conf.h*
 - [emToile](https://github.com/destroyedlolo/emToile)
 
 For MQTT

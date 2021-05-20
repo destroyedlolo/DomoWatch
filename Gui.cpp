@@ -80,6 +80,10 @@ Gui::Gui( void ) : _popup(NULL){
 	popupStyle->setCaptionFont( &lv_font_montserrat_22 );
 	popupStyle->setCaptionAlign( LV_ALIGN_IN_TOP_MID );
 	popupStyle->setCaptionColor( LV_COLOR_BLACK );
+		/* Ticks' style */
+	popupStyle->setTextColor( LV_COLOR_RED );
+	popupStyle->seTexttFont( &lv_font_montserrat_10 );	
+
 
 		/***
 		 * Background images 
