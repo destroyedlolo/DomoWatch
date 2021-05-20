@@ -18,6 +18,11 @@ TemperatureChart::TemperatureChart( lv_obj_t *parent, const char *title, const c
 {
 	this->setSize( lv_obj_get_width( parent ), lv_obj_get_height( parent ) );
 	this->addStyle( popupStyle );
+		// Let space for ticks (left)
+		// and on top / bottom to let them displayed
+	this->setPadding( 10,10,50,0, LV_CHART_PART_BG );
+	this->yTicksLen( 0, 0 );
+
 	this->setCaptionString( title );
 	this->setClickable( false );	// pass event to upper
 
@@ -59,7 +64,19 @@ bool TemperatureChart::msgreceived( const char *topic, const char *payload ){
 				max = val;
 		}
 		this->serie->setRange( min*100, max*100 );
+
 		Serial.printf( "Temperature chart : %f -> %f \n", min, max );
+
+		char t[ 12 ];	// (5 t°)*2 + 1*'\n' + 1
+		sprintf(t, "%.2f\n%.2f", max, min );
+		this->yTicks( t );
+
+/*
+		String ticks((float)max/100);
+		ticks += "\n";
+		ticks += (float)min/100;
+		this->yTicks( ticks.c_str() );
+*/
 
 		return true;
 	}
