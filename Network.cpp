@@ -40,7 +40,7 @@
 */
 
 /* well, __has_include() seems not working with Arduino IDE.
- * comment tout this include and define your granding bellow
+ * comment out this include and define your granting bellow
  */
 #include <Maison.h>
 
