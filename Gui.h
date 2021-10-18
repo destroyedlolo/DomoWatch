@@ -158,4 +158,11 @@ extern Style *popupStyle;
 extern bool mvtWakeup;
 extern uint8_t bl_lev;
 
+
+	/***
+	 * Externals functions used also in the GUI
+	 ***/
+
+extern const char *getResetCause( void );
+
 #endif

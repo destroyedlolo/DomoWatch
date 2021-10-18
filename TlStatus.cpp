@@ -44,9 +44,16 @@ TlStatus::TlStatus( TileView *parent, TileView *cloned ) :
 	this->_version->Align( LV_ALIGN_IN_BOTTOM_MID );
 	this->_version->AutoRealign();
 
-		/* Display last boot time 
+		/* Display last boot time and reason
 		 * This information will be set once at GUI creation
 		 */
+
+	this->_bootreason = new Label( this );
+	this->_bootreason->seTexttFont( &Ubuntu_16px );
+	this->_bootreason->setText( getResetCause() );
+	this->_bootreason->Align( LV_ALIGN_OUT_TOP_MID, this->_version );
+	this->_bootreason->AutoRealign();
+
 	static char buf[29];
 	time_t now;
 	struct tm  info;
@@ -58,7 +65,7 @@ TlStatus::TlStatus( TileView *parent, TileView *cloned ) :
 	this->_boottime = new Label( this );
 	this->_boottime->seTexttFont( &Ubuntu_16px );
 	this->_boottime->setText( buf );
-	this->_boottime->Align( LV_ALIGN_OUT_TOP_MID, this->_version );
+	this->_boottime->Align( LV_ALIGN_OUT_TOP_MID, this->_bootreason );
 	this->_boottime->AutoRealign();
 }
 
