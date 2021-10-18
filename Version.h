@@ -11,8 +11,9 @@
 *		- 007 : James Bond version, tribute to late Sean Connery - 
 *	14/04/2021 - LF : 0.09 - work on WiFi
 *	21/04/2021 - LF : 0.10 - Add time synchronisation
+*	19/10/2021 - LF : 0.15 - expose reboot cause
 */
 
 #ifndef VERSION_H
-#define VERSION_H "0.1404"
+#define VERSION_H "0.1500"
 #endif
