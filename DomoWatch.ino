@@ -355,6 +355,8 @@ void setup(){
 	}, RISING);
 
 
+	ttgo->bma->enableStepCountInterrupt();	// Enable step counter follow-up
+
 		/****
 		* Completed
 		*****/
