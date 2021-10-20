@@ -356,6 +356,7 @@ void setup(){
 
 
 	ttgo->bma->enableStepCountInterrupt();	// Enable step counter follow-up
+	ttgo->bma->enableWakeupInterrupt();		// Doubleclick
 
 		/****
 		* Completed
@@ -428,6 +429,9 @@ void loop(){
 
 		if(ttgo->bma->isStepCounter())
 			gui->updateStepCounter();
+
+		if(ttgo->bma->isDoubleClick())
+			Serial.println("DoubleClick");
 	}
 
 	if( bits & WATCH_UPD_MOVEMENTS ){
