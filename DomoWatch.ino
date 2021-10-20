@@ -158,6 +158,13 @@ void wakeup(){
 	lv_disp_trig_activity(NULL);
 	ttgo->bl->adjust( bl_lev );
 	ttgo->openBL();
+
+		// Clear pending interrupt
+	bool  rlst;
+	do
+		rlst =  ttgo->bma->readInterrupt();
+	while(!rlst);
+
 	ttgo->bma->enableStepCountInterrupt();	// Restore step counter follow-up
 }
 
@@ -411,7 +418,7 @@ void loop(){
 #endif
 				light_sleep();
 			return;
-		} else {	// Probably sharing IRQ
+		} else {	// Probably shared IRQ
 		    ttgo->power->clearIRQ();	// Free for other interrupt
 			gui->updateBatteryLevel();
 			gui->updateBatteryIcon( Gui::LV_ICON_UNKNOWN );
@@ -423,15 +430,18 @@ void loop(){
 
 	if( bits & WATCH_IRQ_BMA ){
 		bool  rlst;
-		do {
+		do
 			rlst =  ttgo->bma->readInterrupt();
-		} while(!rlst);
+		while(!rlst);
 
 		if(ttgo->bma->isStepCounter())
 			gui->updateStepCounter();
 
-		if(ttgo->bma->isDoubleClick())
+		if(ttgo->bma->isDoubleClick()){
 			Serial.println("DoubleClick");
+			if(!wakingup )	// Time for sleeping
+				light_sleep();
+		}
 	}
 
 	if( bits & WATCH_UPD_MOVEMENTS ){
