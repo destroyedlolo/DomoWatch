@@ -165,6 +165,7 @@ void wakeup(){
 		rlst =  ttgo->bma->readInterrupt();
 	while(!rlst);
 
+	ttgo->bma->enableTiltInterrupt(false);	// Don't need wrist interrupt anymore
 	ttgo->bma->enableStepCountInterrupt();	// Restore step counter follow-up
 }
 
@@ -205,13 +206,15 @@ void light_sleep(){
 	/* We are obliged to use different "ext?" as AXP interruption need a low level
 	 * whereas it's hight one for the BMA.
 	 */
-	esp_sleep_enable_ext0_wakeup((gpio_num_t)AXP202_INT, LOW);	// IRQ to wakeup
+	esp_sleep_enable_ext0_wakeup((gpio_num_t)AXP202_INT, LOW);				// IRQ to wakeup
+	esp_sleep_enable_ext1_wakeup(GPIO_SEL_39, ESP_EXT1_WAKEUP_ANY_HIGH);	// Movement
+
 	if(mvtWakeup){
-		esp_sleep_enable_ext1_wakeup(GPIO_SEL_39, ESP_EXT1_WAKEUP_ANY_HIGH);
-		Serial.println("BMA allowed");
+		ttgo->bma->enableTiltInterrupt(true);
+		Serial.println("Wrist allowed");
 	} else {
-		esp_sleep_disable_wakeup_source(ESP_SLEEP_WAKEUP_EXT1);
-		Serial.println("BMA disabled");
+		ttgo->bma->enableTiltInterrupt(false);
+		Serial.println("Wrist disabled");
 	}
 	esp_sleep_enable_gpio_wakeup();
 
