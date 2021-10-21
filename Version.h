@@ -12,8 +12,9 @@
 *	14/04/2021 - LF : 0.09 - work on WiFi
 *	21/04/2021 - LF : 0.10 - Add time synchronisation
 *	19/10/2021 - LF : 0.15 - expose reboot cause
+*	21/10/2021 - LF : 0.16 - work on doubleclick
 */
 
 #ifndef VERSION_H
-#define VERSION_H "0.1503"
+#define VERSION_H "0.1601"
 #endif
