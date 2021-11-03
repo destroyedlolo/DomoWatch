@@ -87,6 +87,15 @@ uint8_t bl_lev;			// Backlight level
 	 */
 bool wakingup = true;
 
+	/* Set local (true) or UTC (false) time zone.
+	 * The RTC is always set to the local time zone BUT the watch itself must be
+	 * able to manage daylight saving time.
+	 */
+
+void setLocalTZ(bool local=true){
+	setenv("TZ", local ? "CET-1CEST-2,M3.5.0/02:00:00,M10.5.0/03:00:00" : "", 1);
+	tzset();
+}
 
 	/*********************
 	*	Sleeping
@@ -149,7 +158,12 @@ void wakeup(){
 
 	ttgo->startLvglTick();
 	ttgo->displayWakeup();
+#if 0
+//	setLocalTZ(false);
 	ttgo->rtc->syncToSystem();
+Serial.printf("<- rtc : %s\n", ttgo->rtc->formatDateTime());
+//	setLocalTZ(true);
+#endif
 
 	gui->updateStepCounter();
 //	gui->updateBatteryLevel();
@@ -185,6 +199,7 @@ void deep_sleep(){
 
 void light_sleep(){
 	ttgo->rtc->syncToRtc();	// In case the time as changed
+// Serial.printf("-> rtc : %s\n", ttgo->rtc->formatDateTime());
 
 	ttgo->stopLvglTick();	// stop Lvgl
 	ttgo->bma->enableStepCountInterrupt(false);	// Step counter will not generate interrupt
@@ -302,8 +317,8 @@ void setup(){
 		*****/
 
 	Serial.println("Reading RTC ...");
-	setenv("TZ", "CET-1CEST-2,M3.5.0/02:00:00,M10.5.0/03:00:00", 1);
-	tzset();
+
+	setLocalTZ();	// Apply local timezone
 
 	ttgo->rtc->check();			// Ensure the RTC is valid (if not use compilation time)
 	ttgo->rtc->syncToSystem();	// sync with ESP32
