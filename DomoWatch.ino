@@ -184,7 +184,7 @@ Serial.printf("<- rtc : %s\n", ttgo->rtc->formatDateTime());
 }
 
 void deep_sleep(){
-	ttgo->rtc->syncToRtc();	// In case the time as changed
+//	ttgo->rtc->syncToRtc();	// In case the time as changed
 
 	ttgo->stopLvglTick();
 	ttgo->displayOff();
@@ -198,7 +198,7 @@ void deep_sleep(){
 }
 
 void light_sleep(){
-	ttgo->rtc->syncToRtc();	// In case the time as changed
+//	ttgo->rtc->syncToRtc();	// In case the time as changed
 // Serial.printf("-> rtc : %s\n", ttgo->rtc->formatDateTime());
 
 	ttgo->stopLvglTick();	// stop Lvgl
