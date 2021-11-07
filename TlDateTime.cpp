@@ -39,44 +39,31 @@ TlDateTime::TlDateTime( TileView *parent, TileView *cloned ) :
 		/* and date */
 	this->datelabel = new Label( this->cont );
 	this->datelabel->seTexttFont( &Ubuntu_16px );
-	this->datelabel->setText( "??.???? ????" );
+	this->datelabel->setText( "??? ??.????????? ????" );
 	this->datelabel->Align( LV_ALIGN_IN_BOTTOM_MID );
 	this->datelabel->AutoRealign();
 	this->datelabel->setClickable( false );	// Pass click to the parent
 
-#if 0
-LV_IMG_DECLARE(foot_16px);
-lv_obj_t 	*_obj = lv_img_create( lv_scr_act(), NULL );
-lv_obj_align( _obj, NULL, LV_ALIGN_IN_BOTTOM_MID, 0,0 );
-lv_img_set_src( _obj, LV_SYMBOL_DUMMY "Test" );
-Serial.printf(" Obj : %d,%d %dx%d\n", 
-		lv_obj_get_x(_obj), lv_obj_get_y(_obj),
-		lv_obj_get_width(_obj), lv_obj_get_height(_obj)
-);
-
-#if 0
-	Image *tst = new Image( lv_scr_act() );
-	tst->Align( LV_ALIGN_IN_BOTTOM_MID);
-	tst->Set( &foot_16px );
-tst->dumpObj("tst DT");
-#endif
-#endif
 }
 
 void TlDateTime::updateTime( void ){
-	time_t now;
-	struct tm  info;
+	RTC_Date now = ttgo->rtc->getDateTime();
+	uint32_t wday = ttgo->rtc->getDayOfWeek( now.day, now.month, now.year );
 	char buf[64];
 
-	time( &now );
-	localtime_r( &now, &info );
-
-	strftime( buf, sizeof(buf), "%H:%M:%S", &info );
+	sprintf( buf, "%02u:%02u:%02u", now.hour, now.minute, now.second );
 	this->timelabel->setText( buf );
 
-	if(info.tm_yday != this->daynum){
-		this->daynum = info.tm_yday;
-		strftime( buf, sizeof(buf), "%a %d %b %Y", &info );
+	if(now.day != this->daynum){
+			// French translation tables
+		const char *wds[] = { "Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam" };
+		const char *mths[] = {
+			"Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
+			"Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"
+		};
+
+		this->daynum = now.day;
+		sprintf( buf, "%s %d %s %d", wds[wday], now.day, mths[now.month-1], now.year );
 		this->datelabel->setText( buf );
 	}
 }
