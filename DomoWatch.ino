@@ -318,7 +318,7 @@ void setup(){
 
 	Serial.println("Reading RTC ...");
 
-	setLocalTZ();	// Apply local timezone
+//	setLocalTZ();	// Apply local timezone
 
 	ttgo->rtc->check();			// Ensure the RTC is valid (if not use compilation time)
 	ttgo->rtc->syncToSystem();	// sync with ESP32
