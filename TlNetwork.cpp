@@ -20,15 +20,18 @@ LV_IMG_DECLARE(congelo_32px);
 
 /* Request time synchronisation.
  *
- * It seems, NTP query is done in a background tasks.
+ * NTP query is done in a background tasks.
  * The added value, it doesn't block the GUI while querying.
- * The bad side is I can't set the RTC immediately : it will be done
- * at shutdonw.
  */
+static void time_synchronized(struct timeval *tv){
+	Serial.println("time synchronized");
+	ttgo->rtc->syncToRtc();
+}
+
 static void syncTime( lv_obj_t *, lv_event_t event ){
 	if( event == LV_EVENT_CLICKED ){
 		Serial.println("Time synchronisation requested");
-
+		sntp_set_time_sync_notification_cb( time_synchronized );
 		configTzTime("CET-1CEST-2,M3.5.0/02:00:00,M10.5.0/03:00:00", "pool.ntp.org");
 
 		gui->backToHome();	// Return to time tile
