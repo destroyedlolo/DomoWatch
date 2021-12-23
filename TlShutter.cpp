@@ -79,7 +79,7 @@ TlShutter::TlShutter( TileView *parent, TileView *cloned ) :
 	this->_stair->setChoices( "Rdc\nSalon\n1er", true );
 	this->_stair->Align( LV_ALIGN_IN_LEFT_MID, (const lv_obj_t *)NULL, 0, -10 );
 
-	this->_stair->attacheEventeHandler( stairChanged );
+	this->_stair->attachEventHandler( stairChanged );
 
 		/* Shutter selector */
 	this->_shutter = new DropDown( stairsStyle, this );
@@ -93,19 +93,19 @@ TlShutter::TlShutter( TileView *parent, TileView *cloned ) :
 	this->upIcon->setClickable( true );
 
 
-	this->upIcon->attacheEventeHandler( upClicked );
+	this->upIcon->attachEventHandler( upClicked );
 
 	this->myIcon = new Image( this );
 	this->myIcon->Set( &my_64px );
 	this->myIcon->Align( LV_ALIGN_IN_RIGHT_MID );
 	this->myIcon->setClickable( true );
 
-	this->myIcon->attacheEventeHandler( myClicked );
+	this->myIcon->attachEventHandler( myClicked );
 
 	this->downIcon = new Image( this );
 	this->downIcon->Set( &down_64px );
 	this->downIcon->Align( LV_ALIGN_IN_BOTTOM_RIGHT );
 	this->downIcon->setClickable( true );
 
-	this->downIcon->attacheEventeHandler( downClicked );
+	this->downIcon->attachEventHandler( downClicked );
 }

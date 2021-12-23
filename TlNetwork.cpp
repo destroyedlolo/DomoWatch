@@ -136,7 +136,7 @@ TlNetwork::TlNetwork( TileView *parent, TileView *cloned ) :
 	this->syncIcon->Align( LV_ALIGN_IN_TOP_LEFT );	// it is itself aligned on the left
 	this->syncIcon->Set( &timezone_64px );
 	this->syncIcon->setClickable( true );
-	this->syncIcon->attacheEventeHandler( syncTime );
+	this->syncIcon->attachEventHandler( syncTime );
 
 		/*
 		 * MQTT
@@ -146,7 +146,7 @@ TlNetwork::TlNetwork( TileView *parent, TileView *cloned ) :
 	this->MQTTIcon->Set( &MQTT_64px );
 	this->MQTTIcon->Align( LV_ALIGN_OUT_RIGHT_MID, this->syncIcon, 20 );	
 	this->MQTTIcon->setClickable( true );
-	this->MQTTIcon->attacheEventeHandler( startstopMQTT );
+	this->MQTTIcon->attachEventHandler( startstopMQTT );
 
 		/*
 		 * Temperatures
@@ -176,7 +176,7 @@ TlNetwork::TlNetwork( TileView *parent, TileView *cloned ) :
 	this->jardinCont->AutoRealign();	// otherwise the icon is shifted
 	this->jardinCont->setPadding(0);
 	this->jardinCont->setClickable( true );	// Pass click to the parent
-	this->jardinCont->attacheEventeHandler( dehorsPopup );
+	this->jardinCont->attachEventHandler( dehorsPopup );
 
 	this->jardinIcon = new Image( this->jardinCont );
 	this->jardinIcon->Set( &jardin_32px );
@@ -195,7 +195,7 @@ TlNetwork::TlNetwork( TileView *parent, TileView *cloned ) :
 	this->salonCont->AutoRealign();	// otherwise the icon is shifted
 	this->salonCont->setPadding(0);
 	this->salonCont->setClickable( true);
-	this->salonCont->attacheEventeHandler( salonPopup );
+	this->salonCont->attachEventHandler( salonPopup );
 
 	this->salonIcon = new Image( this->salonCont );
 	this->salonIcon->Set( &salon_32px );
