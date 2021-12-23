@@ -73,7 +73,7 @@ TlScreen::TlScreen( TileView *parent, TileView *cloned ) :
 	this->wakeupFromMouvement->Align( LV_ALIGN_IN_BOTTOM_LEFT );
 	this->wakeupFromMouvement->setText( "Wakeup by movement");
 	this->wakeupFromMouvement->setChecked( mvtWakeup );
-	this->wakeupFromMouvement->attacheEventeHandler( mvtWakeupChanged );
+	this->wakeupFromMouvement->attachEventHandler( mvtWakeupChanged );
 
 		/* Saver when WiFi enabled */
 	this->wifiCont = new Container( mainStyle, this->getMyself() );
@@ -90,7 +90,7 @@ TlScreen::TlScreen( TileView *parent, TileView *cloned ) :
 	this->wifiSlider->setSize( parent->getWidth() - this->wifiIcon->getWidth() -30, 10 );
 	this->wifiSlider->Align( LV_ALIGN_OUT_RIGHT_MID, this->wifiIcon->getMyself(), 20 );
 	this->wifiSlider->setValue( inactive_wifi_counter/1000 );	// Set initial value
-	this->wifiSlider->attacheEventeHandler( wifiModified );
+	this->wifiSlider->attachEventHandler( wifiModified );
 	wifiModified( this->wifiSlider->getMyself(), LV_EVENT_VALUE_CHANGED );
 
 		/* Saver */
@@ -108,7 +108,7 @@ TlScreen::TlScreen( TileView *parent, TileView *cloned ) :
 	this->saverSlider->setSize( parent->getWidth() - this->saverIcon->getWidth() -30, 10 );
 	this->saverSlider->Align( LV_ALIGN_OUT_RIGHT_MID, this->saverIcon->getMyself(), 20 );
 	this->saverSlider->setValue( inactive_counter/1000 );	// Set initial value
-	this->saverSlider->attacheEventeHandler( saverModified );
+	this->saverSlider->attachEventHandler( saverModified );
 	saverModified( this->saverSlider->getMyself(), LV_EVENT_VALUE_CHANGED );
 
 		/* Brightness */
@@ -126,7 +126,7 @@ TlScreen::TlScreen( TileView *parent, TileView *cloned ) :
 	this->brightnessSlider->Align( LV_ALIGN_OUT_RIGHT_MID, this->brightnessIcon->getMyself(), 20 );
 	this->brightnessSlider->setSize( parent->getWidth() - this->brightnessIcon->getWidth() -30, 10 );
 	this->brightnessSlider->setValue( ttgo->bl->getLevel() );
-	this->brightnessSlider->attacheEventeHandler( brightnessModified );
+	this->brightnessSlider->attachEventHandler( brightnessModified );
 	brightnessModified( this->brightnessSlider->getMyself(), LV_EVENT_VALUE_CHANGED );
 
 /*	Debug

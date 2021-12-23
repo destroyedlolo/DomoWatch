@@ -71,7 +71,7 @@ StatusBar::StatusBar( lv_obj_t *parent, const lv_obj_t *cloned ) :
 	this->stepCounter->setText( "??????" );
 	this->stepCounter->setClickable( false );	// Pass click to the parent
 
-	this->stepButton->attacheEventeHandler( stepClicked );
+	this->stepButton->attachEventHandler( stepClicked );
 
 	this->updateStepCounter();	// Ensure the counter is not "????" :)
 
@@ -103,7 +103,7 @@ StatusBar::StatusBar( lv_obj_t *parent, const lv_obj_t *cloned ) :
 	this->wifiIcon->Align( LV_ALIGN_OUT_LEFT_MID, this->batIcon, -15 );
 	this->wifiIcon->setIntensity();
 	this->wifiIcon->setClickable( true );
-	this->wifiIcon->attacheEventeHandler( wifiClicked );
+	this->wifiIcon->attachEventHandler( wifiClicked );
 }
 
 void StatusBar::updateStepCounter( void ){

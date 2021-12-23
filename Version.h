@@ -14,8 +14,9 @@
 *	19/10/2021 - LF : 0.15 - expose reboot cause
 *	21/10/2021 - LF : 0.16 - work on doubleclick
 *	07/11/2021 - LF : 0.17 - retrieve time/date from RTC
+*	22/12/2021 - LF : 0.18 - Add automation configuration tile
 */
 
 #ifndef VERSION_H
-#define VERSION_H "0.1703"
+#define VERSION_H "0.1704"
 #endif
